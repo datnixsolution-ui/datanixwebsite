@@ -262,17 +262,10 @@ $exportUrl = 'export-enquiries.php' . (!empty($queryString) ? '?' . $queryString
                   </span>
                 </td>
                 <td style="white-space: nowrap;">
-                  <?php if (!empty($enq['id'])): ?>
-                    <a href="enquiry-detail.php?id=<?php echo (int)$enq['id']; ?>" class="btn btn-navy btn-sm">
-                      <span>Manage</span>
-                      <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                    </a>
-                  <?php else: ?>
-                    <a href="enquiry-detail.php?ref=<?php echo urlencode($enq['reference_no']); ?>" class="btn btn-navy btn-sm">
-                      <span>Manage</span>
-                      <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                    </a>
-                  <?php endif; ?>
+                  <a href="enquiry-detail.php?id=<?php echo (int)($enq['id'] ?? 0); ?>&ref=<?php echo urlencode($enq['reference_no']); ?>" class="btn btn-navy btn-sm">
+                    <span>Manage</span>
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                  </a>
                 </td>
               </tr>
             <?php endforeach; ?>

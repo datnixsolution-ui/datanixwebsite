@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * DATNIX SOLUTIONS - Export Candidate Job Applications to CSV
  * Tagline: DATA. PROCESS. PERFORMANCE.

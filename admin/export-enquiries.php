@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * DATNIX SOLUTIONS - Export Enquiries to CSV
  * Tagline: DATA. PROCESS. PERFORMANCE.

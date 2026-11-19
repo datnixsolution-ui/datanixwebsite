@@ -37,6 +37,11 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+// Enable output buffering globally for all admin modules to guarantee safe redirects
+if (!ob_get_level()) {
+    ob_start();
+}
+
 require_once __DIR__ . '/../../includes/db.php';
 require_once __DIR__ . '/../../includes/functions.php';
 

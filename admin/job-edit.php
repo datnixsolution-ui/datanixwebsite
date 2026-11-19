@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * DATNIX SOLUTIONS - Create / Edit Job Opening Form
  * Tagline: DATA. PROCESS. PERFORMANCE.
@@ -9,10 +9,6 @@ requireAuth();
 
 $jobId = (int)($_GET['id'] ?? 0);
 $isEdit = ($jobId > 0);
-
-$pageTitle = $isEdit ? 'Edit Job Opening' : 'Create Job Opening';
-$breadcrumb = $isEdit ? 'Edit Job' : 'New Job';
-require_once __DIR__ . '/includes/header.php';
 
 $job = [
     'title'             => '',
@@ -162,6 +158,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
+
+$pageTitle = $isEdit ? 'Edit Job Opening' : 'Create Job Opening';
+$breadcrumb = $isEdit ? 'Edit Job' : 'New Job';
+require_once __DIR__ . '/includes/header.php';
 ?>
 
 <div class="page-header-row">

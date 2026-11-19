@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * DATNIX SOLUTIONS - Admin Settings & User Management
  * Tagline: DATA. PROCESS. PERFORMANCE.

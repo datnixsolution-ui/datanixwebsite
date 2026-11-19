@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * DATNIX SOLUTIONS - Activity Audit Logs
  * Tagline: DATA. PROCESS. PERFORMANCE.

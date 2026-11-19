@@ -437,7 +437,7 @@
               will review and reply promptly.
             </p>
 
-            <form id="consultationForm" action="https://formspree.io/f/YOUR_FORM_ID" method="POST" novalidate>
+            <form id="consultationForm" action="api/send-enquiry.php" method="POST" novalidate>
               <!-- Formspree Subject & Reply-To Meta Configuration -->
               <input type="hidden" name="_subject" id="emailSubject" value="New DATNIX SOLUTIONS Website Enquiry">
               <input type="hidden" name="_replyto" id="emailReplyTo" value="">
@@ -511,7 +511,7 @@
                   placeholder="Describe the current tasks, data formats, required accuracy benchmarks, or volume expectations..."
                   required rows="4"></textarea>
                 <span class="field-error-text" id="projectDetailsError">Please provide a brief description of your
-                  project requirements (minimum 10 characters).</span>
+                  project requirements (minimum 3 characters).</span>
               </div>
 
               <div style="margin-top: 1.5rem;">

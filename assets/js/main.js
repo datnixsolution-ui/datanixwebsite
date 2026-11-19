@@ -182,8 +182,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
 
-      if (!message || message.length < 10) {
-        setError(detailsInput, 'projectDetailsError', 'Please describe your project scope or data tasks (minimum 10 characters).');
+      if (!message || message.length < 3) {
+        setError(detailsInput, 'projectDetailsError', 'Please describe your project scope or data tasks (minimum 3 characters).');
       }
 
       if (hasError) {
@@ -255,6 +255,27 @@ document.addEventListener('DOMContentLoaded', () => {
         "Project Details": message
       };
 
+      // Prepare robust FormData payload (works seamlessly across Apache, PHP, and proxy setups)
+      const formData = new FormData(contactForm);
+      formData.set('fullName', name);
+      formData.set('full_name', name);
+      formData.set('Full Name', name);
+      formData.set('name', name);
+      formData.set('companyName', company);
+      formData.set('company_name', company);
+      formData.set('Company Name', company);
+      formData.set('email', email);
+      formData.set('Email Address', email);
+      formData.set('phone', phone);
+      formData.set('Mobile Number', phone);
+      formData.set('service', service);
+      formData.set('Service Required', service);
+      formData.set('estimatedVolume', volume);
+      formData.set('Estimated Project Volume', volume);
+      formData.set('projectDetails', message);
+      formData.set('Project Details', message);
+      formData.set('honeypot', honeypot);
+
       // Direct communication channels for backup / direct transmission
       const whatsappText = encodeURIComponent(
         `*New Business Enquiry - DATNIX SOLUTIONS*\n\n` +
@@ -283,32 +304,21 @@ document.addEventListener('DOMContentLoaded', () => {
       );
       const mailUrl = `mailto:datnixsolution@gmail.com?subject=${mailSubject}&body=${mailBody}`;
 
-      // Primary backend: hardened PHP + MySQL endpoint (api/send-enquiry.php)
-      // Fallback backend: Formspree (for static serverless deploys)
       const phpEndpoint = 'api/send-enquiry.php';
-      const formspreeEndpoint = (typeof SITE_CONFIG !== 'undefined' && SITE_CONFIG.formspree && SITE_CONFIG.formspree.endpoint)
-        ? SITE_CONFIG.formspree.endpoint
-        : (contactForm.getAttribute('action') || (SITE_CONFIG && SITE_CONFIG.contact && SITE_CONFIG.contact.formspreeEndpoint) || '');
-
       let submittedSuccessfully = false;
 
-      // Attempt 1: Submit to hardened PHP/MySQL API (5-second timeout for rapid failover)
+      // Attempt: Submit to hardened PHP/MySQL API with generous 20-second timeout for shared hosting
       const abortCtrl = new AbortController();
-      const abortTimer = setTimeout(() => abortCtrl.abort(), 5000);
+      const abortTimer = setTimeout(() => abortCtrl.abort(), 20000);
 
       try {
         const phpResp = await fetch(phpEndpoint, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
-          body: JSON.stringify(enquiryPayload),
+          body: formData,
           signal: abortCtrl.signal
         });
         clearTimeout(abortTimer);
 
-        // If PHP endpoint exists and processes request
         if (phpResp.status !== 404 && phpResp.status !== 405) {
           const phpResult = await phpResp.json().catch(() => null);
 
@@ -320,16 +330,20 @@ document.addEventListener('DOMContentLoaded', () => {
               formStatus.innerHTML = `
                 <div style="font-weight: 700; font-size: 1.05rem; margin-bottom: 0.35rem; color: #065F46; display: flex; align-items: center; gap: 8px;">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                  <span>Enquiry Logged Successfully</span>
+                  <span>Enquiry Received Successfully!</span>
                 </div>
                 <p style="margin: 0 0 0.5rem; font-size: 0.95rem; color: #166534; line-height: 1.5;">
                   Thank you for contacting DATNIX SOLUTIONS! Your enquiry has been recorded in our system under Reference ID:
                   <strong style="color: #065F46; font-family: monospace; font-size: 1.05rem;">${escapeHTML(phpResult.referenceNo || 'LOGGED')}</strong>.
                 </p>
                 <p style="margin: 0; font-size: 0.88rem; color: #15803D;">
-                  Our operations team will review your specifications and contact you shortly. Please quote your reference number in any follow-up correspondence.
+                  Our operations team will review your project specifications and contact you shortly. Please quote your reference number in any follow-up correspondence.
                 </p>
               `;
+            }
+            if (submitBtn) {
+              submitBtn.disabled = false;
+              submitBtn.innerHTML = originalBtnText;
             }
             return;
           } else if (phpResp.status === 429) {
@@ -355,15 +369,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
               `;
             }
+            if (submitBtn) {
+              submitBtn.disabled = false;
+              submitBtn.innerHTML = originalBtnText;
+            }
             return;
           } else if (phpResult && phpResult.error) {
-            // Validation error or server message
             throw new Error(phpResult.error);
           }
         }
       } catch (phpErr) {
-        // If it was a 429 or explicit validation error, don't fallback to Formspree
-        if (phpErr.message && !phpErr.message.includes('fetch') && !phpErr.message.includes('NetworkError') && !phpErr.message.includes('Failed to fetch')) {
+        if (phpErr.name !== 'AbortError' && phpErr.message && !phpErr.message.includes('fetch') && !phpErr.message.includes('NetworkError') && !phpErr.message.includes('Failed to fetch')) {
           if (formStatus) {
             formStatus.className = 'form-status error';
             formStatus.innerHTML = `
@@ -371,132 +387,38 @@ document.addEventListener('DOMContentLoaded', () => {
               <p style="margin-bottom: 0.75rem; font-size: 0.95rem; color: #B91C1C; line-height: 1.5;">${escapeHTML(phpErr.message)}</p>
             `;
           }
-          return;
-        }
-        console.warn('PHP API unavailable, falling back to secondary transport...', phpErr);
-      }
-
-      // Attempt 2: Fallback to Formspree if configured
-      const isPlaceholder = !formspreeEndpoint ||
-        formspreeEndpoint.includes('YOUR_FORM_ID') ||
-        formspreeEndpoint.includes('PASTE') ||
-        formspreeEndpoint.includes('[') ||
-        formspreeEndpoint === '#';
-
-      if (isPlaceholder) {
-        // Honest handling: do not pretend an email was delivered without a real endpoint.
-        setTimeout(() => {
           if (submitBtn) {
             submitBtn.disabled = false;
             submitBtn.innerHTML = originalBtnText;
           }
-
-          if (formStatus) {
-            formStatus.className = 'form-status error';
-            formStatus.innerHTML = `
-              <div style="font-weight: 700; margin-bottom: 0.35rem; color: #991B1B;">
-                Direct Contact Channels
-              </div>
-              <p style="margin-bottom: 0.75rem; font-size: 0.95rem; color: #B91C1C; line-height: 1.5;">
-                Unable to reach the automated enquiry server. You can transmit your enquiry directly to our team:
-              </p>
-              <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 0.5rem;">
-                <a href="${waUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp btn-sm" style="display: inline-flex; align-items: center; gap: 6px;">
-                  <span>Chat on WhatsApp (+91 73870 10393)</span>
-                </a>
-                <a href="${mailUrl}" class="btn btn-navy btn-sm" style="display: inline-flex; align-items: center; gap: 6px;">
-                  <span>Email Directly (datnixsolution@gmail.com)</span>
-                </a>
-              </div>
-            `;
-          }
-        }, 300);
-        return;
+          return;
+        }
+        console.warn('PHP API request failed, offering direct channels...', phpErr);
       }
 
-      // Live Formspree submission path
-      try {
-        const resp = await fetch(formspreeEndpoint, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
-          body: JSON.stringify(enquiryPayload)
-        });
-
-        const result = await resp.json().catch(() => null);
-
-        if (resp.ok && (resp.status >= 200 && resp.status < 300)) {
-          contactForm.reset();
-          if (formStatus) {
-            formStatus.className = 'form-status success';
-            formStatus.innerHTML = `
-              <div style="font-weight: 700; font-size: 1.05rem; margin-bottom: 0.35rem; color: #065F46; display: flex; align-items: center; gap: 8px;">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                <span>Enquiry Submitted Successfully</span>
-              </div>
-              <p style="margin: 0; font-size: 0.95rem; color: #166534; line-height: 1.5;">
-                Thank you for contacting DATNIX SOLUTIONS! Your enquiry has been submitted successfully. Our team will get back to you soon.
-              </p>
-            `;
-          }
-        } else if (resp.status === 429) {
-          const waitNotice = result && result.retryAfter
-            ? `Please wait ${result.retryAfter} seconds before trying again.`
-            : (result && result.error ? result.error : 'Too many enquiries submitted recently. Please wait a moment before trying again.');
-          if (formStatus) {
-            formStatus.className = 'form-status error';
-            formStatus.innerHTML = `
-              <div style="font-weight: 700; margin-bottom: 0.35rem; color: #991B1B;">
-                Submission Limit Notice
-              </div>
-              <p style="margin-bottom: 0.75rem; font-size: 0.95rem; color: #B91C1C; line-height: 1.5;">
-                ${escapeHTML(waitNotice)} Alternatively, reach our team directly:
-              </p>
-              <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 0.5rem;">
-                <a href="${waUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp btn-sm" style="display: inline-flex; align-items: center; gap: 6px;">
-                  <span>Chat on WhatsApp (+91 73870 10393)</span>
-                </a>
-                <a href="${mailUrl}" class="btn btn-navy btn-sm" style="display: inline-flex; align-items: center; gap: 6px;">
-                  <span>Email Directly (datnixsolution@gmail.com)</span>
-                </a>
-              </div>
-            `;
-          }
-        } else {
-          const errorMsg = result && result.errors && result.errors.length
-            ? result.errors.map(e => e.message).join(', ')
-            : (result && result.error ? result.error : `Server responded with status ${resp.status}`);
-          throw new Error(errorMsg);
-        }
-      } catch (fetchErr) {
-        console.error('Formspree submission error:', fetchErr);
-        // Preserve entered information on error
-        if (formStatus) {
-          formStatus.className = 'form-status error';
-          formStatus.innerHTML = `
-            <div style="font-weight: 700; margin-bottom: 0.35rem; color: #991B1B;">
-              Notice
-            </div>
-            <p style="margin-bottom: 0.75rem; font-size: 0.95rem; color: #B91C1C; line-height: 1.5;">
-              Unable to submit your enquiry at the moment. Please try again or contact us directly.
-            </p>
-            <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 0.5rem;">
-              <a href="${waUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp btn-sm" style="display: inline-flex; align-items: center; gap: 6px;">
-                <span>Chat on WhatsApp (+91 73870 10393)</span>
-              </a>
-              <a href="${mailUrl}" class="btn btn-navy btn-sm" style="display: inline-flex; align-items: center; gap: 6px;">
-                <span>Email Directly (datnixsolution@gmail.com)</span>
-              </a>
-            </div>
-          `;
-        }
-      } finally {
-        if (submitBtn) {
-          submitBtn.disabled = false;
-          submitBtn.innerHTML = originalBtnText;
-        }
+      // Fallback: If running on static host (e.g. GitHub Pages) without PHP
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalBtnText;
+      }
+      if (formStatus) {
+        formStatus.className = 'form-status error';
+        formStatus.innerHTML = `
+          <div style="font-weight: 700; margin-bottom: 0.35rem; color: #991B1B;">
+            Direct Contact Channels
+          </div>
+          <p style="margin-bottom: 0.75rem; font-size: 0.95rem; color: #B91C1C; line-height: 1.5;">
+            Connect with our operations team directly via WhatsApp or Email:
+          </p>
+          <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 0.5rem;">
+            <a href="${waUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp btn-sm" style="display: inline-flex; align-items: center; gap: 6px;">
+              <span>Chat on WhatsApp (+91 73870 10393)</span>
+            </a>
+            <a href="${mailUrl}" class="btn btn-navy btn-sm" style="display: inline-flex; align-items: center; gap: 6px;">
+              <span>Email Directly (datnixsolution@gmail.com)</span>
+            </a>
+          </div>
+        `;
       }
     });
   }

@@ -7,10 +7,6 @@
 require_once __DIR__ . '/includes/auth.php';
 requireAuth();
 
-$pageTitle = 'Application Review';
-$breadcrumb = 'Application Detail';
-require_once __DIR__ . '/includes/header.php';
-
 $appId = (int)($_POST['app_id'] ?? ($_GET['id'] ?? 0));
 $refParam = trim((string)($_POST['ref'] ?? ($_GET['ref'] ?? '')));
 
@@ -272,7 +268,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             setFlashMessage('danger', 'Invalid status selection.');
         }
 
-        $redir = $appId > 0 ? "application-detail.php?id=$appId" : "application-detail.php?ref=" . urlencode($app['reference_no']);
+        $redir = "application-detail.php?id=" . (int)$appId . "&ref=" . urlencode($app['reference_no']);
         header("Location: $redir");
         exit;
     }
@@ -328,13 +324,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             setFlashMessage('success', 'Recruitment note added successfully.');
         }
 
-        $redir = $appId > 0 ? "application-detail.php?id=$appId" : "application-detail.php?ref=" . urlencode($app['reference_no']);
+        $redir = "application-detail.php?id=" . (int)$appId . "&ref=" . urlencode($app['reference_no']);
         header("Location: $redir");
         exit;
     }
 }
 
-$pageTargetUrl = 'application-detail.php?' . ($appId > 0 ? 'id=' . $appId : 'ref=' . urlencode($app['reference_no']));
+$pageTitle = 'Application Review';
+$breadcrumb = 'Application Detail';
+require_once __DIR__ . '/includes/header.php';
+
+$pageTargetUrl = 'application-detail.php?id=' . (int)$appId . '&ref=' . urlencode($app['reference_no']);
 ?>
 
 <div class="page-header-row">

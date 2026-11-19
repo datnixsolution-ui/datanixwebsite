@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * DATNIX SOLUTIONS - Job Openings Management
  * Tagline: DATA. PROCESS. PERFORMANCE.

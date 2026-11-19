@@ -7,10 +7,6 @@
 require_once __DIR__ . '/includes/auth.php';
 requireAuth();
 
-$pageTitle = 'Enquiry Detail';
-$breadcrumb = 'Enquiry Detail';
-require_once __DIR__ . '/includes/header.php';
-
 $enquiryId = (int)($_POST['enquiry_id'] ?? ($_GET['id'] ?? 0));
 $refParam = trim((string)($_POST['ref'] ?? ($_GET['ref'] ?? '')));
 
@@ -225,7 +221,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             setFlashMessage('danger', 'Invalid status selection.');
         }
 
-        $redir = $enquiryId > 0 ? "enquiry-detail.php?id=$enquiryId" : "enquiry-detail.php?ref=" . urlencode($enquiry['reference_no']);
+        $redir = "enquiry-detail.php?id=" . (int)$enquiryId . "&ref=" . urlencode($enquiry['reference_no']);
         header("Location: $redir");
         exit;
     }
@@ -281,13 +277,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             setFlashMessage('success', 'Internal note recorded successfully.');
         }
 
-        $redir = $enquiryId > 0 ? "enquiry-detail.php?id=$enquiryId" : "enquiry-detail.php?ref=" . urlencode($enquiry['reference_no']);
+        $redir = "enquiry-detail.php?id=" . (int)$enquiryId . "&ref=" . urlencode($enquiry['reference_no']);
         header("Location: $redir");
         exit;
     }
 }
 
-$pageTargetUrl = 'enquiry-detail.php?' . ($enquiryId > 0 ? 'id=' . $enquiryId : 'ref=' . urlencode($enquiry['reference_no']));
+$pageTitle = 'Enquiry Detail';
+$breadcrumb = 'Enquiry Detail';
+require_once __DIR__ . '/includes/header.php';
+
+$pageTargetUrl = 'enquiry-detail.php?id=' . (int)$enquiryId . '&ref=' . urlencode($enquiry['reference_no']);
 $cleanPhone = preg_replace('/[^0-9]/', '', $enquiry['phone'] ?? '');
 $waLink = !empty($cleanPhone) ? 'https://wa.me/' . $cleanPhone : '';
 ?>

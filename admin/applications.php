@@ -311,17 +311,10 @@ $queryString = http_build_query($filterQueryParams);
                   </span>
                 </td>
                 <td style="white-space: nowrap;">
-                  <?php if (!empty($app['id'])): ?>
-                    <a href="application-detail.php?id=<?php echo (int)$app['id']; ?>" class="btn btn-navy btn-sm">
-                      <span>Manage</span>
-                      <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                    </a>
-                  <?php else: ?>
-                    <a href="application-detail.php?ref=<?php echo urlencode($app['reference_no']); ?>" class="btn btn-navy btn-sm">
-                      <span>Manage</span>
-                      <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                    </a>
-                  <?php endif; ?>
+                  <a href="application-detail.php?id=<?php echo (int)($app['id'] ?? 0); ?>&ref=<?php echo urlencode($app['reference_no']); ?>" class="btn btn-navy btn-sm">
+                    <span>Manage</span>
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                  </a>
                 </td>
               </tr>
             <?php endforeach; ?>
