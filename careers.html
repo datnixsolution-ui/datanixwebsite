@@ -544,21 +544,18 @@
         grid.style.display = 'grid';
       }
 
+      // Instant render for zero-delay page load
+      if (loader) loader.style.display = 'none';
+      renderJobs(fallbackJobs);
+
+      // Background check for dynamic updates
       try {
         const resp = await fetch('api/jobs.php');
         const data = await resp.json().catch(() => null);
-
-        if (loader) loader.style.display = 'none';
-
         if (data && data.success && Array.isArray(data.jobs) && data.jobs.length > 0) {
           renderJobs(data.jobs);
-        } else {
-          renderJobs(fallbackJobs);
         }
-      } catch (err) {
-        if (loader) loader.style.display = 'none';
-        renderJobs(fallbackJobs);
-      }
+      } catch (_) {}
 
       function escapeHtml(text) {
         if (!text) return '';

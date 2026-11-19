@@ -2686,41 +2686,38 @@ textarea.form-control {
 
 /* --------------------------------------------------------------------------
    5. SCROLL-TRIGGERED SECTION REVEALS
-   IntersectionObserver classes for high-performance lazy reveals.
+   Zero-lag hardware-accelerated rendering. Content renders immediately.
    -------------------------------------------------------------------------- */
 .reveal-on-scroll {
-  opacity: 0;
-  transform: translateY(28px);
-  transition: opacity var(--duration-reveal) var(--ease-out-smooth),
-              transform var(--duration-reveal) var(--ease-out-smooth);
-  will-change: opacity, transform;
+  opacity: 1;
+  transform: none;
 }
 
 .reveal-on-scroll.is-revealed {
   opacity: 1;
-  transform: translateY(0);
+  transform: none;
 }
 
 /* Subtle fade-only variant */
 .reveal-fade {
-  opacity: 0;
-  transition: opacity var(--duration-reveal) var(--ease-out-smooth);
-  will-change: opacity;
+  opacity: 1;
 }
 
 .reveal-fade.is-revealed {
   opacity: 1;
 }
 
-/* Stagger sequence delays */
-.reveal-delay-1 { transition-delay: 80ms; }
-.reveal-delay-2 { transition-delay: 160ms; }
-.reveal-delay-3 { transition-delay: 240ms; }
-.reveal-delay-4 { transition-delay: 320ms; }
-.reveal-delay-5 { transition-delay: 400ms; }
-.reveal-delay-6 { transition-delay: 480ms; }
-.reveal-delay-7 { transition-delay: 560ms; }
-.reveal-delay-8 { transition-delay: 640ms; }
+/* Stagger sequence delays disabled for instant 60fps scrolling */
+.reveal-delay-1,
+.reveal-delay-2,
+.reveal-delay-3,
+.reveal-delay-4,
+.reveal-delay-5,
+.reveal-delay-6,
+.reveal-delay-7,
+.reveal-delay-8 {
+  transition-delay: 0s !important;
+}
 
 /* --------------------------------------------------------------------------
    6. ELEGANT CARD HOVER EFFECTS

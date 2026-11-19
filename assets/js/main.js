@@ -43,16 +43,23 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // 3. Scroll to Top Button
+  // 3. Scroll to Top Button (Throttled with requestAnimationFrame for 60fps)
   const scrollTopBtn = document.getElementById('scrollTopBtn');
   if (scrollTopBtn) {
+    let scrollBtnTicking = false;
     window.addEventListener('scroll', () => {
-      if (window.scrollY > 400) {
-        scrollTopBtn.classList.add('visible');
-      } else {
-        scrollTopBtn.classList.remove('visible');
+      if (!scrollBtnTicking) {
+        window.requestAnimationFrame(() => {
+          if (window.scrollY > 400) {
+            scrollTopBtn.classList.add('visible');
+          } else {
+            scrollTopBtn.classList.remove('visible');
+          }
+          scrollBtnTicking = false;
+        });
+        scrollBtnTicking = true;
       }
-    });
+    }, { passive: true });
 
     scrollTopBtn.addEventListener('click', () => {
       window.scrollTo({
@@ -285,7 +292,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
       let submittedSuccessfully = false;
 
-      // Attempt 1: Submit to hardened PHP/MySQL API
+      // Attempt 1: Submit to hardened PHP/MySQL API (5-second timeout for rapid failover)
+      const abortCtrl = new AbortController();
+      const abortTimer = setTimeout(() => abortCtrl.abort(), 5000);
+
       try {
         const phpResp = await fetch(phpEndpoint, {
           method: 'POST',
@@ -293,8 +303,10 @@ document.addEventListener('DOMContentLoaded', () => {
             'Content-Type': 'application/json',
             'Accept': 'application/json'
           },
-          body: JSON.stringify(enquiryPayload)
+          body: JSON.stringify(enquiryPayload),
+          signal: abortCtrl.signal
         });
+        clearTimeout(abortTimer);
 
         // If PHP endpoint exists and processes request
         if (phpResp.status !== 404 && phpResp.status !== 405) {
@@ -575,30 +587,9 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Add base reveal class if not present
+    // Immediate reveal for 60fps instant page display without scroll stutter
     elementsToReveal.forEach(el => {
-      if (!el.classList.contains('reveal-on-scroll') && !el.classList.contains('reveal-fade')) {
-        el.classList.add('reveal-on-scroll');
-      }
-    });
-
-    const observerOptions = {
-      root: null,
-      rootMargin: '0px 0px -40px 0px',
-      threshold: 0.12
-    };
-
-    const revealObserver = new IntersectionObserver((entries, observer) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('is-revealed');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, observerOptions);
-
-    elementsToReveal.forEach(el => {
-      revealObserver.observe(el);
+      el.classList.add('is-revealed');
     });
   }
 

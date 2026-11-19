@@ -12,6 +12,113 @@ $slug = trim($_GET['slug'] ?? '');
 $job = null;
 $allActiveJobs = [];
 
+$staticJobsList = [
+    1 => [
+        'id' => 1,
+        'title' => 'Data Entry Operator (Fresher & Experienced)',
+        'slug' => 'data-entry-operator-fresher-experienced',
+        'department' => 'Data Entry Operations',
+        'location' => 'Work From Home (WFH) / Remote (All India)',
+        'employment_type' => 'Full-Time / WFH',
+        'experience_req' => '0 - 2 Years (Freshers Welcome)',
+        'short_description' => 'Accurate and high-speed alphanumeric data entry, form keying, master record updating, and spreadsheet data entry across client projects.',
+        'responsibilities' => "• Key alphanumeric data from invoices, paper receipts, and scanned records into spreadsheets.\n• Achieve daily target output quotas while maintaining 98%+ character accuracy.\n• Perform initial self-audit checks against source documents prior to batch submission.\n• Comply strictly with enterprise client confidentiality, clean-desk, and NDA protocols.",
+        'required_skills' => "• Typing speed of 30+ WPM with high accuracy.\n• Basic proficiency in Microsoft Excel, Google Sheets, and keyboard numerical entry.\n• High attention to detail and error spotting.\n• Freshers with good typing skills and basic computer literacy are encouraged to apply.",
+        'benefits' => "• 100% Work From Home (WFH) with flexible shift arrangements.\n• Comprehensive remote onboarding and digital tools training provided.\n• Performance-linked monthly incentives and annual appraisals."
+    ],
+    2 => [
+        'id' => 2,
+        'title' => 'Senior Data Entry Specialist (High-Volume & Speed)',
+        'slug' => 'senior-data-entry-specialist',
+        'department' => 'Data Entry Operations',
+        'location' => 'Work From Home (WFH) / Remote (All India)',
+        'employment_type' => 'Full-Time / WFH',
+        'experience_req' => '2 - 4 Years',
+        'short_description' => 'High-volume, rapid-turnaround batch data entry, complex tabulations, dual-screen comparison, and specialized customer database updating.',
+        'responsibilities' => "• Transcribe complex alphanumeric records from multi-format source files into enterprise systems.\n• Execute dual-screen verification checks to ensure zero-defect output conformity (99.8% SLA).\n• Assist team supervisors in tracking hourly team productivity metrics and turnaround SLAs.\n• Flag ambiguous source records, formatting anomalies, and validation errors to project managers.",
+        'required_skills' => "• Proven typing speed of 45+ WPM with 99%+ accuracy.\n• High proficiency in 10-key numeric keypad, keyboard shortcuts, and Excel functions.\n• Minimum 2 years of prior experience in international data entry / BPO operations.\n• Proven ability to handle high-volume repetitive tasks with steady focus.",
+        'benefits' => "• Competitive salary package + high-performance bonuses.\n• Fast-track leadership progression to Remote Pod Lead.\n• Modern cloud workflow tools and continuous technical support."
+    ],
+    3 => [
+        'id' => 3,
+        'title' => 'Multilingual Data Entry Executive (English & Regional)',
+        'slug' => 'multilingual-data-entry-executive',
+        'department' => 'Multilingual Operations',
+        'location' => 'Work From Home (WFH) / Remote (All India)',
+        'employment_type' => 'Full-Time / WFH',
+        'experience_req' => '1 - 3 Years',
+        'short_description' => 'Data entry and verification for multi-language documents, bilingual records, and regional Indian language datasets with Unicode standards.',
+        'responsibilities' => "• Transcribe customer records, public registries, and surveys into English and regional Unicode text.\n• Verify transliteration accuracy and spelling consistency for names, addresses, and local terminology.\n• Key in alphanumeric IDs, phone numbers, and financial figures from multilingual forms.\n• Perform cross-check validation between English and vernacular language fields.",
+        'required_skills' => "• Strong written English plus fluency in Hindi, Gujarati, or other regional languages.\n• Experience with Unicode keyboard layouts and bilingual data entry software.\n• Typing speed of 35+ WPM with meticulous character fidelity.\n• Prior experience in census, voter list, or multilingual banking data entry is a plus.",
+        'benefits' => "• Multilingual skill allowance.\n• 100% remote working flexibility.\n• Supportive virtual team structure and weekly peer syncs."
+    ],
+    4 => [
+        'id' => 4,
+        'title' => 'Excel & Spreadsheet Data Entry Associate',
+        'slug' => 'excel-spreadsheet-data-entry-associate',
+        'department' => 'Back-Office Operations',
+        'location' => 'Work From Home (WFH) / Remote (All India)',
+        'employment_type' => 'Full-Time / WFH',
+        'experience_req' => '1 - 3 Years',
+        'short_description' => 'Structured spreadsheet data entry, formula applications, row/column consolidation, deduplication, and database import preparation in MS Excel.',
+        'responsibilities' => "• Populate and maintain standardized Microsoft Excel workbooks and Google Sheets trackers.\n• Cleanse incoming datasets using trim, deduplication, find-and-replace, and VLOOKUP functions.\n• Convert unstructured customer text tables into normalized tabular records.\n• Generate daily activity logs and row counts for project managers.",
+        'required_skills' => "• Strong hands-on knowledge of MS Excel formulas, filters, conditional formatting, and shortcuts.\n• Accurate 10-key numeric pad typing speed.\n• High analytical attentiveness to spot mismatched figures and orphan records.\n• Familiarity with CSV, XLSX, and Google Drive sharing protocols.",
+        'benefits' => "• Flexible remote work schedule.\n• Skill enhancement programs covering advanced macro automation.\n• Monthly performance allowances."
+    ],
+    5 => [
+        'id' => 5,
+        'title' => 'E-commerce Product Data Entry Assistant',
+        'slug' => 'ecommerce-product-data-entry-assistant',
+        'department' => 'E-commerce Operations',
+        'location' => 'Work From Home (WFH) / Remote (All India)',
+        'employment_type' => 'Full-Time / WFH',
+        'experience_req' => '1 - 2 Years',
+        'short_description' => 'Online product listing, SKU catalog keying, price updates, attribute tagging, and bulk inventory spreadsheet management for e-commerce platforms.',
+        'responsibilities' => "• Enter product titles, SKU codes, manufacturer part numbers, dimensions, and prices into catalog sheets.\n• Map product attributes (color, size, material, category tags) accurately to marketplace taxonomies.\n• Cross-check vendor spec sheets against marketplace listings to prevent catalog inaccuracies.\n• Key in inventory stock levels and promotional pricing updates.",
+        'required_skills' => "• Familiarity with online shopping platforms (Shopify, Amazon, Flipkart, WooCommerce portals).\n• Typing speed of 35+ WPM with strong attention to product spec details.\n• Experience uploading CSV batches or editing bulk product spreadsheets.\n• Diligent, detail-focused mindset for catalog uniformity.",
+        'benefits' => "• 100% remote work setup.\n• Direct exposure to global e-commerce brand operations.\n• Product accuracy bonuses."
+    ],
+    6 => [
+        'id' => 6,
+        'title' => 'Remote Document Data Entry Clerk (Online / WFH)',
+        'slug' => 'remote-document-data-entry-clerk',
+        'department' => 'Data Operations',
+        'location' => 'Work From Home (WFH) / Remote (All India)',
+        'employment_type' => 'Full-Time / WFH',
+        'experience_req' => '0 - 2 Years (Freshers Welcome)',
+        'short_description' => 'Digital indexing, metadata transcription, form entry, and verification from scanned enterprise records and digital forms.',
+        'responsibilities' => "• Access secure cloud portals to view and transcribe scanned document batches.\n• Enter dates, invoice numbers, tax IDs, and transaction amounts with strict fidelity.\n• Tag and organize processed digital files into client repository structures.\n• Complete daily quota assignments on schedule under remote supervision.",
+        'required_skills' => "• Minimum typing speed of 30+ WPM with 95%+ accuracy.\n• Reliable personal computer or laptop with stable high-speed broadband connection.\n• Basic computer proficiency and high degree of discipline for independent remote work.\n• Strong confidentiality ethics and compliance with remote data protection rules.",
+        'benefits' => "• 100% Work From Home (WFH) across any state/city in India.\n• High-speed internet allowance assistance.\n• Paid digital training."
+    ],
+    7 => [
+        'id' => 7,
+        'title' => 'Data Verification & Quality Checking (QC) Specialist',
+        'slug' => 'data-verification-qc-specialist',
+        'department' => 'Quality Assurance',
+        'location' => 'Work From Home (WFH) / Remote (All India)',
+        'employment_type' => 'Full-Time / WFH',
+        'experience_req' => '2 - 4 Years',
+        'short_description' => 'Second-tier audit, dual-key verification, anomaly detection, character-level comparison, and 99.5%+ accuracy audit for completed data batches.',
+        'responsibilities' => "• Conduct statistical sample audits and 100% dual-entry cross-verification across completed batches.\n• Compute error rates (DPU/DPMO) and compile daily quality scorecards for data entry operators.\n• Identify systemic keying errors and recommend process corrections to operations supervisors.\n• Authorize batch sign-off for final client delivery under 99.8% quality SLAs.",
+        'required_skills' => "• 2+ years prior experience in quality control, auditing, or proof-checking within BPO/data services.\n• Outstanding error-detection capability and meticulous eagle-eye attention to detail.\n• Proficiency in data comparison tools, Excel diff scripts, and validation checklists.\n• Strong written and verbal communication for delivering objective operator feedback.",
+        'benefits' => "• Senior-grade compensation package + quarterly quality incentives.\n• Fast-track promotion path to Remote Operations Supervisor.\n• Comprehensive health coverage support."
+    ],
+    8 => [
+        'id' => 8,
+        'title' => 'Back-Office Data Entry & Invoice Processing Clerk',
+        'slug' => 'back-office-data-entry-invoice-clerk',
+        'department' => 'Back-Office Operations',
+        'location' => 'Work From Home (WFH) / Remote (All India)',
+        'employment_type' => 'Full-Time / WFH',
+        'experience_req' => '1 - 3 Years',
+        'short_description' => 'Entry and verification of vendor bills, accounts payable vouchers, purchase receipts, line-item reconciliation, and ledger record updating.',
+        'responsibilities' => "• Process and enter incoming supplier invoices, claims, and delivery notes into ERP systems.\n• Cross-verify invoice line items against purchase orders and approved rate sheets.\n• Update internal records, address books, and customer transaction logs.\n• Prepare daily shift activity summaries and transaction logs for management.",
+        'required_skills' => "• Prior experience in back-office operations, accounting data entry, or commercial BPO.\n• Good numerical reasoning and typing accuracy.\n• Basic knowledge of accounting software or MS Excel.\n• Strong team collaboration and communication skills via Slack / WhatsApp.",
+        'benefits' => "• Stable remote corporate environment with regular business hours.\n• Performance-linked quarterly rewards.\n• Work from anywhere in India."
+    ]
+];
+
 if (!empty($pdo)) {
     try {
         if ($jobId > 0) {
@@ -29,6 +136,26 @@ if (!empty($pdo)) {
         $allActiveJobs = $allStmt->fetchAll();
     } catch (Throwable $e) {
         error_log('[JOB DETAIL FETCH ERROR] ' . $e->getMessage());
+    }
+}
+
+// Fallback to static job dataset if database is cold/unseeded
+if ($job === null) {
+    if ($jobId > 0 && isset($staticJobsList[$jobId])) {
+        $job = $staticJobsList[$jobId];
+    } elseif (!empty($slug)) {
+        foreach ($staticJobsList as $sj) {
+            if ($sj['slug'] === $slug) {
+                $job = $sj;
+                break;
+            }
+        }
+    }
+}
+
+if (empty($allActiveJobs)) {
+    foreach ($staticJobsList as $sj) {
+        $allActiveJobs[] = ['id' => $sj['id'], 'title' => $sj['title']];
     }
 }
 
@@ -456,11 +583,16 @@ $pageJobTitle = $isGeneral ? 'General Talent Pool Application' : $job['title'];
 
         const formData = new FormData(appForm);
 
+        const abortCtrl = new AbortController();
+        const abortTimer = setTimeout(() => abortCtrl.abort(), 10000);
+
         try {
           const resp = await fetch('api/apply.php', {
             method: 'POST',
-            body: formData
+            body: formData,
+            signal: abortCtrl.signal
           });
+          clearTimeout(abortTimer);
 
           const result = await resp.json().catch(() => null);
 

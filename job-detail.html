@@ -475,14 +475,6 @@
 
       try {
         let allJobs = staticJobs;
-        try {
-          const resp = await fetch('api/jobs.php');
-          const data = await resp.json().catch(() => null);
-          if (data && data.success && Array.isArray(data.jobs) && data.jobs.length > 0) {
-            allJobs = data.jobs;
-          }
-        } catch (_) {}
-
         if (specLoading) specLoading.style.display = 'none';
 
         // Populate select dropdown
@@ -616,11 +608,16 @@
 
           const formData = new FormData(appForm);
 
+          const abortCtrl = new AbortController();
+          const abortTimer = setTimeout(() => abortCtrl.abort(), 10000);
+
           try {
             const resp = await fetch('api/apply.php', {
               method: 'POST',
-              body: formData
+              body: formData,
+              signal: abortCtrl.signal
             });
+            clearTimeout(abortTimer);
 
             const result = await resp.json().catch(() => null);
 
