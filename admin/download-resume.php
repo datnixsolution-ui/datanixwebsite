@@ -12,32 +12,55 @@ require_once __DIR__ . '/includes/auth.php';
 requireAuth();
 
 $fileId = (int)($_GET['id'] ?? 0);
-if ($fileId <= 0 || empty($pdo)) {
+$fileNameParam = trim($_GET['file'] ?? '');
+
+if ($fileId <= 0 && empty($fileNameParam)) {
     http_response_code(400);
     die('Invalid resume file reference.');
 }
 
 $admin = getCurrentAdmin();
+$uploadDir = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'resumes' . DIRECTORY_SEPARATOR;
+$filePath = null;
+$safeDownloadName = 'Candidate_Resume';
+$mimeType = 'application/octet-stream';
 
 try {
-    $stmt = $pdo->prepare('
-        SELECT f.*, a.reference_no, a.full_name 
-        FROM application_files f
-        JOIN applications a ON f.application_id = a.id
-        WHERE f.id = :id
-    ');
-    $stmt->execute([':id' => $fileId]);
-    $fileRecord = $stmt->fetch();
+    if (!empty($fileNameParam)) {
+        // Direct file reference from disk backup
+        $safeFile = basename($fileNameParam);
+        $filePath = $uploadDir . $safeFile;
+        $safeDownloadName = 'Candidate_Resume_' . $safeFile;
 
-    if (!$fileRecord) {
-        http_response_code(404);
-        die('Resume record not found in database.');
+        // Auto-detect extension mime
+        $ext = strtolower(pathinfo($safeFile, PATHINFO_EXTENSION));
+        if ($ext === 'pdf') $mimeType = 'application/pdf';
+        elseif ($ext === 'doc') $mimeType = 'application/msword';
+        elseif ($ext === 'docx') $mimeType = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+
+    } elseif ($fileId > 0 && !empty($pdo)) {
+        $stmt = $pdo->prepare('
+            SELECT f.*, a.reference_no, a.full_name 
+            FROM application_files f
+            JOIN applications a ON f.application_id = a.id
+            WHERE f.id = :id
+        ');
+        $stmt->execute([':id' => $fileId]);
+        $fileRecord = $stmt->fetch();
+
+        if (!$fileRecord) {
+            http_response_code(404);
+            die('Resume record not found in database.');
+        }
+
+        $filePath = $uploadDir . basename($fileRecord['stored_filename']);
+        $safeDownloadName = preg_replace('/[^a-zA-Z0-9_\-\.]/', '_', $fileRecord['original_filename']);
+        if (!empty($fileRecord['mime_type'])) {
+            $mimeType = $fileRecord['mime_type'];
+        }
     }
 
-    $uploadDir = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'resumes' . DIRECTORY_SEPARATOR;
-    $filePath = $uploadDir . basename($fileRecord['stored_filename']);
-
-    if (!file_exists($filePath) || !is_readable($filePath)) {
+    if (!$filePath || !file_exists($filePath) || !is_readable($filePath)) {
         http_response_code(404);
         die('Resume document file is not present on disk.');
     }

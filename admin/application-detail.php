@@ -12,7 +12,9 @@ $breadcrumb = 'Application Detail';
 require_once __DIR__ . '/includes/header.php';
 
 $appId = (int)($_GET['id'] ?? 0);
-if ($appId <= 0 || empty($pdo)) {
+$refParam = trim($_GET['ref'] ?? '');
+
+if ($appId <= 0 && empty($refParam)) {
     setFlashMessage('danger', 'Invalid application record ID.');
     header('Location: applications.php');
     exit;
@@ -77,51 +79,93 @@ $resumeFile = null;
 $notes = [];
 $auditLogs = [];
 
-try {
-    $stmt = $pdo->prepare('
-        SELECT a.*, j.title as job_title, j.department, j.location as job_location
-        FROM applications a
-        LEFT JOIN jobs j ON a.job_id = j.id
-        WHERE a.id = :id
-    ');
-    $stmt->execute([':id' => $appId]);
-    $app = $stmt->fetch();
+if ($appId > 0 && !empty($pdo)) {
+    try {
+        $stmt = $pdo->prepare('
+            SELECT a.*, j.title as job_title, j.department, j.location as job_location
+            FROM applications a
+            LEFT JOIN jobs j ON a.job_id = j.id
+            WHERE a.id = :id
+        ');
+        $stmt->execute([':id' => $appId]);
+        $app = $stmt->fetch();
 
-    if (!$app) {
-        setFlashMessage('danger', 'Application record not found.');
-        header('Location: applications.php');
-        exit;
+        if ($app) {
+            // Fetch Resume File
+            $fStmt = $pdo->prepare('SELECT * FROM application_files WHERE application_id = :id LIMIT 1');
+            $fStmt->execute([':id' => $appId]);
+            $resumeFile = $fStmt->fetch();
+
+            // Fetch Internal Notes
+            $nStmt = $pdo->prepare('
+                SELECT n.*, a.full_name as author_name, a.username 
+                FROM application_notes n
+                JOIN admins a ON n.admin_id = a.id
+                WHERE n.application_id = :aid
+                ORDER BY n.created_at DESC
+            ');
+            $nStmt->execute([':aid' => $appId]);
+            $notes = $nStmt->fetchAll();
+
+            // Fetch Activity Logs
+            $lStmt = $pdo->prepare('
+                SELECT l.*, a.full_name as admin_name 
+                FROM activity_logs l
+                LEFT JOIN admins a ON l.admin_id = a.id
+                WHERE l.entity_type = "application" AND l.entity_id = :aid
+                ORDER BY l.created_at DESC
+            ');
+            $lStmt->execute([':aid' => $appId]);
+            $auditLogs = $lStmt->fetchAll();
+        }
+    } catch (Throwable $e) {
+        error_log('[APPLICATION DETAIL ERROR] ' . $e->getMessage());
     }
+}
 
-    // Fetch Resume File
-    $fStmt = $pdo->prepare('SELECT * FROM application_files WHERE application_id = :id LIMIT 1');
-    $fStmt->execute([':id' => $appId]);
-    $resumeFile = $fStmt->fetch();
+// Check disk backup if not loaded from DB
+if (!$app && !empty($refParam)) {
+    $cleanRef = preg_replace('/[^a-zA-Z0-9_-]/', '', $refParam);
+    $diskDir = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'applications';
+    if (is_dir($diskDir)) {
+        $matches = glob($diskDir . DIRECTORY_SEPARATOR . 'app_*' . $cleanRef . '*.json');
+        if ($matches) {
+            $raw = @file_get_contents($matches[0]);
+            $item = json_decode($raw, true);
+            if ($item) {
+                $app = [
+                    'id' => 0,
+                    'reference_no' => $item['reference_no'],
+                    'full_name' => $item['full_name'],
+                    'email' => $item['email'],
+                    'phone' => $item['phone'],
+                    'experience_years' => $item['experience_years'],
+                    'current_location' => $item['current_location'] ?? ($item['candidate_address'] ?? 'WFH'),
+                    'notice_period' => $item['notice_period'],
+                    'additional_info' => $item['additional_info'] ?? '',
+                    'status' => 'New',
+                    'created_at' => $item['created_at'],
+                    'job_title' => 'Data Operations (WFH)',
+                    'department' => 'Operations',
+                    'job_location' => 'Work From Home (WFH) / Remote'
+                ];
+                if (!empty($item['resume_stored'])) {
+                    $resumeFile = [
+                        'id' => 0,
+                        'original_filename' => $item['resume_original'] ?? 'Candidate_Resume',
+                        'stored_filename' => $item['resume_stored'],
+                        'file_size' => 0
+                    ];
+                }
+            }
+        }
+    }
+}
 
-    // Fetch Internal Notes
-    $nStmt = $pdo->prepare('
-        SELECT n.*, a.full_name as author_name, a.username 
-        FROM application_notes n
-        JOIN admins a ON n.admin_id = a.id
-        WHERE n.application_id = :aid
-        ORDER BY n.created_at DESC
-    ');
-    $nStmt->execute([':aid' => $appId]);
-    $notes = $nStmt->fetchAll();
-
-    // Fetch Activity Logs
-    $lStmt = $pdo->prepare('
-        SELECT l.*, a.full_name as admin_name 
-        FROM activity_logs l
-        LEFT JOIN admins a ON l.admin_id = a.id
-        WHERE l.entity_type = "application" AND l.entity_id = :aid
-        ORDER BY l.created_at DESC
-    ');
-    $lStmt->execute([':aid' => $appId]);
-    $auditLogs = $lStmt->fetchAll();
-
-} catch (Throwable $e) {
-    error_log('[APPLICATION DETAIL ERROR] ' . $e->getMessage());
+if (!$app) {
+    setFlashMessage('danger', 'Application record not found.');
+    header('Location: applications.php');
+    exit;
 }
 ?>
 
@@ -206,10 +250,17 @@ try {
                 </div>
               </div>
             </div>
-            <a href="download-resume.php?id=<?php echo (int)$resumeFile['id']; ?>" class="btn btn-navy btn-sm">
-              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-              <span>Download CV</span>
-            </a>
+            <?php if (!empty($resumeFile['stored_filename'])): ?>
+              <a href="download-resume.php?file=<?php echo urlencode($resumeFile['stored_filename']); ?>" class="btn btn-navy btn-sm">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                <span>Download CV</span>
+              </a>
+            <?php else: ?>
+              <a href="download-resume.php?id=<?php echo (int)$resumeFile['id']; ?>" class="btn btn-navy btn-sm">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                <span>Download CV</span>
+              </a>
+            <?php endif; ?>
           </div>
         <?php else: ?>
           <div class="alert alert-warning">No resume document file associated with this candidate record.</div>

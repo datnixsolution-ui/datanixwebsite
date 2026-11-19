@@ -12,8 +12,10 @@ $breadcrumb = 'Enquiry Detail';
 require_once __DIR__ . '/includes/header.php';
 
 $enquiryId = (int)($_GET['id'] ?? 0);
-if ($enquiryId <= 0 || empty($pdo)) {
-    setFlashMessage('danger', 'Invalid enquiry record ID specified.');
+$refParam = trim($_GET['ref'] ?? '');
+
+if ($enquiryId <= 0 && empty($refParam)) {
+    setFlashMessage('danger', 'Invalid enquiry record specified.');
     header('Location: enquiries.php');
     exit;
 }
@@ -76,41 +78,72 @@ $enquiry = null;
 $notes = [];
 $auditLogs = [];
 
-try {
-    $stmt = $pdo->prepare('SELECT * FROM enquiries WHERE id = :id');
-    $stmt->execute([':id' => $enquiryId]);
-    $enquiry = $stmt->fetch();
+if ($enquiryId > 0 && !empty($pdo)) {
+    try {
+        $stmt = $pdo->prepare('SELECT * FROM enquiries WHERE id = :id');
+        $stmt->execute([':id' => $enquiryId]);
+        $enquiry = $stmt->fetch();
 
-    if (!$enquiry) {
-        setFlashMessage('danger', 'Enquiry record not found.');
-        header('Location: enquiries.php');
-        exit;
+        if ($enquiry) {
+            // Fetch Internal Notes
+            $noteStmt = $pdo->prepare('
+                SELECT n.*, a.full_name as author_name, a.username 
+                FROM enquiry_notes n
+                JOIN admins a ON n.admin_id = a.id
+                WHERE n.enquiry_id = :eid
+                ORDER BY n.created_at DESC
+            ');
+            $noteStmt->execute([':eid' => $enquiryId]);
+            $notes = $noteStmt->fetchAll();
+
+            // Fetch Audit Trail for this enquiry
+            $logStmt = $pdo->prepare('
+                SELECT l.*, a.full_name as admin_name 
+                FROM activity_logs l
+                LEFT JOIN admins a ON l.admin_id = a.id
+                WHERE l.entity_type = "enquiry" AND l.entity_id = :eid
+                ORDER BY l.created_at DESC
+            ');
+            $logStmt->execute([':eid' => $enquiryId]);
+            $auditLogs = $logStmt->fetchAll();
+        }
+    } catch (Throwable $e) {
+        error_log('[ENQUIRY DETAIL ERROR] ' . $e->getMessage());
     }
+}
 
-    // Fetch Internal Notes
-    $noteStmt = $pdo->prepare('
-        SELECT n.*, a.full_name as author_name, a.username 
-        FROM enquiry_notes n
-        JOIN admins a ON n.admin_id = a.id
-        WHERE n.enquiry_id = :eid
-        ORDER BY n.created_at DESC
-    ');
-    $noteStmt->execute([':eid' => $enquiryId]);
-    $notes = $noteStmt->fetchAll();
+// Check disk backup if not loaded from DB
+if (!$enquiry && !empty($refParam)) {
+    $cleanRef = preg_replace('/[^a-zA-Z0-9_-]/', '', $refParam);
+    $diskDir = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'enquiries';
+    if (is_dir($diskDir)) {
+        $matches = glob($diskDir . DIRECTORY_SEPARATOR . 'enq_*' . $cleanRef . '*.json');
+        if ($matches) {
+            $raw = @file_get_contents($matches[0]);
+            $item = json_decode($raw, true);
+            if ($item) {
+                $enquiry = [
+                    'id' => 0,
+                    'reference_no' => $item['reference_no'],
+                    'full_name' => $item['full_name'],
+                    'company_name' => $item['company_name'] ?? '',
+                    'email' => $item['email'],
+                    'phone' => $item['phone'] ?? '',
+                    'service' => $item['service'],
+                    'estimated_volume' => $item['estimated_volume'] ?? '',
+                    'project_details' => $item['project_details'] ?? '',
+                    'status' => 'New',
+                    'created_at' => $item['created_at']
+                ];
+            }
+        }
+    }
+}
 
-    // Fetch Audit Trail for this enquiry
-    $logStmt = $pdo->prepare('
-        SELECT l.*, a.full_name as admin_name 
-        FROM activity_logs l
-        LEFT JOIN admins a ON l.admin_id = a.id
-        WHERE l.entity_type = "enquiry" AND l.entity_id = :eid
-        ORDER BY l.created_at DESC
-    ');
-    $logStmt->execute([':eid' => $enquiryId]);
-    $auditLogs = $logStmt->fetchAll();
-
-} catch (Throwable $e) {
-    error_log('[ENQUIRY DETAIL ERROR] ' . $e->getMessage());
+if (!$enquiry) {
+    setFlashMessage('danger', 'Enquiry record not found.');
+    header('Location: enquiries.php');
+    exit;
 }
 
 $cleanPhone = preg_replace('/[^0-9]/', '', $enquiry['phone'] ?? '');

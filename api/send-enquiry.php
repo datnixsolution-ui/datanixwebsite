@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * DATNIX SOLUTIONS - Hardened PHP Backend Handler for Enquiry Form
  * Endpoint: /api/send-enquiry.php

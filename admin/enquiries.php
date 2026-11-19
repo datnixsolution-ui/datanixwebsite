@@ -77,6 +77,38 @@ if (!empty($pdo)) {
     }
 }
 
+// Check for zero-loss disk backup enquiries in uploads/enquiries/
+$diskEnqDir = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'enquiries';
+if (is_dir($diskEnqDir)) {
+    $enqFiles = glob($diskEnqDir . DIRECTORY_SEPARATOR . 'enq_*.json');
+    if ($enqFiles) {
+        $existingEnqRefs = array_column($enquiries, 'reference_no');
+        foreach ($enqFiles as $ef) {
+            $raw = @file_get_contents($ef);
+            if ($raw) {
+                $item = json_decode($raw, true);
+                if ($item && isset($item['reference_no']) && !in_array($item['reference_no'], $existingEnqRefs, true)) {
+                    $enquiries[] = [
+                        'id' => 0,
+                        'reference_no' => $item['reference_no'],
+                        'full_name' => $item['full_name'] ?? 'Inquirer',
+                        'company_name' => $item['company_name'] ?? '',
+                        'email' => $item['email'] ?? '',
+                        'phone' => $item['phone'] ?? '',
+                        'service' => $item['service'] ?? 'General Enquiry',
+                        'estimated_volume' => $item['estimated_volume'] ?? '',
+                        'project_details' => $item['project_details'] ?? '',
+                        'status' => 'New',
+                        'created_at' => $item['created_at'] ?? date('Y-m-d H:i:s'),
+                        'is_disk_backup' => true
+                    ];
+                    $totalCount++;
+                }
+            }
+        }
+    }
+}
+
 $totalPages = max(1, (int)ceil($totalCount / $perPage));
 
 // Build query string for export & pagination
@@ -195,10 +227,17 @@ $exportUrl = 'export-enquiries.php' . (!empty($queryString) ? '?' . $queryString
                   </span>
                 </td>
                 <td style="white-space: nowrap;">
-                  <a href="enquiry-detail.php?id=<?php echo (int)$enq['id']; ?>" class="btn btn-navy btn-sm">
-                    <span>Manage</span>
-                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                  </a>
+                  <?php if (!empty($enq['id'])): ?>
+                    <a href="enquiry-detail.php?id=<?php echo (int)$enq['id']; ?>" class="btn btn-navy btn-sm">
+                      <span>Manage</span>
+                      <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    </a>
+                  <?php else: ?>
+                    <a href="enquiry-detail.php?ref=<?php echo urlencode($enq['reference_no']); ?>" class="btn btn-navy btn-sm">
+                      <span>Manage</span>
+                      <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    </a>
+                  <?php endif; ?>
                 </td>
               </tr>
             <?php endforeach; ?>

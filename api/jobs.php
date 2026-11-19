@@ -7,7 +7,6 @@
 
 header('Content-Type: application/json; charset=UTF-8');
 header('X-Content-Type-Options: nosniff');
-header('Access-Control-Allow-Origin: *');
 header('Cache-Control: public, max-age=600'); // Cache for 10 mins
 
 $staticJobs = [

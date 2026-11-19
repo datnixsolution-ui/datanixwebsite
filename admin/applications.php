@@ -90,6 +90,45 @@ if (!empty($pdo)) {
     }
 }
 
+// Check for zero-loss disk backup applications in uploads/applications/
+$diskDir = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'applications';
+if (is_dir($diskDir)) {
+    $jsonFiles = glob($diskDir . DIRECTORY_SEPARATOR . 'app_*.json');
+    if ($jsonFiles) {
+        $existingRefs = array_column($applications, 'reference_no');
+        foreach ($jsonFiles as $jf) {
+            $raw = @file_get_contents($jf);
+            if ($raw) {
+                $item = json_decode($raw, true);
+                if ($item && isset($item['reference_no']) && !in_array($item['reference_no'], $existingRefs, true)) {
+                    $applications[] = [
+                        'id' => 0,
+                        'reference_no' => $item['reference_no'],
+                        'job_id' => $item['job_id'] ?? 0,
+                        'full_name' => $item['full_name'] ?? 'Candidate',
+                        'email' => $item['email'] ?? '',
+                        'phone' => $item['phone'] ?? '',
+                        'experience_years' => $item['experience_years'] ?? '',
+                        'current_location' => $item['current_location'] ?? ($item['candidate_address'] ?? 'WFH'),
+                        'notice_period' => $item['notice_period'] ?? '',
+                        'additional_info' => $item['additional_info'] ?? '',
+                        'status' => 'New',
+                        'created_at' => $item['created_at'] ?? date('Y-m-d H:i:s'),
+                        'job_title' => 'Data Operations (WFH)',
+                        'department' => 'Operations',
+                        'file_id' => !empty($item['resume_stored']) ? 1 : null,
+                        'original_filename' => $item['resume_original'] ?? (!empty($item['has_resume']) ? 'Resume' : null),
+                        'file_size' => 0,
+                        'is_disk_backup' => true,
+                        'resume_stored' => $item['resume_stored'] ?? null
+                    ];
+                    $totalCount++;
+                }
+            }
+        }
+    }
+}
+
 $totalPages = max(1, (int)ceil($totalCount / $perPage));
 
 $filterQueryParams = $_GET;
@@ -200,7 +239,12 @@ $queryString = http_build_query($filterQueryParams);
                   <div style="font-size: 11.5px; color: var(--admin-text-muted);">NP: <?php echo e($app['notice_period']); ?></div>
                 </td>
                 <td>
-                  <?php if (!empty($app['file_id'])): ?>
+                  <?php if (!empty($app['resume_stored'])): ?>
+                    <a href="download-resume.php?file=<?php echo urlencode($app['resume_stored']); ?>" class="btn btn-outline btn-sm" title="Download CV">
+                      <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                      <span>CV (Download)</span>
+                    </a>
+                  <?php elseif (!empty($app['file_id'])): ?>
                     <a href="download-resume.php?id=<?php echo (int)$app['file_id']; ?>" class="btn btn-outline btn-sm" title="Download CV">
                       <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
                       <span>CV (<?php echo formatFileSize((int)$app['file_size']); ?>)</span>
@@ -215,10 +259,17 @@ $queryString = http_build_query($filterQueryParams);
                   </span>
                 </td>
                 <td style="white-space: nowrap;">
-                  <a href="application-detail.php?id=<?php echo (int)$app['id']; ?>" class="btn btn-navy btn-sm">
-                    <span>Manage</span>
-                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                  </a>
+                  <?php if (!empty($app['id'])): ?>
+                    <a href="application-detail.php?id=<?php echo (int)$app['id']; ?>" class="btn btn-navy btn-sm">
+                      <span>Manage</span>
+                      <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    </a>
+                  <?php else: ?>
+                    <a href="application-detail.php?ref=<?php echo urlencode($app['reference_no']); ?>" class="btn btn-navy btn-sm">
+                      <span>Manage</span>
+                      <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    </a>
+                  <?php endif; ?>
                 </td>
               </tr>
             <?php endforeach; ?>
