@@ -134,6 +134,12 @@ FileETag None
 <IfModule mod_rewrite.c>
   RewriteEngine On
 
+  # Force Secure HTTPS Encryption (Except ACME SSL Verification)
+  RewriteCond %{HTTPS} off
+  RewriteCond %{HTTP:X-Forwarded-Proto} !https
+  RewriteCond %{REQUEST_URI} !^/\.well-known/acme-challenge/
+  RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
   # Block dangerous HTTP verbs (prevent Cross-Site Tracing)
   RewriteCond %{REQUEST_METHOD} ^(TRACE|TRACK|DEBUG) [NC]
   RewriteRule .* - [F,L]

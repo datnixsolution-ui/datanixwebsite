@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * DATNIX SOLUTIONS - Job Application & Resume Upload Backend
  * Endpoint: /api/apply.php
@@ -88,9 +88,14 @@ $phone          = trim((string)($_POST['phone'] ?? ''));
 $jobId          = (int)($_POST['jobId'] ?? 0);
 $experience     = trim((string)($_POST['experience'] ?? ''));
 $location       = trim((string)($_POST['location'] ?? ''));
+$candidateAddress = trim((string)($_POST['candidateAddress'] ?? ''));
 $noticePeriod   = trim((string)($_POST['noticePeriod'] ?? ''));
 $additionalInfo = trim((string)($_POST['additionalInfo'] ?? ''));
 $privacyConsent = !empty($_POST['privacyConsent']);
+
+if (!empty($candidateAddress)) {
+    $location = $location . ' (WFH Address: ' . $candidateAddress . ')';
+}
 
 // Validation
 $errors = [];

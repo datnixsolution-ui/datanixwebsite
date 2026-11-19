@@ -207,12 +207,13 @@ CREATE TABLE IF NOT EXISTS `login_attempts` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- -----------------------------------------------------------------------------
--- Sample Job Vacancies & Active Openings (100% Data Entry & Back-Office Focus)
--- Location: 20, Satkar Complex, Chimanlal Girdharlal Rd (C.G. Road), Ahmedabad - 380006, Gujarat
+-- Sample Job Vacancies & Active Openings (100% Work From Home / Remote Focus)
+-- Location: Work From Home (WFH) / Remote (All India)
 -- -----------------------------------------------------------------------------
 
 -- Clean up any previous non-data-entry openings
 DELETE FROM `jobs` WHERE `slug` IN ('ocr-digital-publishing-epub-xml', 'arabic-data-conversion-specialist', 'senior-data-entry-specialist-all-languages');
+UPDATE `jobs` SET `location` = 'Work From Home (WFH) / Remote (All India)', `employment_type` = 'Full-Time / WFH' WHERE `status` = 'Active';
 
 -- 1. Data Entry Operator (Fresher & Experienced)
 INSERT INTO `jobs` (`title`, `slug`, `department`, `location`, `employment_type`, `experience_req`, `short_description`, `responsibilities`, `required_skills`, `benefits`, `status`, `is_published`) 
@@ -220,13 +221,13 @@ SELECT
   'Data Entry Operator (Fresher & Experienced)',
   'data-entry-operator-fresher-experienced',
   'Data Entry Operations',
-  'Ahmedabad, Gujarat (20, Satkar Complex, C.G. Rd - 380006)',
-  'Full-Time',
+  'Work From Home (WFH) / Remote (All India)',
+  'Full-Time / WFH',
   '0 - 2 Years (Freshers Welcome)',
   'Accurate and high-speed alphanumeric data entry, form keying, master record updating, and spreadsheet data entry across client projects.',
   '• Key alphanumeric data from invoices, paper receipts, and scanned records into spreadsheets.\n• Achieve daily target output quotas while maintaining 98%+ character accuracy.\n• Perform initial self-audit checks against source documents prior to batch submission.\n• Comply strictly with enterprise client confidentiality, clean-desk, and NDA protocols.',
   '• Typing speed of 30+ WPM with high accuracy.\n• Basic proficiency in Microsoft Excel, Google Sheets, and keyboard numerical entry.\n• High attention to detail and error spotting.\n• Freshers with good typing skills and basic computer literacy are encouraged to apply.',
-  '• Fixed day shifts with predictable working hours.\n• Comprehensive typing and tools training provided on onboarding.\n• Performance-linked monthly incentives and annual appraisals.\n• Prime central Ahmedabad office at Satkar Complex, C.G. Road.',
+  '• 100% Work From Home (WFH) with flexible shift arrangements.\n• Comprehensive remote onboarding and digital tools training provided.\n• Performance-linked monthly incentives and annual appraisals.',
   'Active',
   1
 FROM DUAL
@@ -238,13 +239,13 @@ SELECT
   'Senior Data Entry Specialist (High-Volume & Speed)',
   'senior-data-entry-specialist',
   'Data Entry Operations',
-  'Ahmedabad, Gujarat (20, Satkar Complex, C.G. Rd - 380006) / Hybrid',
-  'Full-Time',
+  'Work From Home (WFH) / Remote (All India)',
+  'Full-Time / WFH',
   '2 - 4 Years',
   'High-volume, rapid-turnaround batch data entry, complex tabulations, dual-screen comparison, and specialized customer database updating.',
   '• Transcribe complex alphanumeric records from multi-format source files into enterprise systems.\n• Execute dual-screen verification checks to ensure zero-defect output conformity (99.8% SLA).\n• Assist team supervisors in tracking hourly team productivity metrics and turnaround SLAs.\n• Flag ambiguous source records, formatting anomalies, and validation errors to project managers.',
   '• Proven typing speed of 45+ WPM with 99%+ accuracy.\n• High proficiency in 10-key numeric keypad, keyboard shortcuts, and Excel functions.\n• Minimum 2 years of prior experience in international data entry / BPO operations.\n• Proven ability to handle high-volume repetitive tasks with steady focus.',
-  '• Competitive salary package + high-performance bonuses.\n• Fast-track leadership progression to Team Lead / Quality Lead.\n• Modern ergonomic workstations with dual-monitor setups.',
+  '• Competitive salary package + high-performance bonuses.\n• Fast-track leadership progression to Remote Pod Lead.\n• Modern cloud workflow tools and continuous technical support.',
   'Active',
   1
 FROM DUAL
@@ -256,13 +257,13 @@ SELECT
   'Multilingual Data Entry Executive (English & Regional)',
   'multilingual-data-entry-executive',
   'Multilingual Operations',
-  'Ahmedabad, Gujarat (20, Satkar Complex, C.G. Rd - 380006)',
-  'Full-Time',
+  'Work From Home (WFH) / Remote (All India)',
+  'Full-Time / WFH',
   '1 - 3 Years',
   'Data entry and verification for multi-language documents, bilingual records, and regional Indian language datasets with Unicode standards.',
   '• Transcribe customer records, public registries, and surveys into English and regional Unicode text.\n• Verify transliteration accuracy and spelling consistency for names, addresses, and local terminology.\n• Key in alphanumeric IDs, phone numbers, and financial figures from multilingual forms.\n• Perform cross-check validation between English and vernacular language fields.',
   '• Strong written English plus fluency in Hindi, Gujarati, or other regional languages.\n• Experience with Unicode keyboard layouts and bilingual data entry software.\n• Typing speed of 35+ WPM with meticulous character fidelity.\n• Prior experience in census, voter list, or multilingual banking data entry is a plus.',
-  '• Multilingual skill allowance.\n• Structured work hours and supportive team environment.\n• Rapid internal growth into Multilingual QA Lead.',
+  '• Multilingual skill allowance.\n• 100% remote working flexibility.\n• Supportive virtual team structure and weekly peer syncs.',
   'Active',
   1
 FROM DUAL
@@ -274,13 +275,13 @@ SELECT
   'Excel & Spreadsheet Data Entry Associate',
   'excel-spreadsheet-data-entry-associate',
   'Back-Office Operations',
-  'Ahmedabad, Gujarat (20, Satkar Complex, C.G. Rd - 380006)',
-  'Full-Time',
+  'Work From Home (WFH) / Remote (All India)',
+  'Full-Time / WFH',
   '1 - 3 Years',
   'Structured spreadsheet data entry, formula applications, row/column consolidation, deduplication, and database import preparation in MS Excel.',
   '• Input and structure high-volume raw business data into standardized Excel and Google Sheets templates.\n• Apply spreadsheet formulas (VLOOKUP, SUMIFS, CONCATENATE, IF) for data validation.\n• Cleanse duplicate rows, standardize dates/currencies, and repair corrupted formatting.\n• Export finalized spreadsheets into clean CSV and database-ready formats.',
   '• Strong practical experience in Microsoft Excel (Formulas, Pivot Tables, Conditional Formatting).\n• Fast 10-key numeric pad typing speed.\n• Disciplined attention to formula logic and data integrity.\n• Familiarity with Google Sheets and cloud spreadsheets.',
-  '• Advanced Excel and data analytics coaching.\n• Regular day shifts with Saturday afternoon wrap-ups.\n• Performance-based increments and annual bonus.',
+  '• Advanced Excel and data analytics coaching.\n• Flexible work hours with milestone-based completion.\n• Performance-based increments and annual bonus.',
   'Active',
   1
 FROM DUAL
@@ -292,13 +293,13 @@ SELECT
   'E-Commerce Product Data Entry Specialist',
   'ecommerce-product-data-entry-specialist',
   'E-Commerce Data',
-  'Ahmedabad, Gujarat (20, Satkar Complex, C.G. Rd - 380006) / Hybrid',
-  'Full-Time',
+  'Work From Home (WFH) / Remote (All India)',
+  'Full-Time / WFH',
   '1 - 3 Years',
   'Product catalog data entry, SKU specifications keying, pricing updates, image attribution, and category mapping for global retail portals.',
   '• Key in product titles, dimensions, materials, and bullet features into e-commerce spreadsheets.\n• Batch upload product feeds to e-commerce storefronts (Amazon, Shopify, Flipkart, WooCommerce).\n• Standardize brand specifications, color codes, and size options according to taxonomy guidelines.\n• Conduct periodic inventory and price updates from vendor catalogs.',
   '• Prior experience in e-commerce listing, SKU entry, or catalog data management.\n• Familiarity with Amazon Seller Central, Shopify admin, or Excel product flat files.\n• Fast typing speed and strong web navigation skills.\n• Detail-oriented approach to image-to-SKU matching.',
-  '• Exposure to international e-commerce brand projects.\n• Monthly performance incentives on catalog milestones.\n• Modern corporate environment at C.G. Road, Ahmedabad.',
+  '• Exposure to international e-commerce brand projects.\n• Monthly performance incentives on catalog milestones.\n• Complete Work From Home autonomy.',
   'Active',
   1
 FROM DUAL
@@ -310,13 +311,13 @@ SELECT
   'Data Entry Quality Control (QC) & Verification Auditor',
   'data-entry-qc-verification-auditor',
   'Quality Assurance',
-  'Ahmedabad, Gujarat (20, Satkar Complex, C.G. Rd - 380006)',
-  'Full-Time',
+  'Work From Home (WFH) / Remote (All India)',
+  'Full-Time / WFH',
   '2 - 4 Years',
   '100% and AQL sampling verification of completed data entry batches against original source scans, defect logging, and accuracy certification.',
   '• Perform field-by-field verification of completed data batches against source document scans.\n• Log character substitutions, omission errors, and formatting inconsistencies in defect tracking sheets.\n• Provide constructive feedback to entry operators to improve first-pass accuracy yields.\n• Issue official batch quality certification before data files are dispatched to clients.',
   '• Deep understanding of data quality assurance methodologies and AQL sampling.\n• Exceptional eye for detail and high concentration stamina.\n• Advanced MS Excel skills for discrepancy reporting.\n• Minimum 2 years in quality auditing or senior data entry roles.',
-  '• Senior position with leadership responsibilities.\n• Competitive compensation with quality-based performance incentives.\n• Professional training in Six Sigma quality concepts.',
+  '• Senior position with leadership responsibilities.\n• Competitive compensation with quality-based performance incentives.\n• Remote Six Sigma quality coaching.',
   'Active',
   1
 FROM DUAL
@@ -328,13 +329,13 @@ SELECT
   'Document Scanning & Indexing Data Entry Operator',
   'document-scanning-indexing-data-entry-operator',
   'Document Processing',
-  'Ahmedabad, Gujarat (20, Satkar Complex, C.G. Rd - 380006)',
-  'Full-Time',
+  'Work From Home (WFH) / Remote (All India)',
+  'Full-Time / WFH',
   '0 - 2 Years (Freshers Welcome)',
-  'Physical document prep, high-speed rotary scanning, folder naming, indexing, and metadata data entry for legal and corporate archives.',
-  '• Prepare physical files for scanning by removing staples, clips, and smoothing folds.\n• Operate production document scanners and review image quality (de-skew, contrast).\n• Enter metadata index fields (file number, customer name, date, classification code).\n• Re-assemble scanned physical files in pristine order for archiving.',
-  '• High degree of physical dexterity, organization, and care with original documents.\n• Basic computer operating skills and keyboard typing.\n• Reliable, punctual, and disciplined approach to daily quotas.\n• No prior experience necessary; complete on-the-job training provided.',
-  '• Fixed day shifts in a modern, climate-controlled document center.\n• Training on commercial scanning hardware and indexing tools.\n• Growth opportunities into supervisory positions.',
+  'Digital document prep, indexing, folder naming, and metadata data entry for legal and corporate archives.',
+  '• Download and review scanned digital archives for legibility and completeness.\n• Enter metadata index fields (file number, customer name, date, classification code).\n• Tag folder structures and verify OCR text streams against original scans.\n• Maintain structured batch tracking sheets.',
+  '• Basic computer operating skills and keyboard typing.\n• Reliable PC and good broadband connection at home.\n• Reliable, punctual, and disciplined approach to daily quotas.\n• No prior experience necessary; complete on-the-job training provided.',
+  '• 100% Work From Home (WFH) schedule.\n• Training on commercial digital archiving and indexing tools.\n• Growth opportunities into supervisory positions.',
   'Active',
   1
 FROM DUAL
@@ -346,13 +347,13 @@ SELECT
   'Back-Office Data Entry & Processing Executive',
   'back-office-data-entry-executive',
   'Back-Office Support',
-  'Ahmedabad, Gujarat (20, Satkar Complex, C.G. Rd - 380006)',
-  'Full-Time',
+  'Work From Home (WFH) / Remote (All India)',
+  'Full-Time / WFH',
   '1 - 3 Years',
   'Routine back-office data processing, invoice & purchase order entry, claims data keying, and daily operational status reporting.',
   '• Process and enter incoming supplier invoices, claims, and delivery notes into ERP systems.\n• Cross-verify invoice line items against purchase orders and approved rate sheets.\n• Update internal records, address books, and customer transaction logs.\n• Prepare daily shift activity summaries and transaction logs for management.',
-  '• Prior experience in back-office operations, accounting data entry, or commercial BPO.\n• Good numerical reasoning and typing accuracy.\n• Basic knowledge of accounting software or MS Excel.\n• Strong team collaboration and communication skills.',
-  '• Stable corporate environment with regular business hours.\n• Performance-linked quarterly rewards.\n• Centrally located Ahmedabad office at Satkar Complex.',
+  '• Prior experience in back-office operations, accounting data entry, or commercial BPO.\n• Good numerical reasoning and typing accuracy.\n• Basic knowledge of accounting software or MS Excel.\n• Strong team collaboration and communication skills via Slack / WhatsApp.',
+  '• Stable remote corporate environment with regular business hours.\n• Performance-linked quarterly rewards.\n• Work from anywhere in India.',
   'Active',
   1
 FROM DUAL

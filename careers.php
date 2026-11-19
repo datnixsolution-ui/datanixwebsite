@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * DATNIX SOLUTIONS - Public Careers Portal
  * Tagline: DATA. PROCESS. PERFORMANCE.
@@ -31,8 +31,8 @@ if (empty($jobs)) {
             'title' => 'Data Entry Operator (Fresher & Experienced)',
             'slug' => 'data-entry-operator-fresher-experienced',
             'department' => 'Data Entry Operations',
-            'location' => 'Ahmedabad, Gujarat (20, Satkar Complex, C.G. Rd - 380006)',
-            'employment_type' => 'Full-Time',
+            'location' => 'Work From Home (WFH) / Remote (All India)',
+            'employment_type' => 'Full-Time / WFH',
             'experience_req' => '0 - 2 Years (Freshers Welcome)',
             'short_description' => 'Accurate and high-speed alphanumeric data entry, form keying, master record updating, and spreadsheet data entry across client projects.'
         ],
@@ -41,8 +41,8 @@ if (empty($jobs)) {
             'title' => 'Senior Data Entry Specialist (High-Volume & Speed)',
             'slug' => 'senior-data-entry-specialist',
             'department' => 'Data Entry Operations',
-            'location' => 'Ahmedabad, Gujarat (20, Satkar Complex, C.G. Rd - 380006) / Hybrid',
-            'employment_type' => 'Full-Time',
+            'location' => 'Work From Home (WFH) / Remote (All India)',
+            'employment_type' => 'Full-Time / WFH',
             'experience_req' => '2 - 4 Years',
             'short_description' => 'High-volume, rapid-turnaround batch data entry, complex tabulations, dual-screen comparison, and specialized customer database updating.'
         ],
@@ -51,8 +51,8 @@ if (empty($jobs)) {
             'title' => 'Multilingual Data Entry Executive (English & Regional)',
             'slug' => 'multilingual-data-entry-executive',
             'department' => 'Multilingual Operations',
-            'location' => 'Ahmedabad, Gujarat (20, Satkar Complex, C.G. Rd - 380006)',
-            'employment_type' => 'Full-Time',
+            'location' => 'Work From Home (WFH) / Remote (All India)',
+            'employment_type' => 'Full-Time / WFH',
             'experience_req' => '1 - 3 Years',
             'short_description' => 'Data entry and verification for multi-language documents, bilingual records, and regional Indian language datasets with Unicode standards.'
         ],
@@ -61,8 +61,8 @@ if (empty($jobs)) {
             'title' => 'Excel & Spreadsheet Data Entry Associate',
             'slug' => 'excel-spreadsheet-data-entry-associate',
             'department' => 'Back-Office Operations',
-            'location' => 'Ahmedabad, Gujarat (20, Satkar Complex, C.G. Rd - 380006)',
-            'employment_type' => 'Full-Time',
+            'location' => 'Work From Home (WFH) / Remote (All India)',
+            'employment_type' => 'Full-Time / WFH',
             'experience_req' => '1 - 3 Years',
             'short_description' => 'Structured spreadsheet data entry, formula applications, row/column consolidation, deduplication, and database import preparation in MS Excel.'
         ],
@@ -71,8 +71,8 @@ if (empty($jobs)) {
             'title' => 'E-Commerce Product Data Entry Specialist',
             'slug' => 'ecommerce-product-data-entry-specialist',
             'department' => 'E-Commerce Data',
-            'location' => 'Ahmedabad, Gujarat (20, Satkar Complex, C.G. Rd - 380006) / Hybrid',
-            'employment_type' => 'Full-Time',
+            'location' => 'Work From Home (WFH) / Remote (All India)',
+            'employment_type' => 'Full-Time / WFH',
             'experience_req' => '1 - 3 Years',
             'short_description' => 'Product catalog data entry, SKU specifications keying, pricing updates, image attribution, and category mapping for global retail portals.'
         ],
@@ -81,8 +81,8 @@ if (empty($jobs)) {
             'title' => 'Data Entry Quality Control (QC) & Verification Auditor',
             'slug' => 'data-entry-qc-verification-auditor',
             'department' => 'Quality Assurance',
-            'location' => 'Ahmedabad, Gujarat (20, Satkar Complex, C.G. Rd - 380006)',
-            'employment_type' => 'Full-Time',
+            'location' => 'Work From Home (WFH) / Remote (All India)',
+            'employment_type' => 'Full-Time / WFH',
             'experience_req' => '2 - 4 Years',
             'short_description' => '100% and AQL sampling verification of completed data entry batches against original source scans, defect logging, and accuracy certification.'
         ],
@@ -91,18 +91,18 @@ if (empty($jobs)) {
             'title' => 'Document Scanning & Indexing Data Entry Operator',
             'slug' => 'document-scanning-indexing-data-entry-operator',
             'department' => 'Document Processing',
-            'location' => 'Ahmedabad, Gujarat (20, Satkar Complex, C.G. Rd - 380006)',
-            'employment_type' => 'Full-Time',
+            'location' => 'Work From Home (WFH) / Remote (All India)',
+            'employment_type' => 'Full-Time / WFH',
             'experience_req' => '0 - 2 Years (Freshers Welcome)',
-            'short_description' => 'Physical document prep, high-speed rotary scanning, folder naming, indexing, and metadata data entry for legal and corporate archives.'
+            'short_description' => 'Digital document prep, indexing, folder naming, and metadata data entry for legal and corporate archives.'
         ],
         [
             'id' => 8,
             'title' => 'Back-Office Data Entry & Processing Executive',
             'slug' => 'back-office-data-entry-executive',
             'department' => 'Back-Office Support',
-            'location' => 'Ahmedabad, Gujarat (20, Satkar Complex, C.G. Rd - 380006)',
-            'employment_type' => 'Full-Time',
+            'location' => 'Work From Home (WFH) / Remote (All India)',
+            'employment_type' => 'Full-Time / WFH',
             'experience_req' => '1 - 3 Years',
             'short_description' => 'Routine back-office data processing, invoice & purchase order entry, claims data keying, and daily operational status reporting.'
         ]

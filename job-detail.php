@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * DATNIX SOLUTIONS - Job Detail & Application Portal
  * Tagline: DATA. PROCESS. PERFORMANCE.
@@ -342,8 +342,13 @@ $pageJobTitle = $isGeneral ? 'General Talent Pool Application' : $job['title'];
               </div>
 
               <div class="form-group">
-                <label for="appLocation" class="form-label">Current City / Location <span style="color: #EF4444;">*</span></label>
-                <input type="text" id="appLocation" name="location" class="form-control" placeholder="e.g. Ahmedabad, Gujarat / Open" required>
+                <label for="appLocation" class="form-label">Current City &amp; State <span style="color: #EF4444;">*</span></label>
+                <input type="text" id="appLocation" name="location" class="form-control" placeholder="e.g. Pune, Maharashtra / Jaipur, Rajasthan" required>
+              </div>
+
+              <div class="form-group">
+                <label for="appCandidateAddress" class="form-label">Full Residential Address <span style="color: #EF4444;">*</span></label>
+                <textarea id="appCandidateAddress" name="candidateAddress" class="form-control" style="min-height: 55px;" placeholder="House/Flat No., Street, Area, City, State, PIN Code (Required for WFH verification &amp; official communication)" required></textarea>
               </div>
 
               <!-- Resume Upload (Optional - PDF / DOC / DOCX max 5MB) -->
