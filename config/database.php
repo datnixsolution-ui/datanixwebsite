@@ -66,14 +66,62 @@ class Database {
             PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci'
         ];
 
+        $connected = false;
         try {
             self::$instance = new PDO($dsn, self::$config['username'], self::$config['password'], $options);
+            $connected = true;
         } catch (PDOException $e) {
-            // Log real detailed error privately
-            error_log('[DATNIX DB ERROR] ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());
-            
-            // Mask connection string and credentials from visitors
-            throw new Exception('Database connection failed. Please ensure MySQL service is running and credentials are valid in config/config.php.');
+            // Auto-Discovery: If database name differs or was freshly created in cPanel
+            try {
+                $genericDsn = sprintf(
+                    'mysql:host=%s;port=%d;charset=%s',
+                    self::$config['host'] ?? 'localhost',
+                    self::$config['port'] ?? 3306,
+                    self::$config['charset'] ?? 'utf8mb4'
+                );
+                $tempPdo = new PDO($genericDsn, self::$config['username'], self::$config['password'], $options);
+                $stmt = $tempPdo->query("SHOW DATABASES");
+                $databases = $stmt ? $stmt->fetchAll(PDO::FETCH_COLUMN) : [];
+                $prefix = strtolower(self::$config['username']);
+                $matchedDb = null;
+                foreach ($databases as $dbName) {
+                    if (strpos(strtolower($dbName), $prefix) === 0) {
+                        $matchedDb = $dbName;
+                        break;
+                    }
+                }
+                if ($matchedDb) {
+                    $tempPdo->exec("USE `" . str_replace("`", "``", $matchedDb) . "`");
+                    self::$instance = $tempPdo;
+                    $connected = true;
+                }
+            } catch (Throwable $discoveryErr) {
+                // Auto-discovery failed
+            }
+
+            if (!$connected) {
+                error_log('[DATNIX DB ERROR] ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());
+                throw new Exception('Database connection failed. Please ensure MySQL service is running and credentials are valid in config/config.php.');
+            }
+        }
+
+        // Auto-Provision: Check if tables exist; if fresh install, self-provision database.sql
+        if ($connected && self::$instance !== null) {
+            try {
+                $tblCheck = self::$instance->query("SHOW TABLES LIKE 'admins'");
+                if ($tblCheck && $tblCheck->rowCount() === 0) {
+                    $sqlFile = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'database.sql';
+                    if (file_exists($sqlFile)) {
+                        $schema = @file_get_contents($sqlFile);
+                        if (!empty($schema)) {
+                            // Split statements safely and execute
+                            self::$instance->exec($schema);
+                        }
+                    }
+                }
+            } catch (Throwable $provErr) {
+                error_log('[DATNIX AUTO-PROVISION NOTICE] ' . $provErr->getMessage());
+            }
         }
     }
 

@@ -61,14 +61,19 @@ const TRUSTED_ORIGINS = [
 
 const ALLOWED_SERVICES = [
   'Data Entry',
+  'Data Entry (All Languages & Multilingual)',
+  'OCR Processing & Data Conversion (ePUB/XML)',
+  'Arabic Data Conversion & Localization',
   'Data Processing',
   'Back Office Support',
   'Document Management',
   'Web Research',
   'E-commerce Data Management',
   'Data Verification',
+  'Data Quality & BPO',
   'BPO and Process Support',
   'General Outsourcing',
+  'Other / Custom Inquiry',
   'Other'
 ];
 
@@ -557,13 +562,34 @@ export async function handler(event, context) {
     }
 
     let canonicalService = '';
+    const cleanService = serviceInput.replace(/&amp;/g, '&').trim();
     const matchedService = ALLOWED_SERVICES.find(
-      s => s.toLowerCase() === serviceInput.toLowerCase()
+      s => s.toLowerCase() === serviceInput.toLowerCase() || s.toLowerCase() === cleanService.toLowerCase()
     );
-    if (!matchedService) {
-      errors.push('Invalid service selection. Please choose a valid service from our catalog.');
-    } else {
+    if (matchedService) {
       canonicalService = matchedService;
+    } else if (/data entry/i.test(cleanService)) {
+      canonicalService = 'Data Entry (All Languages & Multilingual)';
+    } else if (/ocr|epub/i.test(cleanService)) {
+      canonicalService = 'OCR Processing & Data Conversion (ePUB/XML)';
+    } else if (/arabic/i.test(cleanService)) {
+      canonicalService = 'Arabic Data Conversion & Localization';
+    } else if (/back office/i.test(cleanService)) {
+      canonicalService = 'Back Office Support';
+    } else if (/document/i.test(cleanService)) {
+      canonicalService = 'Document Management';
+    } else if (/research/i.test(cleanService)) {
+      canonicalService = 'Web Research';
+    } else if (/commerce|catalog/i.test(cleanService)) {
+      canonicalService = 'E-commerce Data Management';
+    } else if (/verification|quality/i.test(cleanService)) {
+      canonicalService = 'Data Verification';
+    } else if (/process/i.test(cleanService)) {
+      canonicalService = 'Data Processing';
+    } else if (cleanService.length <= 120 && !/[<>]/.test(cleanService)) {
+      canonicalService = cleanService;
+    } else {
+      canonicalService = 'General Outsourcing';
     }
 
     if (estimatedVolume) {

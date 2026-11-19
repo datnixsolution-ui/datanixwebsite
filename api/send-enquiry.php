@@ -66,14 +66,22 @@ $trustedOrigins = [
 
 $allowedServices = [
     'Data Entry',
+    'Data Entry (All Languages & Multilingual)',
+    'Data Entry (All Languages &amp; Multilingual)',
+    'OCR Processing & Data Conversion (ePUB/XML)',
+    'OCR Processing &amp; Data Conversion (ePUB/XML)',
+    'Arabic Data Conversion & Localization',
+    'Arabic Data Conversion &amp; Localization',
     'Data Processing',
     'Back Office Support',
     'Document Management',
     'Web Research',
     'E-commerce Data Management',
     'Data Verification',
+    'Data Quality & BPO',
     'BPO and Process Support',
     'General Outsourcing',
+    'Other / Custom Inquiry',
     'Other'
 ];
 
@@ -408,16 +416,39 @@ if (!empty($companyName)) {
     }
 }
 
-// Service Selection Whitelist
+// Service Selection Whitelist with tolerant matching
 $canonicalService = '';
+$decodedService = html_entity_decode($serviceInput, ENT_QUOTES | ENT_HTML5, 'UTF-8');
 foreach ($allowedServices as $s) {
-    if (strcasecmp($s, $serviceInput) === 0) {
-        $canonicalService = $s;
+    if (strcasecmp($s, $serviceInput) === 0 || strcasecmp($s, $decodedService) === 0) {
+        $canonicalService = html_entity_decode($s, ENT_QUOTES | ENT_HTML5, 'UTF-8');
         break;
     }
 }
 if (empty($canonicalService)) {
-    $errors[] = 'Invalid service selection. Please choose a valid service from our catalog.';
+    if (stripos($serviceInput, 'data entry') !== false) {
+        $canonicalService = 'Data Entry (All Languages & Multilingual)';
+    } elseif (stripos($serviceInput, 'ocr') !== false || stripos($serviceInput, 'epub') !== false) {
+        $canonicalService = 'OCR Processing & Data Conversion (ePUB/XML)';
+    } elseif (stripos($serviceInput, 'arabic') !== false) {
+        $canonicalService = 'Arabic Data Conversion & Localization';
+    } elseif (stripos($serviceInput, 'back office') !== false) {
+        $canonicalService = 'Back Office Support';
+    } elseif (stripos($serviceInput, 'document') !== false) {
+        $canonicalService = 'Document Management';
+    } elseif (stripos($serviceInput, 'research') !== false) {
+        $canonicalService = 'Web Research';
+    } elseif (stripos($serviceInput, 'commerce') !== false || stripos($serviceInput, 'catalog') !== false) {
+        $canonicalService = 'E-commerce Data Management';
+    } elseif (stripos($serviceInput, 'verification') !== false || stripos($serviceInput, 'quality') !== false) {
+        $canonicalService = 'Data Verification';
+    } elseif (stripos($serviceInput, 'process') !== false) {
+        $canonicalService = 'Data Processing';
+    } elseif (!empty($serviceInput) && strlen($serviceInput) <= 120 && !preg_match('/[<>]/', $serviceInput)) {
+        $canonicalService = htmlspecialchars($decodedService, ENT_QUOTES, 'UTF-8');
+    } else {
+        $canonicalService = 'General Outsourcing';
+    }
 }
 
 // Estimated Volume (Optional)

@@ -116,23 +116,48 @@ if (empty($jobs)) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   
-  <title>Careers &amp; Job Openings | DATNIX SOLUTIONS</title>
-  <meta name="description" content="Explore open career opportunities at DATNIX SOLUTIONS. Join our operational pods in data entry, document processing, QA auditing, and back-office services.">
+  <title>100% Work From Home (WFH) Data Entry Jobs | Remote Careers India | DATNIX SOLUTIONS</title>
+  <meta name="description" content="Apply for 100% Work From Home (WFH) Data Entry jobs at DATNIX SOLUTIONS. Remote Data Entry Operators, Typing Specialists, Excel Assistants &amp; QC Auditors across India. Freshers welcome. No commute, flexible shifts, nationwide remote hiring.">
+  <meta name="keywords" content="Work from home data entry jobs, remote data entry jobs India, WFH typing jobs, online data entry operator, remote back office jobs, data entry jobs for freshers, part time data entry WFH, DATNIX SOLUTIONS careers">
   <meta name="author" content="DATNIX SOLUTIONS">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
   <link rel="canonical" href="https://datnixsolutions.com/careers.php">
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Careers &amp; Job Openings | DATNIX SOLUTIONS">
-  <meta property="og:description" content="Explore open positions at DATNIX SOLUTIONS. Build a career in enterprise data operations and BPO services.">
+  <meta property="og:site_name" content="DATNIX SOLUTIONS">
+  <meta property="og:title" content="100% Work From Home (WFH) Data Entry Jobs | Remote Careers India | DATNIX SOLUTIONS">
+  <meta property="og:description" content="Apply for 100% Work From Home (WFH) Data Entry jobs at DATNIX SOLUTIONS. Remote Data Entry Operators, Typing Specialists, and QC Auditors across India. Freshers welcome.">
   <meta property="og:url" content="https://datnixsolutions.com/careers.php">
   <meta property="og:image" content="https://datnixsolutions.com/assets/images/datnix-social-share.png">
+
+  <!-- Twitter / X Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="100% Work From Home (WFH) Data Entry Jobs | Remote Careers India | DATNIX SOLUTIONS">
+  <meta name="twitter:description" content="Apply for 100% Work From Home (WFH) Data Entry jobs at DATNIX SOLUTIONS. Remote Data Entry Operators and QC Auditors across India. Freshers welcome.">
+  <meta name="twitter:image" content="https://datnixsolutions.com/assets/images/datnix-social-share.png">
 
   <!-- Favicons -->
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicon-16x16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="assets/images/apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
+  <meta name="theme-color" content="#092D78">
+
+  <!-- Google Search Console Verification Placeholder -->
+  <!-- <meta name="google-site-verification" content="YOUR_GOOGLE_SEARCH_CONSOLE_VERIFICATION_CODE"> -->
+
+  <!-- Google Analytics 4 (GA4) Integration Placeholder -->
+  <!--
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+  </script>
+  -->
 
   <!-- Stylesheet -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -481,8 +506,8 @@ if (empty($jobs)) {
             <li class="footer-contact-item">
               <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
               <div>
-                <div style="font-size: 0.78rem; text-transform: uppercase; color: #94A3B8;">Corporate Office</div>
-                <span data-config="address">20, Satkar Complex, Chimanlal Girdharlal Rd, Ahmedabad - 380006, Gujarat</span>
+                <div style="font-size: 0.78rem; text-transform: uppercase; color: #94A3B8;">Work Model</div>
+                <span data-config="address">100% Work From Home (WFH) Across India | Corporate Office: Ahmedabad, Gujarat</span>
               </div>
             </li>
             <li class="footer-contact-item">

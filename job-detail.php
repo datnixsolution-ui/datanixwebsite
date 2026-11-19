@@ -170,13 +170,123 @@ $pageJobTitle = $isGeneral ? 'General Talent Pool Application' : $job['title'];
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   
-  <title><?php echo e($pageJobTitle); ?> | DATNIX SOLUTIONS Careers</title>
-  <meta name="description" content="Apply for <?php echo e($pageJobTitle); ?> at DATNIX SOLUTIONS. Submit your resume and join our data operations and BPO team.">
+  <!-- Primary SEO Metadata -->
+  <title><?php echo e($pageJobTitle); ?> | 100% Work From Home (WFH) | DATNIX SOLUTIONS</title>
+  <meta name="description" content="Apply for <?php echo e($pageJobTitle); ?> (100% Work From Home) at DATNIX SOLUTIONS. Submit your application online for remote data entry and operations jobs across India. Freshers welcome, no resume required.">
+  <meta name="keywords" content="Work from home data entry jobs, remote data entry application, WFH data typing jobs, online data entry operator India, remote excel jobs, freshers data entry jobs, DATNIX SOLUTIONS careers">
   <meta name="author" content="DATNIX SOLUTIONS">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <link rel="canonical" href="https://datnixsolutions.com/job-detail.php<?php echo !empty($slug) ? '?slug=' . urlencode($slug) : ($jobId > 0 ? '?id=' . $jobId : ''); ?>">
+
+  <!-- Geographic & Local Search Engine Optimization (GEO) -->
+  <meta name="geo.region" content="IN">
+  <meta name="geo.placename" content="India (Nationwide 100% Work From Home / Remote)">
+  <meta name="geo.position" content="20.5937;78.9629">
+  <meta name="ICBM" content="20.5937, 78.9629">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="DATNIX SOLUTIONS">
+  <meta property="og:title" content="<?php echo e($pageJobTitle); ?> | 100% Work From Home (WFH) | DATNIX SOLUTIONS">
+  <meta property="og:description" content="Apply for <?php echo e($pageJobTitle); ?> (100% Work From Home) at DATNIX SOLUTIONS. Freshers welcome, no resume required.">
+  <meta property="og:url" content="https://datnixsolutions.com/job-detail.php<?php echo !empty($slug) ? '?slug=' . urlencode($slug) : ($jobId > 0 ? '?id=' . $jobId : ''); ?>">
+  <meta property="og:image" content="https://datnixsolutions.com/assets/images/datnix-social-share.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+
+  <!-- Twitter / X Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="<?php echo e($pageJobTitle); ?> | 100% Work From Home (WFH) | DATNIX SOLUTIONS">
+  <meta name="twitter:description" content="Apply for <?php echo e($pageJobTitle); ?> at DATNIX SOLUTIONS. Remote WFH data entry openings across India.">
+  <meta name="twitter:image" content="https://datnixsolutions.com/assets/images/datnix-social-share.png">
+
+  <!-- Structured Data (JSON-LD: Google for Jobs & BreadcrumbList) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://datnixsolutions.com/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Careers",
+            "item": "https://datnixsolutions.com/careers.php"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Job Application",
+            "item": "https://datnixsolutions.com/job-detail.php"
+          }
+        ]
+      },
+      {
+        "@type": "JobPosting",
+        "title": <?php echo json_encode($pageJobTitle . ' (100% Work From Home)'); ?>,
+        "description": <?php echo json_encode('<p>DATNIX SOLUTIONS is hiring for ' . htmlspecialchars($pageJobTitle) . ' (100% Work From Home / Remote) positions across India. Freshers and experienced candidates welcome. Deliver high-accuracy data entry, spreadsheet management, and document verification from home.</p>'); ?>,
+        "identifier": {
+          "@type": "PropertyValue",
+          "name": "DATNIX SOLUTIONS",
+          "value": <?php echo json_encode('DNX-WFH-APP-' . ($job ? $job['id'] : 'GEN')); ?>
+        },
+        "datePosted": "2026-11-19",
+        "validThrough": "2027-12-31T23:59:59+05:30",
+        "employmentType": "FULL_TIME",
+        "hiringOrganization": {
+          "@type": "Organization",
+          "name": "DATNIX SOLUTIONS",
+          "sameAs": "https://datnixsolutions.com",
+          "logo": "https://datnixsolutions.com/assets/images/datnix-logo.png"
+        },
+        "jobLocationType": "TELECOMMUTE",
+        "applicantLocationRequirements": {
+          "@type": "Country",
+          "name": "India"
+        },
+        "baseSalary": {
+          "@type": "MonetaryAmount",
+          "currency": "INR",
+          "value": {
+            "@type": "QuantitativeValue",
+            "minValue": 180000,
+            "maxValue": 360000,
+            "unitText": "YEAR"
+          }
+        }
+      }
+    ]
+  }
+  </script>
 
   <!-- Favicons -->
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/images/apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
+  <meta name="theme-color" content="#092D78">
+
+  <!-- Google Search Console Verification Placeholder -->
+  <!-- <meta name="google-site-verification" content="YOUR_GOOGLE_SEARCH_CONSOLE_VERIFICATION_CODE"> -->
+
+  <!-- Google Analytics 4 (GA4) Integration Placeholder -->
+  <!--
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+  </script>
+  -->
 
   <!-- Stylesheet -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
