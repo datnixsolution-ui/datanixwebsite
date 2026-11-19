@@ -652,9 +652,15 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
 
           <div class="wa-msg wa-msg-bot">
-            <div>How can our solutions team help your organization today? Select a service below or type your requirement:</div>
+            <div>How can our team assist you today? Select a service or career option below, or type your requirement:</div>
             
             <div class="wa-chips-container" id="waChips">
+              <button type="button" class="wa-chip-btn" data-intent="Job Application &amp; Career Openings in Ahmedabad">
+                💼 Job Application &amp; Career Openings
+              </button>
+              <button type="button" class="wa-chip-btn" data-intent="Submit Resume for Data Entry / Back-Office Jobs">
+                📄 Submit Resume / HR Hiring Inquiry
+              </button>
               <button type="button" class="wa-chip-btn" data-intent="Data Entry &amp; BPO Quotation">
                 📊 Request BPO &amp; Data Entry Quote
               </button>
@@ -667,9 +673,6 @@ document.addEventListener('DOMContentLoaded', () => {
               <button type="button" class="wa-chip-btn" data-intent="Multilingual &amp; All-Language Data Entry">
                 🔤 All-Language Data Entry (Multilingual)
               </button>
-              <button type="button" class="wa-chip-btn" data-intent="Ahmedabad Careers &amp; Job Openings">
-                💼 Ahmedabad Careers &amp; Vacancies
-              </button>
               <button type="button" class="wa-chip-btn" data-intent="General Business Requirement Discussion">
                 💬 Custom Requirement / Live Discussion
               </button>
@@ -679,7 +682,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
 
         <form class="wa-chat-footer" id="waChatForm" onsubmit="return false;">
-          <input type="text" id="waChatInput" class="wa-input" placeholder="Type your inquiry..." autocomplete="off">
+          <input type="text" id="waChatInput" class="wa-input" placeholder="Type your project or job inquiry..." autocomplete="off">
           <button type="submit" id="waChatSend" class="wa-btn-send" aria-label="Send WhatsApp message">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
               <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
@@ -762,27 +765,59 @@ document.addEventListener('DOMContentLoaded', () => {
         const botBubble = document.createElement('div');
         botBubble.className = 'wa-msg wa-msg-bot';
         
-        const fullWaText = `Hello DATNIX SOLUTIONS, I am inquiring regarding: ${userMessage}. Please provide information and quotation details.`;
-        const waLink = `https://wa.me/917387010393?text=${encodeURIComponent(fullWaText)}`;
+        const isCareerInquiry = /career|job|resume|hiring|vacancy|opening|interview|work|apply|fresher|experience/i.test(userMessage);
 
-        botBubble.innerHTML = `
-          <div>Thank you! Connecting you directly to our solution desk on WhatsApp...</div>
-          <div style="margin-top: 8px;">
-            <a href="${waLink}" target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp btn-sm" style="display:inline-flex; align-items:center; gap:6px; font-size:12px; padding:6px 14px; text-decoration:none;">
-              <span>Open WhatsApp Chat Now &rarr;</span>
-            </a>
-          </div>
-          <div class="wa-msg-time">${timeStr}</div>
-        `;
-        chatBody.appendChild(botBubble);
-        chatBody.scrollTop = chatBody.scrollHeight;
+        let fullWaText = '';
+        let buttonLabel = '';
+        let extraActionHtml = '';
 
-        // Auto-redirect after 1 second
-        setTimeout(() => {
-          window.open(waLink, '_blank', 'noopener,noreferrer');
-        }, 1100);
-      }, 450);
-    }
+        if (isCareerInquiry) {
+          fullWaText = `Hello DATNIX SOLUTIONS HR Team, I am inquiring regarding career opportunities and job openings at your Ahmedabad office (20, Satkar Complex, C.G. Rd - 380006). I would like to submit my profile/resume for: ${userMessage}.`;
+          buttonLabel = 'Chat with HR on WhatsApp &rarr;';
+          const waLink = `https://wa.me/917387010393?text=${encodeURIComponent(fullWaText)}`;
+
+          extraActionHtml = `
+            <div><strong>Career Desk Connected!</strong> 👋 We are actively hiring for Data Operations, Arabic OCR Conversion, Quality Auditing, and Back-Office pods at our Ahmedabad headquarters and hybrid setups.</div>
+            <div style="margin-top: 10px; display: flex; flex-direction: column; gap: 8px;">
+              <a href="${waLink}" target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp btn-sm" style="display:inline-flex; align-items:center; justify-content:center; gap:6px; font-size:12px; padding:7px 14px; text-decoration:none; background:#25D366; color:white; border-radius:4px; font-weight:700;">
+                <span>${buttonLabel}</span>
+              </a>
+              <a href="careers.html" class="btn btn-navy btn-sm" style="display:inline-flex; align-items:center; justify-content:center; gap:6px; font-size:12px; padding:7px 14px; text-decoration:none; background:#092D78; color:white; border-radius:4px; font-weight:700;">
+                <span>View All 8+ Open Jobs &amp; Apply Online &rarr;</span>
+              </a>
+            </div>
+            <div class="wa-msg-time">${timeStr}</div>
+          `;
+          botBubble.innerHTML = extraActionHtml;
+          chatBody.appendChild(botBubble);
+          chatBody.scrollTop = chatBody.scrollHeight;
+
+          setTimeout(() => {
+            window.open(waLink, '_blank', 'noopener,noreferrer');
+          }, 1400);
+
+        } else {
+          fullWaText = `Hello DATNIX SOLUTIONS, I am inquiring regarding: ${userMessage}. Please provide information and quotation details.`;
+          buttonLabel = 'Open WhatsApp Chat Now &rarr;';
+          const waLink = `https://wa.me/917387010393?text=${encodeURIComponent(fullWaText)}`;
+
+          extraActionHtml = `
+            <div>Thank you! Connecting you directly to our solution desk on WhatsApp...</div>
+            <div style="margin-top: 8px;">
+              <a href="${waLink}" target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp btn-sm" style="display:inline-flex; align-items:center; gap:6px; font-size:12px; padding:7px 14px; text-decoration:none; background:#25D366; color:white; border-radius:4px; font-weight:700;">
+                <span>${buttonLabel}</span>
+              </a>
+            </div>
+            <div class="wa-msg-time">${timeStr}</div>
+          `;
+          botBubble.innerHTML = extraActionHtml;
+          chatBody.appendChild(botBubble);
+          chatBody.scrollTop = chatBody.scrollHeight;
+
+          setTimeout(() => {
+            window.open(waLink, '_blank', 'noopener,noreferrer');
+          }, 1100);
+        }
 
     function escapeHtml(str) {
       return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
