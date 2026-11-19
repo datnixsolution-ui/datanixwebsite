@@ -221,7 +221,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             setFlashMessage('danger', 'Invalid status selection.');
         }
 
-        $redir = "enquiry-detail.php?id=" . (int)$enquiryId . "&ref=" . urlencode($enquiry['reference_no']);
+        $redir = ($newStatus === 'Closed' || !empty($_POST['return_to_list']))
+            ? 'enquiries.php'
+            : ("enquiry-detail.php?id=" . (int)$enquiryId . "&ref=" . urlencode($enquiry['reference_no']));
         header("Location: $redir");
         exit;
     }
@@ -277,7 +279,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             setFlashMessage('success', 'Internal note recorded successfully.');
         }
 
-        $redir = "enquiry-detail.php?id=" . (int)$enquiryId . "&ref=" . urlencode($enquiry['reference_no']);
+        $redir = ($newStatus === 'Closed' || !empty($_POST['return_to_list']))
+            ? 'enquiries.php'
+            : ("enquiry-detail.php?id=" . (int)$enquiryId . "&ref=" . urlencode($enquiry['reference_no']));
         header("Location: $redir");
         exit;
     }

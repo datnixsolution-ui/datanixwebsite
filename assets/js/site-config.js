@@ -1,4 +1,4 @@
-﻿/**
+/**
  * DATNIX SOLUTIONS - Central Website Configuration
  * Tagline: DATA. PROCESS. PERFORMANCE.
  * 

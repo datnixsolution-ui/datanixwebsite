@@ -268,7 +268,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             setFlashMessage('danger', 'Invalid status selection.');
         }
 
-        $redir = "application-detail.php?id=" . (int)$appId . "&ref=" . urlencode($app['reference_no']);
+        $redir = ($newStatus === 'Rejected' || $newStatus === 'Selected' || !empty($_POST['return_to_list']))
+            ? 'applications.php'
+            : ("application-detail.php?id=" . (int)$appId . "&ref=" . urlencode($app['reference_no']));
         header("Location: $redir");
         exit;
     }
@@ -324,7 +326,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             setFlashMessage('success', 'Recruitment note added successfully.');
         }
 
-        $redir = "application-detail.php?id=" . (int)$appId . "&ref=" . urlencode($app['reference_no']);
+        $redir = ($newStatus === 'Rejected' || $newStatus === 'Selected' || !empty($_POST['return_to_list']))
+            ? 'applications.php'
+            : ("application-detail.php?id=" . (int)$appId . "&ref=" . urlencode($app['reference_no']));
         header("Location: $redir");
         exit;
     }

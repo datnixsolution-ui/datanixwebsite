@@ -9,9 +9,8 @@ requireAuth();
 
 $pageTitle = 'Careers & Job Openings';
 $breadcrumb = 'Job Openings';
-require_once __DIR__ . '/includes/header.php';
 
-// Handle Action Toggles (Publish/Unpublish, Delete, Close)
+// Handle Action Toggles (Publish/Unpublish, Delete, Close, Reopen)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $submittedToken = $_POST['csrf_token'] ?? '';
     if (!validateCsrfToken($submittedToken)) {
@@ -42,6 +41,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } catch (Throwable $e) {
                 setFlashMessage('danger', 'Error closing job: ' . $e->getMessage());
             }
+        } elseif ($action === 'reopen_job') {
+            try {
+                $stmt = $pdo->prepare('UPDATE jobs SET status = "Active", updated_at = NOW() WHERE id = :id');
+                $stmt->execute([':id' => $jobId]);
+                logActivity($pdo, $admin['id'], 'job_reopened', 'job', $jobId, 'Reopened job opening as Active');
+                setFlashMessage('success', 'Job opening reopened and set to Active.');
+            } catch (Throwable $e) {
+                setFlashMessage('danger', 'Error reopening job: ' . $e->getMessage());
+            }
         } elseif ($action === 'delete_job') {
             try {
                 // Check if applications exist for this job
@@ -62,7 +70,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     }
-    header('Location: careers.php');
+
+    $returnTo = trim((string)($_POST['return_to'] ?? ''));
+    if (empty($returnTo) || !preg_match('/^[a-zA-Z0-9_\-\.\?\=\&\/]+$/', $returnTo)) {
+        $returnTo = 'careers.php';
+    }
+    header("Location: $returnTo");
     exit;
 }
 
@@ -211,6 +224,8 @@ if (empty($jobs)) {
         ]
     ];
 }
+
+require_once __DIR__ . '/includes/header.php';
 ?>
 
 <div class="page-header-row">
@@ -294,6 +309,7 @@ if (empty($jobs)) {
                     <?php echo csrfField(); ?>
                     <input type="hidden" name="form_action" value="toggle_publish">
                     <input type="hidden" name="job_id" value="<?php echo (int)$job['id']; ?>">
+                    <input type="hidden" name="return_to" value="<?php echo e($_SERVER['REQUEST_URI'] ?? 'careers.php'); ?>">
                     <?php if ($job['is_published']): ?>
                       <button type="submit" class="btn btn-sm btn-outline" style="color: #047857; border-color: #A7F3D0; background: #ECFDF5;" title="Click to Unpublish">
                         &bull; Published
@@ -321,8 +337,19 @@ if (empty($jobs)) {
                         <?php echo csrfField(); ?>
                         <input type="hidden" name="form_action" value="close_job">
                         <input type="hidden" name="job_id" value="<?php echo (int)$job['id']; ?>">
-                        <button type="submit" class="btn btn-outline btn-sm" style="color: #B45309;">
+                        <input type="hidden" name="return_to" value="<?php echo e($_SERVER['REQUEST_URI'] ?? 'careers.php'); ?>">
+                        <button type="submit" class="btn btn-outline btn-sm" style="color: #B45309;" title="Close Job Opening">
                           Close
+                        </button>
+                      </form>
+                    <?php else: ?>
+                      <form method="POST" action="careers.php" style="display: inline;" data-confirm="Are you sure you want to reopen and set this job opening to Active?">
+                        <?php echo csrfField(); ?>
+                        <input type="hidden" name="form_action" value="reopen_job">
+                        <input type="hidden" name="job_id" value="<?php echo (int)$job['id']; ?>">
+                        <input type="hidden" name="return_to" value="<?php echo e($_SERVER['REQUEST_URI'] ?? 'careers.php'); ?>">
+                        <button type="submit" class="btn btn-outline btn-sm" style="color: #047857;" title="Reopen as Active">
+                          Reopen
                         </button>
                       </form>
                     <?php endif; ?>
@@ -331,6 +358,7 @@ if (empty($jobs)) {
                       <?php echo csrfField(); ?>
                       <input type="hidden" name="form_action" value="delete_job">
                       <input type="hidden" name="job_id" value="<?php echo (int)$job['id']; ?>">
+                      <input type="hidden" name="return_to" value="<?php echo e($_SERVER['REQUEST_URI'] ?? 'careers.php'); ?>">
                       <button type="submit" class="btn btn-danger btn-sm" title="Delete Job Opening">
                         &times;
                       </button>
