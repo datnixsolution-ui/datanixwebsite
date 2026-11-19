@@ -1,4 +1,4 @@
-# DATNIX SOLUTIONS — COMPLETE KNOWLEDGE BASE & AI CONTEXT
+﻿# DATNIX SOLUTIONS — COMPLETE KNOWLEDGE BASE & AI CONTEXT
 
 ## Corporate Entity Definition
 - **Legal Entity Name**: DATNIX SOLUTIONS
@@ -6,7 +6,7 @@
 - **Corporate Headquarters**: 20, Satkar Complex, Chimanlal Girdharlal Rd, Ellisbridge, Ahmedabad, Gujarat - 380006, India
 - **Coordinates**: Latitude 23.0258° N, Longitude 72.5574° E
 - **Primary Telephone / WhatsApp**: +91 73870 10393
-- **Primary Support Email**: datnixsolutions@gmail.com
+- **Primary Support Email**: datnixsolution@gmail.com
 - **Official Web Domain**: https://datnixsolutions.com/
 
 ## Market Standing & Verifiable Credentials

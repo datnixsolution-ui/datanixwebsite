@@ -104,9 +104,9 @@
           <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
           <span data-config="phone">+91 73870 10393</span>
         </a>
-        <a href="mailto:datnixsolutions@gmail.com" class="top-bar-item" data-config="email-link">
+        <a href="mailto:datnixsolution@gmail.com" class="top-bar-item" data-config="email-link">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-          <span data-config="email">datnixsolutions@gmail.com</span>
+          <span data-config="email">datnixsolution@gmail.com</span>
         </a>
       </div>
       <div class="top-bar-right">
@@ -238,7 +238,7 @@
           <div class="form-card" style="padding: 2.25rem;">
             <h3 class="form-title" style="font-size: 1.35rem;">Candidate Application</h3>
             <p class="form-desc" style="font-size: 0.88rem; margin-bottom: 1.5rem;">
-              Complete the form below and upload your resume in PDF or DOC/DOCX format (max. 5MB).
+              Complete the form below. Uploading a resume is optional; you can also apply by submitting your details.
             </p>
 
             <form id="applicationForm" action="api/apply.php" method="POST" enctype="multipart/form-data" novalidate>
@@ -265,7 +265,7 @@
               <div class="form-group">
                 <label for="appJobId" class="form-label">Position Applied For <span style="color: #EF4444;">*</span></label>
                 <select id="appJobId" name="jobId" class="form-control" required>
-                  <option value="0">General Talent Pool (All Operations)</option>
+                  <option value="0">General Talent Pool (Data Entry &amp; Operations)</option>
                 </select>
               </div>
 
@@ -285,24 +285,25 @@
                 <input type="text" id="appLocation" name="location" class="form-control" placeholder="e.g. Ahmedabad, Gujarat / Open" required>
               </div>
 
-              <!-- Resume Upload (PDF / DOC / DOCX only, max 5MB) -->
+              <!-- Resume Upload (Optional - PDF / DOC / DOCX max 5MB) -->
               <div class="form-group">
-                <label for="appResume" class="form-label">Resume / CV Document <span style="color: #EF4444;">*</span></label>
-                <input type="file" id="appResume" name="resume" class="form-control" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" required style="padding: 0.4rem;">
-                <div style="font-size: 11.5px; color: var(--text-muted); margin-top: 3px;">Accepted formats: PDF, DOC, DOCX. Maximum file size: 5MB.</div>
+                <label for="appResume" class="form-label">Resume / CV Document <span style="font-weight: 400; color: var(--text-muted); font-size: 0.85rem;">(Optional)</span></label>
+                <input type="file" id="appResume" name="resume" class="form-control" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" style="padding: 0.4rem;">
+                <div style="font-size: 11.5px; color: var(--text-muted); margin-top: 3px;">Optional: Upload PDF, DOC, or DOCX (max 5MB) or apply directly without a file.</div>
               </div>
 
               <div class="form-group">
                 <label for="appAdditional" class="form-label">Additional Information (Optional)</label>
-                <textarea id="appAdditional" name="additionalInfo" class="form-control" style="min-height: 70px;" placeholder="Relevant certifications, typing speed, or availability notes..."></textarea>
+                <textarea id="appAdditional" name="additionalInfo" class="form-control" style="min-height: 70px;" placeholder="Typing speed (WPM), software familiarity, or shift preferences..."></textarea>
               </div>
 
               <!-- Privacy Consent -->
               <div style="margin-bottom: 1.25rem; display: flex; align-items: flex-start; gap: 0.5rem; font-size: 12px; color: var(--text-muted);">
                 <input type="checkbox" id="privacyConsent" name="privacyConsent" value="1" required style="margin-top: 2px;">
                 <label for="privacyConsent" style="cursor: pointer; line-height: 1.4;">
-                  I agree that DATNIX SOLUTIONS may store and process my application details and resume for recruitment and operational selection purposes.
+                  I agree that DATNIX SOLUTIONS may store and process my application details for recruitment and operational selection purposes.
                 </label>
+              </div>
               </div>
 
               <button type="submit" id="submitAppBtn" class="btn btn-primary btn-lg" style="width: 100%;">
@@ -360,29 +361,139 @@
       const specGeneral = document.getElementById('specGeneral');
       const jobSelect = document.getElementById('appJobId');
 
+      const staticJobs = [
+        {
+          id: 1,
+          title: "Data Entry Operator (Fresher & Experienced)",
+          slug: "data-entry-operator-fresher-experienced",
+          department: "Data Entry Operations",
+          location: "Ahmedabad, Gujarat (20, Satkar Complex, C.G. Rd - 380006)",
+          employment_type: "Full-Time",
+          experience_req: "0 - 2 Years (Freshers Welcome)",
+          short_description: "Accurate and high-speed alphanumeric data entry, form keying, master record updating, and spreadsheet data entry across client projects.",
+          responsibilities: "• Key alphanumeric data from invoices, paper receipts, and scanned records into spreadsheets.\n• Achieve daily target output quotas while maintaining 98%+ character accuracy.\n• Perform initial self-audit checks against source documents prior to batch submission.\n• Comply strictly with enterprise client confidentiality, clean-desk, and NDA protocols.",
+          required_skills: "• Typing speed of 30+ WPM with high accuracy.\n• Basic proficiency in Microsoft Excel, Google Sheets, and keyboard numerical entry.\n• High attention to detail and error spotting.\n• Freshers with good typing skills and basic computer literacy are encouraged to apply.",
+          benefits: "• Fixed day shifts with predictable working hours.\n• Comprehensive typing and tools training provided on onboarding.\n• Performance-linked monthly incentives and annual appraisals.\n• Prime central Ahmedabad office at Satkar Complex, C.G. Road."
+        },
+        {
+          id: 2,
+          title: "Senior Data Entry Specialist (High-Volume & Speed)",
+          slug: "senior-data-entry-specialist",
+          department: "Data Entry Operations",
+          location: "Ahmedabad, Gujarat (20, Satkar Complex, C.G. Rd - 380006) / Hybrid",
+          employment_type: "Full-Time",
+          experience_req: "2 - 4 Years",
+          short_description: "High-volume, rapid-turnaround batch data entry, complex tabulations, dual-screen comparison, and specialized customer database updating.",
+          responsibilities: "• Transcribe complex alphanumeric records from multi-format source files into enterprise systems.\n• Execute dual-screen verification checks to ensure zero-defect output conformity (99.8% SLA).\n• Assist team supervisors in tracking hourly team productivity metrics and turnaround SLAs.\n• Flag ambiguous source records, formatting anomalies, and validation errors to project managers.",
+          required_skills: "• Proven typing speed of 45+ WPM with 99%+ accuracy.\n• High proficiency in 10-key numeric keypad, keyboard shortcuts, and Excel functions.\n• Minimum 2 years of prior experience in international data entry / BPO operations.\n• Proven ability to handle high-volume repetitive tasks with steady focus.",
+          benefits: "• Competitive salary package + high-performance bonuses.\n• Fast-track leadership progression to Team Lead / Quality Lead.\n• Modern ergonomic workstations with dual-monitor setups."
+        },
+        {
+          id: 3,
+          title: "Multilingual Data Entry Executive (English & Regional)",
+          slug: "multilingual-data-entry-executive",
+          department: "Multilingual Operations",
+          location: "Ahmedabad, Gujarat (20, Satkar Complex, C.G. Rd - 380006)",
+          employment_type: "Full-Time",
+          experience_req: "1 - 3 Years",
+          short_description: "Data entry and verification for multi-language documents, bilingual records, and regional Indian language datasets with Unicode standards.",
+          responsibilities: "• Transcribe customer records, public registries, and surveys into English and regional Unicode text.\n• Verify transliteration accuracy and spelling consistency for names, addresses, and local terminology.\n• Key in alphanumeric IDs, phone numbers, and financial figures from multilingual forms.\n• Perform cross-check validation between English and vernacular language fields.",
+          required_skills: "• Strong written English plus fluency in Hindi, Gujarati, or other regional languages.\n• Experience with Unicode keyboard layouts and bilingual data entry software.\n• Typing speed of 35+ WPM with meticulous character fidelity.\n• Prior experience in census, voter list, or multilingual banking data entry is a plus.",
+          benefits: "• Multilingual skill allowance.\n• Structured work hours and supportive team environment.\n• Rapid internal growth into Multilingual QA Lead."
+        },
+        {
+          id: 4,
+          title: "Excel & Spreadsheet Data Entry Associate",
+          slug: "excel-spreadsheet-data-entry-associate",
+          department: "Back-Office Operations",
+          location: "Ahmedabad, Gujarat (20, Satkar Complex, C.G. Rd - 380006)",
+          employment_type: "Full-Time",
+          experience_req: "1 - 3 Years",
+          short_description: "Structured spreadsheet data entry, formula applications, row/column consolidation, deduplication, and database import preparation in MS Excel.",
+          responsibilities: "• Input and structure high-volume raw business data into standardized Excel and Google Sheets templates.\n• Apply spreadsheet formulas (VLOOKUP, SUMIFS, CONCATENATE, IF) for data validation.\n• Cleanse duplicate rows, standardize dates/currencies, and repair corrupted formatting.\n• Export finalized spreadsheets into clean CSV and database-ready formats.",
+          required_skills: "• Strong practical experience in Microsoft Excel (Formulas, Pivot Tables, Conditional Formatting).\n• Fast 10-key numeric pad typing speed.\n• Disciplined attention to formula logic and data integrity.\n• Familiarity with Google Sheets and cloud spreadsheets.",
+          benefits: "• Advanced Excel and data analytics coaching.\n• Regular day shifts with Saturday afternoon wrap-ups.\n• Performance-based increments and annual bonus."
+        },
+        {
+          id: 5,
+          title: "E-Commerce Product Data Entry Specialist",
+          slug: "ecommerce-product-data-entry-specialist",
+          department: "E-Commerce Data",
+          location: "Ahmedabad, Gujarat (20, Satkar Complex, C.G. Rd - 380006) / Hybrid",
+          employment_type: "Full-Time",
+          experience_req: "1 - 3 Years",
+          short_description: "Product catalog data entry, SKU specifications keying, pricing updates, image attribution, and category mapping for global retail portals.",
+          responsibilities: "• Key in product titles, dimensions, materials, and bullet features into e-commerce spreadsheets.\n• Batch upload product feeds to e-commerce storefronts (Amazon, Shopify, Flipkart, WooCommerce).\n• Standardize brand specifications, color codes, and size options according to taxonomy guidelines.\n• Conduct periodic inventory and price updates from vendor catalogs.",
+          required_skills: "• Prior experience in e-commerce listing, SKU entry, or catalog data management.\n• Familiarity with Amazon Seller Central, Shopify admin, or Excel product flat files.\n• Fast typing speed and strong web navigation skills.\n• Detail-oriented approach to image-to-SKU matching.",
+          benefits: "• Exposure to international e-commerce brand projects.\n• Monthly performance incentives on catalog milestones.\n• Modern corporate environment at C.G. Road, Ahmedabad."
+        },
+        {
+          id: 6,
+          title: "Data Entry Quality Control (QC) & Verification Auditor",
+          slug: "data-entry-qc-verification-auditor",
+          department: "Quality Assurance",
+          location: "Ahmedabad, Gujarat (20, Satkar Complex, C.G. Rd - 380006)",
+          employment_type: "Full-Time",
+          experience_req: "2 - 4 Years",
+          short_description: "100% and AQL sampling verification of completed data entry batches against original source scans, defect logging, and accuracy certification.",
+          responsibilities: "• Perform field-by-field verification of completed data batches against source document scans.\n• Log character substitutions, omission errors, and formatting inconsistencies in defect tracking sheets.\n• Provide constructive feedback to entry operators to improve first-pass accuracy yields.\n• Issue official batch quality certification before data files are dispatched to clients.",
+          required_skills: "• Deep understanding of data quality assurance methodologies and AQL sampling.\n• Exceptional eye for detail and high concentration stamina.\n• Advanced MS Excel skills for discrepancy reporting.\n• Minimum 2 years in quality auditing or senior data entry roles.",
+          benefits: "• Senior position with leadership responsibilities.\n• Competitive compensation with quality-based performance incentives.\n• Professional training in Six Sigma quality concepts."
+        },
+        {
+          id: 7,
+          title: "Document Scanning & Indexing Data Entry Operator",
+          slug: "document-scanning-indexing-data-entry-operator",
+          department: "Document Processing",
+          location: "Ahmedabad, Gujarat (20, Satkar Complex, C.G. Rd - 380006)",
+          employment_type: "Full-Time",
+          experience_req: "0 - 2 Years (Freshers Welcome)",
+          short_description: "Physical document prep, high-speed rotary scanning, folder naming, indexing, and metadata data entry for legal and corporate archives.",
+          responsibilities: "• Prepare physical files for scanning by removing staples, clips, and smoothing folds.\n• Operate production document scanners and review image quality (de-skew, contrast).\n• Enter metadata index fields (file number, customer name, date, classification code).\n• Re-assemble scanned physical files in pristine order for archiving.",
+          required_skills: "• High degree of physical dexterity, organization, and care with original documents.\n• Basic computer operating skills and keyboard typing.\n• Reliable, punctual, and disciplined approach to daily quotas.\n• No prior experience necessary; complete on-the-job training provided.",
+          benefits: "• Fixed day shifts in a modern, climate-controlled document center.\n• Training on commercial scanning hardware and indexing tools.\n• Growth opportunities into supervisory positions."
+        },
+        {
+          id: 8,
+          title: "Back-Office Data Entry & Processing Executive",
+          slug: "back-office-data-entry-executive",
+          department: "Back-Office Support",
+          location: "Ahmedabad, Gujarat (20, Satkar Complex, C.G. Rd - 380006)",
+          employment_type: "Full-Time",
+          experience_req: "1 - 3 Years",
+          short_description: "Routine back-office data processing, invoice & purchase order entry, claims data keying, and daily operational status reporting.",
+          responsibilities: "• Process and enter incoming supplier invoices, claims, and delivery notes into ERP systems.\n• Cross-verify invoice line items against purchase orders and approved rate sheets.\n• Update internal records, address books, and customer transaction logs.\n• Prepare daily shift activity summaries and transaction logs for management.",
+          required_skills: "• Prior experience in back-office operations, accounting data entry, or commercial BPO.\n• Good numerical reasoning and typing accuracy.\n• Basic knowledge of accounting software or MS Excel.\n• Strong team collaboration and communication skills.",
+          benefits: "• Stable corporate environment with regular business hours.\n• Performance-linked quarterly rewards.\n• Centrally located Ahmedabad office at Satkar Complex."
+        }
+      ];
+
       try {
-        const resp = await fetch('api/jobs.php');
-        const data = await resp.json().catch(() => null);
+        let allJobs = staticJobs;
+        try {
+          const resp = await fetch('api/jobs.php');
+          const data = await resp.json().catch(() => null);
+          if (data && data.success && Array.isArray(data.jobs) && data.jobs.length > 0) {
+            allJobs = data.jobs;
+          }
+        } catch (_) {}
 
         if (specLoading) specLoading.style.display = 'none';
 
-        let targetJob = null;
-        if (data && data.success && Array.isArray(data.jobs)) {
-          // Populate select dropdown
-          jobSelect.innerHTML = '<option value="0">General Talent Pool (All Operations)</option>';
-          data.jobs.forEach(j => {
-            const opt = document.createElement('option');
-            opt.value = j.id;
-            opt.textContent = `${j.title} (${j.department})`;
-            jobSelect.appendChild(opt);
-          });
+        // Populate select dropdown
+        jobSelect.innerHTML = '<option value="0">General Talent Pool (Data Entry &amp; Operations)</option>';
+        allJobs.forEach(j => {
+          const opt = document.createElement('option');
+          opt.value = j.id;
+          opt.textContent = `${j.title} (${j.department})`;
+          jobSelect.appendChild(opt);
+        });
 
-          // Find requested job
-          if (slug) {
-            targetJob = data.jobs.find(j => j.slug === slug);
-          } else if (id) {
-            targetJob = data.jobs.find(j => j.id == id);
-          }
+        let targetJob = null;
+        if (slug) {
+          targetJob = allJobs.find(j => j.slug === slug);
+        } else if (id) {
+          targetJob = allJobs.find(j => j.id == id);
         }
 
         if (targetJob) {
@@ -473,19 +584,14 @@
           e.preventDefault();
 
           const fileInput = document.getElementById('appResume');
-          if (!fileInput.files || fileInput.files.length === 0) {
-            appStatus.className = 'form-status error';
-            appStatus.innerHTML = '<strong>Document Required:</strong> Please choose your resume file (PDF, DOC, or DOCX).';
-            appStatus.style.display = 'block';
-            return;
-          }
-
-          const file = fileInput.files[0];
-          if (file.size > 5242880) {
-            appStatus.className = 'form-status error';
-            appStatus.innerHTML = '<strong>File Too Large:</strong> The selected resume exceeds the 5MB file limit.';
-            appStatus.style.display = 'block';
-            return;
+          if (fileInput.files && fileInput.files.length > 0) {
+            const file = fileInput.files[0];
+            if (file.size > 5242880) {
+              appStatus.className = 'form-status error';
+              appStatus.innerHTML = '<strong>File Too Large:</strong> The selected resume exceeds the 5MB file limit.';
+              appStatus.style.display = 'block';
+              return;
+            }
           }
 
           const consent = document.getElementById('privacyConsent');
@@ -534,7 +640,7 @@
             }
           } catch (err) {
             appStatus.className = 'form-status error';
-            appStatus.innerHTML = '<strong>Connection Error:</strong> Could not complete upload. Please check your network connection or email your resume directly to datnixsolutions@gmail.com.';
+            appStatus.innerHTML = '<strong>Connection Error:</strong> Could not complete upload. Please check your network connection or email your resume directly to datnixsolution@gmail.com.';
             submitBtn.disabled = false;
             submitBtn.innerHTML = originalText;
           }

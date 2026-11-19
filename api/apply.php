@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * DATNIX SOLUTIONS - Job Application & Resume Upload Backend
  * Endpoint: /api/apply.php
@@ -77,7 +77,7 @@ try {
 } catch (Throwable $e) {
     error_log('[APPLY DB ERROR] ' . $e->getMessage());
     http_response_code(500);
-    echo json_encode(['success' => false, 'error' => 'Database service currently unavailable. Please email your resume to datnixsolutions@gmail.com.']);
+    echo json_encode(['success' => false, 'error' => 'Database service currently unavailable. Please email your resume to datnixsolution@gmail.com.']);
     exit;
 }
 
@@ -136,10 +136,15 @@ if ($jobId > 0) {
     }
 }
 
-// Resume File Validation & Secure Storage
-if (!isset($_FILES['resume']) || $_FILES['resume']['error'] !== UPLOAD_ERR_OK) {
-    $errors[] = 'Please upload a valid resume document.';
-} else {
+// Resume File Validation & Secure Storage (Optional - Not Mandatory)
+$hasResume = isset($_FILES['resume']) && $_FILES['resume']['error'] === UPLOAD_ERR_OK && !empty($_FILES['resume']['name']);
+$destPath = null;
+$originalName = null;
+$randomFilename = null;
+$mimeType = null;
+$fileSize = 0;
+
+if ($hasResume) {
     $resume = $_FILES['resume'];
     $maxSize = 5242880; // 5MB
 
@@ -157,7 +162,7 @@ if (!isset($_FILES['resume']) || $_FILES['resume']['error'] !== UPLOAD_ERR_OK) {
 
     $allowedExts = ['pdf', 'doc', 'docx'];
     if (!in_array($ext, $allowedExts, true)) {
-        $errors[] = 'Invalid file extension. Only PDF, DOC, and DOCX resumes are accepted.';
+        $errors[] = 'Invalid file extension. Only PDF, DOC, and DOCX files are accepted.';
     }
 
     // MIME type check
@@ -207,6 +212,9 @@ if (!isset($_FILES['resume']) || $_FILES['resume']['error'] !== UPLOAD_ERR_OK) {
             }
         }
     }
+} elseif (isset($_FILES['resume']) && $_FILES['resume']['error'] !== UPLOAD_ERR_NO_FILE && $_FILES['resume']['error'] !== UPLOAD_ERR_OK) {
+    // If a file was attempted but had an upload error
+    $errors[] = 'An error occurred during file upload. You may submit without a resume or try a smaller file.';
 }
 
 if (!empty($errors)) {
@@ -215,24 +223,27 @@ if (!empty($errors)) {
     exit;
 }
 
-// Generate Secure Random Stored Filename
-$randomFilename = bin2hex(random_bytes(16)) . '.' . $ext;
-$uploadDir = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'resumes' . DIRECTORY_SEPARATOR;
+if ($hasResume) {
+    // Generate Secure Random Stored Filename
+    $randomFilename = bin2hex(random_bytes(16)) . '.' . $ext;
+    $uploadDir = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'resumes' . DIRECTORY_SEPARATOR;
 
-if (!is_dir($uploadDir)) {
-    @mkdir($uploadDir, 0750, true);
+    if (!is_dir($uploadDir)) {
+        @mkdir($uploadDir, 0750, true);
+    }
+
+    $destPath = $uploadDir . $randomFilename;
+    $fileSize = (int)$resume['size'];
+
+    if (!move_uploaded_file($resume['tmp_name'], $destPath)) {
+        http_response_code(500);
+        echo json_encode(['success' => false, 'error' => 'Failed to store resume on server. Please try again.']);
+        exit;
+    }
+
+    // Ensure non-executable permissions
+    @chmod($destPath, 0640);
 }
-
-$destPath = $uploadDir . $randomFilename;
-
-if (!move_uploaded_file($resume['tmp_name'], $destPath)) {
-    http_response_code(500);
-    echo json_encode(['success' => false, 'error' => 'Failed to store resume on server. Please try again.']);
-    exit;
-}
-
-// Ensure non-executable permissions
-@chmod($destPath, 0640);
 
 // Generate Application Reference ID
 $referenceNo = generateReferenceNo('APP');
@@ -270,26 +281,28 @@ try {
 
     $applicationId = (int)$pdo->lastInsertId();
 
-    // 2. Insert into application_files table
-    $fileStmt = $pdo->prepare('
-        INSERT INTO application_files (
-            application_id, original_filename, stored_filename, file_path, file_size, mime_type, created_at
-        ) VALUES (
-            :app_id, :orig, :stored, :path, :size, :mime, NOW()
-        )
-    ');
+    // 2. Insert into application_files table if resume uploaded
+    if ($hasResume && $destPath !== null) {
+        $fileStmt = $pdo->prepare('
+            INSERT INTO application_files (
+                application_id, original_filename, stored_filename, file_path, file_size, mime_type, created_at
+            ) VALUES (
+                :app_id, :orig, :stored, :path, :size, :mime, NOW()
+            )
+        ');
 
-    $fileStmt->execute([
-        ':app_id' => $applicationId,
-        ':orig'   => $originalName,
-        ':stored' => $randomFilename,
-        ':path'   => $destPath,
-        ':size'   => (int)$resume['size'],
-        ':mime'   => $mimeType
-    ]);
+        $fileStmt->execute([
+            ':app_id' => $applicationId,
+            ':orig'   => $originalName,
+            ':stored' => $randomFilename,
+            ':path'   => $destPath,
+            ':size'   => $fileSize,
+            ':mime'   => $mimeType
+        ]);
+    }
 
     // 3. Log activity
-    logActivity($pdo, null, 'application_submitted', 'application', $applicationId, "New candidate application $referenceNo from $fullName ($email)");
+    logActivity($pdo, null, 'application_submitted', 'application', $applicationId, "New candidate application $referenceNo from $fullName ($email)" . ($hasResume ? ' (with resume)' : ' (no resume)'));
 
     $pdo->commit();
 
@@ -306,14 +319,14 @@ try {
         $pdo->rollBack();
     }
     // Clean up uploaded file on failure
-    if (file_exists($destPath)) {
+    if ($destPath !== null && file_exists($destPath)) {
         @unlink($destPath);
     }
     error_log('[APPLICATION SAVE ERROR] ' . $e->getMessage());
     http_response_code(500);
     echo json_encode([
         'success' => false,
-        'error'   => 'A database error occurred while registering your application. Please try again or email your resume directly to datnixsolutions@gmail.com.'
+        'error'   => 'A database error occurred while registering your application. Please try again or email your resume directly to datnixsolution@gmail.com.'
     ]);
     exit;
 }

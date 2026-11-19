@@ -1,4 +1,4 @@
-/**
+﻿/**
  * DATNIX SOLUTIONS - Central Website Configuration
  * Tagline: DATA. PROCESS. PERFORMANCE.
  * 
@@ -21,8 +21,8 @@ const SITE_CONFIG = {
     mobileDisplay: "+91 73870 10393",
     mobileTel: "tel:+917387010393",
     
-    email: "datnixsolutions@gmail.com",
-    emailMailto: "mailto:datnixsolutions@gmail.com",
+    email: "datnixsolution@gmail.com",
+    emailMailto: "mailto:datnixsolution@gmail.com",
     
     whatsapp: "+91 7387010393",
     whatsappDisplay: "+91 73870 10393",
@@ -31,7 +31,7 @@ const SITE_CONFIG = {
     whatsappFloatingLink: "https://wa.me/917387010393?text=Hello%20DATNIX%20SOLUTIONS%2C%20I%20am%20interested%20in%20your%20data%20entry%20and%20BPO%20services.%20I%20would%20like%20to%20discuss%20a%20business%20requirement.",
 
     responseCommitment: "Prompt inquiries response within 2-4 business hours",
-    // Formspree Integration for genuine enquiry delivery to datnixsolutions@gmail.com:
+    // Formspree Integration for genuine enquiry delivery to datnixsolution@gmail.com:
     // Replace "YOUR_FORM_ID" with your actual Formspree endpoint (e.g. "https://formspree.io/f/mqazklow")
     formspreeEndpoint: "https://formspree.io/f/YOUR_FORM_ID",
     backendEndpoint: "https://formspree.io/f/YOUR_FORM_ID",
@@ -39,7 +39,7 @@ const SITE_CONFIG = {
 
   formspree: {
     endpoint: "https://formspree.io/f/YOUR_FORM_ID",
-    recipientEmail: "datnixsolutions@gmail.com",
+    recipientEmail: "datnixsolution@gmail.com",
     subjectPrefix: "New DATNIX SOLUTIONS Website Enquiry"
   },
 

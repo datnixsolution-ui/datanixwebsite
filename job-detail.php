@@ -137,9 +137,9 @@ $pageJobTitle = $isGeneral ? 'General Talent Pool Application' : $job['title'];
           <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
           <span data-config="phone">+91 73870 10393</span>
         </a>
-        <a href="mailto:datnixsolutions@gmail.com" class="top-bar-item" data-config="email-link">
+        <a href="mailto:datnixsolution@gmail.com" class="top-bar-item" data-config="email-link">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-          <span data-config="email">datnixsolutions@gmail.com</span>
+          <span data-config="email">datnixsolution@gmail.com</span>
         </a>
       </div>
       <div class="top-bar-right">
@@ -346,23 +346,23 @@ $pageJobTitle = $isGeneral ? 'General Talent Pool Application' : $job['title'];
                 <input type="text" id="appLocation" name="location" class="form-control" placeholder="e.g. Ahmedabad, Gujarat / Open" required>
               </div>
 
-              <!-- Resume Upload (PDF / DOC / DOCX only, max 5MB) -->
+              <!-- Resume Upload (Optional - PDF / DOC / DOCX max 5MB) -->
               <div class="form-group">
-                <label for="appResume" class="form-label">Resume / CV Document <span style="color: #EF4444;">*</span></label>
-                <input type="file" id="appResume" name="resume" class="form-control" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" required style="padding: 0.4rem;">
-                <div style="font-size: 11.5px; color: var(--text-muted); margin-top: 3px;">Accepted formats: PDF, DOC, DOCX. Maximum file size: 5MB.</div>
+                <label for="appResume" class="form-label">Resume / CV Document <span style="font-weight: 400; color: var(--text-muted); font-size: 0.85rem;">(Optional)</span></label>
+                <input type="file" id="appResume" name="resume" class="form-control" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" style="padding: 0.4rem;">
+                <div style="font-size: 11.5px; color: var(--text-muted); margin-top: 3px;">Optional: Upload PDF, DOC, or DOCX (max 5MB) or apply directly without a file.</div>
               </div>
 
               <div class="form-group">
                 <label for="appAdditional" class="form-label">Additional Information (Optional)</label>
-                <textarea id="appAdditional" name="additionalInfo" class="form-control" style="min-height: 70px;" placeholder="Relevant certifications, typing speed, or availability notes..."></textarea>
+                <textarea id="appAdditional" name="additionalInfo" class="form-control" style="min-height: 70px;" placeholder="Typing speed (WPM), software familiarity, or shift preferences..."></textarea>
               </div>
 
               <!-- Privacy Consent -->
               <div style="margin-bottom: 1.25rem; display: flex; align-items: flex-start; gap: 0.5rem; font-size: 12px; color: var(--text-muted);">
                 <input type="checkbox" id="privacyConsent" name="privacyConsent" value="1" required style="margin-top: 2px;">
                 <label for="privacyConsent" style="cursor: pointer; line-height: 1.4;">
-                  I agree that DATNIX SOLUTIONS may store and process my application details and resume for recruitment and operational selection purposes.
+                  I agree that DATNIX SOLUTIONS may store and process my application details for recruitment and operational selection purposes.
                 </label>
               </div>
 
@@ -423,19 +423,14 @@ $pageJobTitle = $isGeneral ? 'General Talent Pool Application' : $job['title'];
         e.preventDefault();
 
         const fileInput = document.getElementById('appResume');
-        if (!fileInput.files || fileInput.files.length === 0) {
-          appStatus.className = 'form-status error';
-          appStatus.innerHTML = '<strong>Document Required:</strong> Please choose your resume file (PDF, DOC, or DOCX).';
-          appStatus.style.display = 'block';
-          return;
-        }
-
-        const file = fileInput.files[0];
-        if (file.size > 5242880) { // 5MB
-          appStatus.className = 'form-status error';
-          appStatus.innerHTML = '<strong>File Too Large:</strong> The selected resume exceeds the 5MB file limit.';
-          appStatus.style.display = 'block';
-          return;
+        if (fileInput.files && fileInput.files.length > 0) {
+          const file = fileInput.files[0];
+          if (file.size > 5242880) { // 5MB
+            appStatus.className = 'form-status error';
+            appStatus.innerHTML = '<strong>File Too Large:</strong> The selected resume exceeds the 5MB file limit.';
+            appStatus.style.display = 'block';
+            return;
+          }
         }
 
         const consent = document.getElementById('privacyConsent');
@@ -485,7 +480,7 @@ $pageJobTitle = $isGeneral ? 'General Talent Pool Application' : $job['title'];
           }
         } catch (err) {
           appStatus.className = 'form-status error';
-          appStatus.innerHTML = '<strong>Connection Error:</strong> Could not complete upload. Please check your network connection or email your resume directly to datnixsolutions@gmail.com.';
+          appStatus.innerHTML = '<strong>Connection Error:</strong> Could not complete upload. Please check your network connection or email your resume directly to datnixsolution@gmail.com.';
           submitBtn.disabled = false;
           submitBtn.innerHTML = originalText;
         }

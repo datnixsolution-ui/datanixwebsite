@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * DATNIX SOLUTIONS - Hardened PHP Backend Handler for Enquiry Form
  * Endpoint: /api/send-enquiry.php
@@ -310,7 +310,7 @@ if (!$rateLimit['allowed']) {
     http_response_code(429);
     echo json_encode([
         'success' => false,
-        'error' => "Too many submissions from this address. Please wait {$rateLimit['retryAfter']} seconds before submitting again, or contact us directly on WhatsApp (+91 73870 10393) or email (datnixsolutions@gmail.com).",
+        'error' => "Too many submissions from this address. Please wait {$rateLimit['retryAfter']} seconds before submitting again, or contact us directly on WhatsApp (+91 73870 10393) or email (datnixsolution@gmail.com).",
         'retryAfter' => $rateLimit['retryAfter']
     ]);
     exit;
@@ -467,7 +467,7 @@ if (empty($pdo)) {
         http_response_code(500);
         echo json_encode([
             'success' => false,
-            'error' => 'Unable to connect to enquiry storage system. Please contact us directly at datnixsolutions@gmail.com or WhatsApp (+91 73870 10393).'
+            'error' => 'Unable to connect to enquiry storage system. Please contact us directly at datnixsolution@gmail.com or WhatsApp (+91 73870 10393).'
         ]);
         exit;
     }

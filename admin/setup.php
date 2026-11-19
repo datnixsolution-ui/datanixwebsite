@@ -144,7 +144,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
       <div class="form-group">
         <label for="email" class="form-label">Official Email Address</label>
-        <input type="email" id="email" name="email" class="form-control" placeholder="e.g. datnixsolutions@gmail.com" required value="<?php echo e($_POST['email'] ?? ''); ?>">
+        <input type="email" id="email" name="email" class="form-control" placeholder="e.g. datnixsolution@gmail.com" required value="<?php echo e($_POST['email'] ?? ''); ?>">
       </div>
 
       <div class="form-group">

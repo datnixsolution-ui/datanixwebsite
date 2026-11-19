@@ -1,4 +1,4 @@
-/**
+﻿/**
  * DATNIX SOLUTIONS - Netlify Serverless Function for Enquiry Dispatch
  * Endpoint: /.netlify/functions/send-enquiry (or /api/send-enquiry via netlify.toml)
  * Runtime: Netlify Functions (AWS Lambda Compatible)
@@ -450,7 +450,7 @@ export async function handler(event, context) {
       headers: rateLimitHeaders,
       body: JSON.stringify({
         success: false,
-        error: `Too many submissions from this address. Please wait ${rateLimitResult.retryAfter} seconds before submitting again, or contact us directly on WhatsApp (+91 73870 10393) or email (datnixsolutions@gmail.com).`,
+        error: `Too many submissions from this address. Please wait ${rateLimitResult.retryAfter} seconds before submitting again, or contact us directly on WhatsApp (+91 73870 10393) or email (datnixsolution@gmail.com).`,
         retryAfter: rateLimitResult.retryAfter
       })
     };
@@ -604,7 +604,7 @@ export async function handler(event, context) {
     // 11. Environment Variables Check
     const resendApiKey = process.env.RESEND_API_KEY;
     const sendgridApiKey = process.env.SENDGRID_API_KEY;
-    const recipientEmail = process.env.NOTIFICATION_EMAIL || 'datnixsolutions@gmail.com';
+    const recipientEmail = process.env.NOTIFICATION_EMAIL || 'datnixsolution@gmail.com';
     const senderEmail = process.env.SENDER_EMAIL || 'onboarding@resend.dev';
 
     if (!resendApiKey && !sendgridApiKey) {
@@ -737,7 +737,7 @@ export async function handler(event, context) {
         headers: rateLimitHeaders,
         body: JSON.stringify({
           success: true,
-          message: 'Your enquiry has been delivered to datnixsolutions@gmail.com. We will contact you within 2-4 business hours.',
+          message: 'Your enquiry has been delivered to datnixsolution@gmail.com. We will contact you within 2-4 business hours.',
           deliveryId: providerResponseId
         })
       };
@@ -751,7 +751,7 @@ export async function handler(event, context) {
       headers: rateLimitHeaders,
       body: JSON.stringify({
         success: false,
-        error: 'Enquiry delivery service is temporarily unavailable. Please contact datnixsolutions@gmail.com directly.'
+        error: 'Enquiry delivery service is temporarily unavailable. Please contact datnixsolution@gmail.com directly.'
       })
     };
   }

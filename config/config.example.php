@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * DATNIX SOLUTIONS - Configuration Template
  * Tagline: DATA. PROCESS. PERFORMANCE.
@@ -59,7 +59,7 @@ return [
 
     'notifications' => [
         'email_enabled'   => false, // Keep disabled until production email credentials provided
-        'official_email'  => 'datnixsolutions@gmail.com',
+        'official_email'  => 'datnixsolution@gmail.com',
         'official_phone'  => '+91 73870 10393',
         'whatsapp_number' => '917387010393',
     ]

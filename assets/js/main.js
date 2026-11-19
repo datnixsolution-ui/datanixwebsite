@@ -1,4 +1,4 @@
-/**
+﻿/**
  * DATNIX SOLUTIONS - Core JavaScript
  * Tagline: DATA. PROCESS. PERFORMANCE.
  */
@@ -274,7 +274,7 @@ document.addEventListener('DOMContentLoaded', () => {
         `Project Scope & Details:\n${message}\n\n` +
         `Regards,\n${name}`
       );
-      const mailUrl = `mailto:datnixsolutions@gmail.com?subject=${mailSubject}&body=${mailBody}`;
+      const mailUrl = `mailto:datnixsolution@gmail.com?subject=${mailSubject}&body=${mailBody}`;
 
       // Primary backend: hardened PHP + MySQL endpoint (api/send-enquiry.php)
       // Fallback backend: Formspree (for static serverless deploys)
@@ -338,7 +338,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <span>Chat on WhatsApp (+91 73870 10393)</span>
                   </a>
                   <a href="${mailUrl}" class="btn btn-navy btn-sm" style="display: inline-flex; align-items: center; gap: 6px;">
-                    <span>Email Directly (datnixsolutions@gmail.com)</span>
+                    <span>Email Directly (datnixsolution@gmail.com)</span>
                   </a>
                 </div>
               `;
@@ -393,7 +393,7 @@ document.addEventListener('DOMContentLoaded', () => {
                   <span>Chat on WhatsApp (+91 73870 10393)</span>
                 </a>
                 <a href="${mailUrl}" class="btn btn-navy btn-sm" style="display: inline-flex; align-items: center; gap: 6px;">
-                  <span>Email Directly (datnixsolutions@gmail.com)</span>
+                  <span>Email Directly (datnixsolution@gmail.com)</span>
                 </a>
               </div>
             `;
@@ -447,7 +447,7 @@ document.addEventListener('DOMContentLoaded', () => {
                   <span>Chat on WhatsApp (+91 73870 10393)</span>
                 </a>
                 <a href="${mailUrl}" class="btn btn-navy btn-sm" style="display: inline-flex; align-items: center; gap: 6px;">
-                  <span>Email Directly (datnixsolutions@gmail.com)</span>
+                  <span>Email Directly (datnixsolution@gmail.com)</span>
                 </a>
               </div>
             `;
@@ -475,7 +475,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span>Chat on WhatsApp (+91 73870 10393)</span>
               </a>
               <a href="${mailUrl}" class="btn btn-navy btn-sm" style="display: inline-flex; align-items: center; gap: 6px;">
-                <span>Email Directly (datnixsolutions@gmail.com)</span>
+                <span>Email Directly (datnixsolution@gmail.com)</span>
               </a>
             </div>
           `;
@@ -655,23 +655,20 @@ document.addEventListener('DOMContentLoaded', () => {
             <div>How can our team assist you today? Select a service or career option below, or type your requirement:</div>
             
             <div class="wa-chips-container" id="waChips">
-              <button type="button" class="wa-chip-btn" data-intent="Job Application &amp; Career Openings in Ahmedabad">
-                💼 Job Application &amp; Career Openings
+              <button type="button" class="wa-chip-btn" data-intent="Data Entry Job Openings in Ahmedabad">
+                💼 Data Entry Job Openings in Ahmedabad
               </button>
-              <button type="button" class="wa-chip-btn" data-intent="Submit Resume for Data Entry / Back-Office Jobs">
-                📄 Submit Resume / HR Hiring Inquiry
+              <button type="button" class="wa-chip-btn" data-intent="Apply for Data Entry Job (No Resume Required)">
+                📝 Apply for Data Entry Job (No Resume Required)
               </button>
               <button type="button" class="wa-chip-btn" data-intent="Data Entry &amp; BPO Quotation">
                 📊 Request BPO &amp; Data Entry Quote
               </button>
-              <button type="button" class="wa-chip-btn" data-intent="Arabic Data Conversion &amp; Localization">
-                🌐 Arabic Data Conversion &amp; Processing
-              </button>
-              <button type="button" class="wa-chip-btn" data-intent="OCR Processing &amp; ePUB/XML Conversion">
-                📄 OCR, ePUB &amp; XML Data Conversion
-              </button>
               <button type="button" class="wa-chip-btn" data-intent="Multilingual &amp; All-Language Data Entry">
                 🔤 All-Language Data Entry (Multilingual)
+              </button>
+              <button type="button" class="wa-chip-btn" data-intent="Excel &amp; Spreadsheet Data Processing">
+                📈 Excel &amp; Spreadsheet Data Entry
               </button>
               <button type="button" class="wa-chip-btn" data-intent="General Business Requirement Discussion">
                 💬 Custom Requirement / Live Discussion
@@ -772,18 +769,18 @@ document.addEventListener('DOMContentLoaded', () => {
         let extraActionHtml = '';
 
         if (isCareerInquiry) {
-          fullWaText = `Hello DATNIX SOLUTIONS HR Team, I am inquiring regarding career opportunities and job openings at your Ahmedabad office (20, Satkar Complex, C.G. Rd - 380006). I would like to submit my profile/resume for: ${userMessage}.`;
+          fullWaText = `Hello DATNIX SOLUTIONS HR Team, I am inquiring regarding Data Entry job openings at your Ahmedabad office (20, Satkar Complex, C.G. Rd - 380006). I would like to submit my application/details: ${userMessage}.`;
           buttonLabel = 'Chat with HR on WhatsApp &rarr;';
           const waLink = `https://wa.me/917387010393?text=${encodeURIComponent(fullWaText)}`;
 
           extraActionHtml = `
-            <div><strong>Career Desk Connected!</strong> 👋 We are actively hiring for Data Operations, Arabic OCR Conversion, Quality Auditing, and Back-Office pods at our Ahmedabad headquarters and hybrid setups.</div>
+            <div><strong>Data Entry Career Desk Connected!</strong> 👋 We are actively hiring for Data Entry Operators (Freshers &amp; Experienced), Senior Data Entry Specialists, Excel Associates, and Back-Office pods at our Ahmedabad headquarters (20, Satkar Complex, C.G. Rd - 380006). <strong>No resume mandatory</strong> &mdash; you can apply with just your contact and experience details!</div>
             <div style="margin-top: 10px; display: flex; flex-direction: column; gap: 8px;">
               <a href="${waLink}" target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp btn-sm" style="display:inline-flex; align-items:center; justify-content:center; gap:6px; font-size:12px; padding:7px 14px; text-decoration:none; background:#25D366; color:white; border-radius:4px; font-weight:700;">
                 <span>${buttonLabel}</span>
               </a>
               <a href="careers.html" class="btn btn-navy btn-sm" style="display:inline-flex; align-items:center; justify-content:center; gap:6px; font-size:12px; padding:7px 14px; text-decoration:none; background:#092D78; color:white; border-radius:4px; font-weight:700;">
-                <span>View All 8+ Open Jobs &amp; Apply Online &rarr;</span>
+                <span>View All 8+ Data Entry Jobs &amp; Apply Online &rarr;</span>
               </a>
             </div>
             <div class="wa-msg-time">${timeStr}</div>

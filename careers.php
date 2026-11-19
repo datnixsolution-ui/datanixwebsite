@@ -28,83 +28,83 @@ if (empty($jobs)) {
     $jobs = [
         [
             'id' => 1,
-            'title' => 'Senior Data Entry Specialist (All Languages & High-Volume)',
-            'slug' => 'senior-data-entry-specialist-all-languages',
-            'department' => 'Data Operations',
-            'location' => 'Ahmedabad, Gujarat (Satkar Complex, C.G. Rd - 380006) / Hybrid',
+            'title' => 'Data Entry Operator (Fresher & Experienced)',
+            'slug' => 'data-entry-operator-fresher-experienced',
+            'department' => 'Data Entry Operations',
+            'location' => 'Ahmedabad, Gujarat (20, Satkar Complex, C.G. Rd - 380006)',
             'employment_type' => 'Full-Time',
-            'experience_req' => '2 - 4 Years',
-            'short_description' => 'High-volume, multi-language data entry, conversion, character encoding verification (UTF-8), and validation across enterprise client workflows.'
+            'experience_req' => '0 - 2 Years (Freshers Welcome)',
+            'short_description' => 'Accurate and high-speed alphanumeric data entry, form keying, master record updating, and spreadsheet data entry across client projects.'
         ],
         [
             'id' => 2,
-            'title' => 'Arabic Data Conversion & Digitization Specialist',
-            'slug' => 'arabic-data-conversion-specialist',
-            'department' => 'Multilingual & Localization',
-            'location' => 'Ahmedabad, Gujarat (Satkar Complex, C.G. Rd - 380006) / Hybrid',
+            'title' => 'Senior Data Entry Specialist (High-Volume & Speed)',
+            'slug' => 'senior-data-entry-specialist',
+            'department' => 'Data Entry Operations',
+            'location' => 'Ahmedabad, Gujarat (20, Satkar Complex, C.G. Rd - 380006) / Hybrid',
             'employment_type' => 'Full-Time',
-            'experience_req' => '2 - 5 Years',
-            'short_description' => 'Specialized Arabic language OCR, bidirectional (RTL) text processing, Arabic manuscripts/deed conversion into Word, Excel, XML, and digital formats.'
+            'experience_req' => '2 - 4 Years',
+            'short_description' => 'High-volume, rapid-turnaround batch data entry, complex tabulations, dual-screen comparison, and specialized customer database updating.'
         ],
         [
             'id' => 3,
-            'title' => 'OCR & Digital Publishing Associate (ePUB / XML / HTML5)',
-            'slug' => 'ocr-digital-publishing-epub-xml',
-            'department' => 'Data Conversion',
-            'location' => 'Ahmedabad, Gujarat (Satkar Complex, C.G. Rd - 380006) / Hybrid',
+            'title' => 'Multilingual Data Entry Executive (English & Regional)',
+            'slug' => 'multilingual-data-entry-executive',
+            'department' => 'Multilingual Operations',
+            'location' => 'Ahmedabad, Gujarat (20, Satkar Complex, C.G. Rd - 380006)',
             'employment_type' => 'Full-Time',
             'experience_req' => '1 - 3 Years',
-            'short_description' => 'Book, journal, and paper scanning, OCR layout retention, and structured conversion into digital ePUB, XML (JATS/TEI), and HTML5 formats.'
+            'short_description' => 'Data entry and verification for multi-language documents, bilingual records, and regional Indian language datasets with Unicode standards.'
         ],
         [
             'id' => 4,
-            'title' => 'Multilingual Data Entry & Verification Executive',
-            'slug' => 'multilingual-data-entry-executive',
-            'department' => 'International Operations',
-            'location' => 'Ahmedabad, Gujarat (Satkar Complex, C.G. Rd - 380006)',
+            'title' => 'Excel & Spreadsheet Data Entry Associate',
+            'slug' => 'excel-spreadsheet-data-entry-associate',
+            'department' => 'Back-Office Operations',
+            'location' => 'Ahmedabad, Gujarat (20, Satkar Complex, C.G. Rd - 380006)',
             'employment_type' => 'Full-Time',
             'experience_req' => '1 - 3 Years',
-            'short_description' => 'Data entry and cross-verification across European, Middle Eastern, and Indian language records with strict UTF-8 Unicode standards.'
+            'short_description' => 'Structured spreadsheet data entry, formula applications, row/column consolidation, deduplication, and database import preparation in MS Excel.'
         ],
         [
             'id' => 5,
-            'title' => 'Quality Assurance Auditor (Data & BPO)',
-            'slug' => 'qa-auditor-data-bpo',
-            'department' => 'Quality Assurance',
-            'location' => 'Ahmedabad, Gujarat (Satkar Complex, C.G. Rd - 380006)',
+            'title' => 'E-Commerce Product Data Entry Specialist',
+            'slug' => 'ecommerce-product-data-entry-specialist',
+            'department' => 'E-Commerce Data',
+            'location' => 'Ahmedabad, Gujarat (20, Satkar Complex, C.G. Rd - 380006) / Hybrid',
             'employment_type' => 'Full-Time',
-            'experience_req' => '3 - 5 Years',
-            'short_description' => 'Independent secondary audits, statistical sampling, error registers, and dual-pass verification across all client data deliverables.'
+            'experience_req' => '1 - 3 Years',
+            'short_description' => 'Product catalog data entry, SKU specifications keying, pricing updates, image attribution, and category mapping for global retail portals.'
         ],
         [
             'id' => 6,
-            'title' => 'E-Commerce Catalog & SKU Enrichment Specialist',
-            'slug' => 'ecommerce-catalog-specialist',
-            'department' => 'E-Commerce Data',
-            'location' => 'Ahmedabad, Gujarat (Satkar Complex, C.G. Rd - 380006) / Hybrid',
+            'title' => 'Data Entry Quality Control (QC) & Verification Auditor',
+            'slug' => 'data-entry-qc-verification-auditor',
+            'department' => 'Quality Assurance',
+            'location' => 'Ahmedabad, Gujarat (20, Satkar Complex, C.G. Rd - 380006)',
             'employment_type' => 'Full-Time',
             'experience_req' => '2 - 4 Years',
-            'short_description' => 'Multi-channel product listings, SKU taxonomy categorization, and digital asset matching for global retail portals.'
+            'short_description' => '100% and AQL sampling verification of completed data entry batches against original source scans, defect logging, and accuracy certification.'
         ],
         [
             'id' => 7,
-            'title' => 'Document Digitization & High-Speed Scanning Technician',
-            'slug' => 'document-digitization-scanning-technician',
-            'department' => 'Document Management',
-            'location' => 'Ahmedabad, Gujarat (Satkar Complex, C.G. Rd - 380006)',
+            'title' => 'Document Scanning & Indexing Data Entry Operator',
+            'slug' => 'document-scanning-indexing-data-entry-operator',
+            'department' => 'Document Processing',
+            'location' => 'Ahmedabad, Gujarat (20, Satkar Complex, C.G. Rd - 380006)',
             'employment_type' => 'Full-Time',
-            'experience_req' => '1 - 3 Years',
-            'short_description' => 'Operating production rotary and flatbed scanners, batch indexing, metadata assignment, and secure document archiving.'
+            'experience_req' => '0 - 2 Years (Freshers Welcome)',
+            'short_description' => 'Physical document prep, high-speed rotary scanning, folder naming, indexing, and metadata data entry for legal and corporate archives.'
         ],
         [
             'id' => 8,
-            'title' => 'Back-Office Operations Executive',
-            'slug' => 'back-office-operations-executive',
+            'title' => 'Back-Office Data Entry & Processing Executive',
+            'slug' => 'back-office-data-entry-executive',
             'department' => 'Back-Office Support',
-            'location' => 'Ahmedabad, Gujarat (Satkar Complex, C.G. Rd - 380006) / Hybrid',
+            'location' => 'Ahmedabad, Gujarat (20, Satkar Complex, C.G. Rd - 380006)',
             'employment_type' => 'Full-Time',
             'experience_req' => '1 - 3 Years',
-            'short_description' => 'Routine administrative workflows, invoice verification, vendor records upkeep, and daily reporting.'
+            'short_description' => 'Routine back-office data processing, invoice & purchase order entry, claims data keying, and daily operational status reporting.'
         ]
     ];
 }
@@ -221,12 +221,12 @@ if (empty($jobs)) {
           </svg>
           <span data-config="phone">+91 73870 10393</span>
         </a>
-        <a href="mailto:datnixsolutions@gmail.com" class="top-bar-item" data-config="email-link">
+        <a href="mailto:datnixsolution@gmail.com" class="top-bar-item" data-config="email-link">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
             <polyline points="22,6 12,13 2,6"></polyline>
           </svg>
-          <span data-config="email">datnixsolutions@gmail.com</span>
+          <span data-config="email">datnixsolution@gmail.com</span>
         </a>
       </div>
       <div class="top-bar-right">
@@ -496,7 +496,7 @@ if (empty($jobs)) {
               <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
               <div>
                 <div style="font-size: 0.78rem; text-transform: uppercase; color: #94A3B8;">Email</div>
-                <a href="mailto:datnixsolutions@gmail.com" data-config="email-link">datnixsolutions@gmail.com</a>
+                <a href="mailto:datnixsolution@gmail.com" data-config="email-link">datnixsolution@gmail.com</a>
               </div>
             </li>
           </ul>

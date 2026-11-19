@@ -1,4 +1,4 @@
-/**
+﻿/**
  * DATNIX SOLUTIONS - Hardened Enquiry API Dispatcher
  * Endpoint: POST /api/send-enquiry
  * Runtime: Node.js (Vercel Serverless / AWS Lambda / Edge Compatible)
@@ -498,7 +498,7 @@ export default async function handler(req, res) {
     const statusCode = rateLimitResult.mode === 'fail-closed' ? 503 : 429;
     return res.status(statusCode).json({
       success: false,
-      error: `Too many submissions from this address. Please wait ${rateLimitResult.retryAfter} seconds before trying again, or contact us directly on WhatsApp (+91 73870 10393) or email (datnixsolutions@gmail.com).`,
+      error: `Too many submissions from this address. Please wait ${rateLimitResult.retryAfter} seconds before trying again, or contact us directly on WhatsApp (+91 73870 10393) or email (datnixsolution@gmail.com).`,
       retryAfter: rateLimitResult.retryAfter
     });
   }
@@ -653,7 +653,7 @@ export default async function handler(req, res) {
     // 11. Environment Variables & Secret Configuration
     const resendApiKey = process.env.RESEND_API_KEY;
     const sendgridApiKey = process.env.SENDGRID_API_KEY;
-    const recipientEmail = process.env.NOTIFICATION_EMAIL || 'datnixsolutions@gmail.com';
+    const recipientEmail = process.env.NOTIFICATION_EMAIL || 'datnixsolution@gmail.com';
     const senderEmail = process.env.SENDER_EMAIL || 'onboarding@resend.dev';
 
     if (!resendApiKey && !sendgridApiKey) {
@@ -779,7 +779,7 @@ export default async function handler(req, res) {
     if (providerSuccess) {
       return res.status(200).json({
         success: true,
-        message: 'Your enquiry has been delivered to datnixsolutions@gmail.com. We will contact you within 2-4 business hours.',
+        message: 'Your enquiry has been delivered to datnixsolution@gmail.com. We will contact you within 2-4 business hours.',
         deliveryId: providerResponseId
       });
     } else {
@@ -789,7 +789,7 @@ export default async function handler(req, res) {
     console.error('[DATNIX DISPATCH EXCEPTION]', err.message);
     return res.status(502).json({
       success: false,
-      error: 'Enquiry delivery service is temporarily unavailable. Please contact datnixsolutions@gmail.com directly.'
+      error: 'Enquiry delivery service is temporarily unavailable. Please contact datnixsolution@gmail.com directly.'
     });
   }
 }
