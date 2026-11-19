@@ -88,8 +88,43 @@ if (is_dir($diskEnqDir)) {
             if ($raw) {
                 $item = json_decode($raw, true);
                 if ($item && isset($item['reference_no']) && !in_array($item['reference_no'], $existingEnqRefs, true)) {
+                    $newEnqId = 0;
+                    // Auto-sync into MySQL if connected
+                    if (!empty($pdo)) {
+                        try {
+                            $ins = $pdo->prepare('
+                                INSERT INTO enquiries (
+                                    reference_no, full_name, company_name, email, phone,
+                                    service, estimated_volume, project_details, status,
+                                    ip_address, user_agent, created_at, updated_at
+                                ) VALUES (
+                                    :ref, :name, :company, :email, :phone,
+                                    :service, :volume, :details, :st,
+                                    :ip, :ua, :created, NOW()
+                                )
+                            ');
+                            $ins->execute([
+                                ':ref'     => $item['reference_no'],
+                                ':name'    => $item['full_name'] ?? 'Inquirer',
+                                ':company' => $item['company_name'] ?? null,
+                                ':email'   => $item['email'] ?? '',
+                                ':phone'   => $item['phone'] ?? null,
+                                ':service' => $item['service'] ?? 'General Outsourcing',
+                                ':volume'  => $item['estimated_volume'] ?? null,
+                                ':details' => $item['project_details'] ?? '',
+                                ':st'      => $item['status'] ?? 'New',
+                                ':ip'      => $item['ip_address'] ?? '127.0.0.1',
+                                ':ua'      => $item['user_agent'] ?? 'Web Form',
+                                ':created' => $item['created_at'] ?? date('Y-m-d H:i:s')
+                            ]);
+                            $newEnqId = (int)$pdo->lastInsertId();
+                        } catch (Throwable $syncErr) {
+                            error_log('[ENQUIRIES LIST AUTO-SYNC ERROR] ' . $syncErr->getMessage());
+                        }
+                    }
+
                     $enquiries[] = [
-                        'id' => 0,
+                        'id' => $newEnqId,
                         'reference_no' => $item['reference_no'],
                         'full_name' => $item['full_name'] ?? 'Inquirer',
                         'company_name' => $item['company_name'] ?? '',
@@ -98,7 +133,7 @@ if (is_dir($diskEnqDir)) {
                         'service' => $item['service'] ?? 'General Enquiry',
                         'estimated_volume' => $item['estimated_volume'] ?? '',
                         'project_details' => $item['project_details'] ?? '',
-                        'status' => 'New',
+                        'status' => $item['status'] ?? 'New',
                         'created_at' => $item['created_at'] ?? date('Y-m-d H:i:s'),
                         'is_disk_backup' => true
                     ];

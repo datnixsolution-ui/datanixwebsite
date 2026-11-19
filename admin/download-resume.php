@@ -24,6 +24,7 @@ $uploadDir = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPA
 $filePath = null;
 $safeDownloadName = 'Candidate_Resume';
 $mimeType = 'application/octet-stream';
+$appId = 0;
 
 try {
     if (!empty($fileNameParam)) {
@@ -37,6 +38,7 @@ try {
         if ($ext === 'pdf') $mimeType = 'application/pdf';
         elseif ($ext === 'doc') $mimeType = 'application/msword';
         elseif ($ext === 'docx') $mimeType = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+        elseif (in_array($ext, ['png', 'jpg', 'jpeg'])) $mimeType = 'image/' . ($ext === 'jpg' ? 'jpeg' : $ext);
 
     } elseif ($fileId > 0 && !empty($pdo)) {
         $stmt = $pdo->prepare('
@@ -58,6 +60,7 @@ try {
         if (!empty($fileRecord['mime_type'])) {
             $mimeType = $fileRecord['mime_type'];
         }
+        $appId = (int)$fileRecord['application_id'];
     }
 
     if (!$filePath || !file_exists($filePath) || !is_readable($filePath)) {
@@ -65,17 +68,15 @@ try {
         die('Resume document file is not present on disk.');
     }
 
-    // Log the download event in audit logs
-    logActivity($pdo, $admin['id'], 'resume_downloaded', 'application', (int)$fileRecord['application_id'], 'Downloaded resume: ' . $fileRecord['original_filename']);
+    // Log the download event in audit logs if PDO is active
+    if (!empty($pdo) && function_exists('logActivity')) {
+        logActivity($pdo, $admin['id'] ?? 1, 'resume_downloaded', 'application', $appId, 'Downloaded resume: ' . $safeDownloadName);
+    }
 
     // Clean any prior output buffers
     while (ob_get_level()) {
         ob_end_clean();
     }
-
-    // Set secure download headers
-    $safeDownloadName = preg_replace('/[^a-zA-Z0-9_\-\.]/', '_', $fileRecord['original_filename']);
-    $mimeType = !empty($fileRecord['mime_type']) ? $fileRecord['mime_type'] : 'application/octet-stream';
 
     header('Content-Description: File Transfer');
     header('Content-Type: ' . $mimeType);
@@ -98,7 +99,7 @@ try {
     exit;
 
 } catch (Throwable $e) {
-    error_log('[RESUME DOWNLOAD ERROR] ' . $e->getMessage());
+    error_log('[RESUME DOWNLOAD CONTROLLER ERROR] ' . $e->getMessage());
     http_response_code(500);
-    die('An error occurred during resume retrieval.');
+    die('Internal error processing resume file: ' . $e->getMessage());
 }

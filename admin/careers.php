@@ -101,6 +101,116 @@ if (!empty($pdo)) {
         error_log('[CAREERS LIST ERROR] ' . $e->getMessage());
     }
 }
+
+// Fallback if database is cold / unseeded
+if (empty($jobs)) {
+    $jobs = [
+        [
+            'id' => 1,
+            'title' => 'Data Entry Operator (Fresher & Experienced)',
+            'slug' => 'data-entry-operator-fresher-experienced',
+            'department' => 'Data Entry Operations',
+            'location' => 'Work From Home (WFH) / Remote (All India)',
+            'employment_type' => 'Full-Time / WFH',
+            'experience_req' => '0 - 2 Years (Freshers Welcome)',
+            'status' => 'Active',
+            'is_published' => 1,
+            'applications_count' => 0,
+            'created_at' => date('Y-m-d H:i:s')
+        ],
+        [
+            'id' => 2,
+            'title' => 'Senior Data Entry Specialist (High-Volume & Speed)',
+            'slug' => 'senior-data-entry-specialist',
+            'department' => 'Data Entry Operations',
+            'location' => 'Work From Home (WFH) / Remote (All India)',
+            'employment_type' => 'Full-Time / WFH',
+            'experience_req' => '2 - 4 Years',
+            'status' => 'Active',
+            'is_published' => 1,
+            'applications_count' => 0,
+            'created_at' => date('Y-m-d H:i:s')
+        ],
+        [
+            'id' => 3,
+            'title' => 'Online Form Filling & Data Entry Assistant',
+            'slug' => 'online-form-filling-data-entry-assistant',
+            'department' => 'Data Operations',
+            'location' => 'Work From Home (WFH) / Remote (All India)',
+            'employment_type' => 'Full-Time / WFH',
+            'experience_req' => '0 - 1 Year (Freshers Welcome)',
+            'status' => 'Active',
+            'is_published' => 1,
+            'applications_count' => 0,
+            'created_at' => date('Y-m-d H:i:s')
+        ],
+        [
+            'id' => 4,
+            'title' => 'Data Quality & Verification Executive (WFH)',
+            'slug' => 'data-quality-verification-executive',
+            'department' => 'Quality Assurance',
+            'location' => 'Work From Home (WFH) / Remote (All India)',
+            'employment_type' => 'Full-Time / WFH',
+            'experience_req' => '1 - 3 Years',
+            'status' => 'Active',
+            'is_published' => 1,
+            'applications_count' => 0,
+            'created_at' => date('Y-m-d H:i:s')
+        ],
+        [
+            'id' => 5,
+            'title' => 'Excel & Spreadsheet Data Entry Associate',
+            'slug' => 'excel-spreadsheet-data-entry-associate',
+            'department' => 'Spreadsheet Management',
+            'location' => 'Work From Home (WFH) / Remote (All India)',
+            'employment_type' => 'Full-Time / WFH',
+            'experience_req' => '0 - 2 Years',
+            'status' => 'Active',
+            'is_published' => 1,
+            'applications_count' => 0,
+            'created_at' => date('Y-m-d H:i:s')
+        ],
+        [
+            'id' => 6,
+            'title' => 'Bilingual / Multilingual Data Entry Operator (WFH)',
+            'slug' => 'multilingual-data-entry-operator',
+            'department' => 'Multilingual Operations',
+            'location' => 'Work From Home (WFH) / Remote (All India)',
+            'employment_type' => 'Full-Time / WFH',
+            'experience_req' => '0 - 2 Years',
+            'status' => 'Active',
+            'is_published' => 1,
+            'applications_count' => 0,
+            'created_at' => date('Y-m-d H:i:s')
+        ],
+        [
+            'id' => 7,
+            'title' => 'Document Scanning & Indexing Data Entry Operator',
+            'slug' => 'document-scanning-indexing-data-entry-operator',
+            'department' => 'Document Processing',
+            'location' => 'Work From Home (WFH) / Remote (All India)',
+            'employment_type' => 'Full-Time / WFH',
+            'experience_req' => '0 - 2 Years (Freshers Welcome)',
+            'status' => 'Active',
+            'is_published' => 1,
+            'applications_count' => 0,
+            'created_at' => date('Y-m-d H:i:s')
+        ],
+        [
+            'id' => 8,
+            'title' => 'Back-Office Data Entry & Processing Executive',
+            'slug' => 'back-office-data-entry-executive',
+            'department' => 'Back-Office Support',
+            'location' => 'Work From Home (WFH) / Remote (All India)',
+            'employment_type' => 'Full-Time / WFH',
+            'experience_req' => '1 - 3 Years',
+            'status' => 'Active',
+            'is_published' => 1,
+            'applications_count' => 0,
+            'created_at' => date('Y-m-d H:i:s')
+        ]
+    ];
+}
 ?>
 
 <div class="page-header-row">

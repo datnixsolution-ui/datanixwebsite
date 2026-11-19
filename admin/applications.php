@@ -101,18 +101,70 @@ if (is_dir($diskDir)) {
             if ($raw) {
                 $item = json_decode($raw, true);
                 if ($item && isset($item['reference_no']) && !in_array($item['reference_no'], $existingRefs, true)) {
+                    $newDbId = 0;
+                    // Auto-sync into MySQL if database is connected
+                    if (!empty($pdo)) {
+                        try {
+                            $ins = $pdo->prepare('
+                                INSERT INTO applications (
+                                    reference_no, job_id, full_name, email, phone,
+                                    experience_years, current_location, notice_period,
+                                    additional_info, status, ip_address, user_agent, created_at, updated_at
+                                ) VALUES (
+                                    :ref, :jid, :name, :email, :phone,
+                                    :exp, :loc, :np,
+                                    :info, :st, :ip, :ua, :created, NOW()
+                                )
+                            ');
+                            $ins->execute([
+                                ':ref'     => $item['reference_no'],
+                                ':jid'     => $item['job_id'] ?? 0,
+                                ':name'    => $item['full_name'] ?? 'Candidate',
+                                ':email'   => $item['email'] ?? '',
+                                ':phone'   => $item['phone'] ?? '',
+                                ':exp'     => $item['experience_years'] ?? '',
+                                ':loc'     => $item['current_location'] ?? ($item['candidate_address'] ?? 'WFH (All India)'),
+                                ':np'      => $item['notice_period'] ?? '',
+                                ':info'    => $item['additional_info'] ?? null,
+                                ':st'      => $item['status'] ?? 'New',
+                                ':ip'      => $item['ip_address'] ?? '127.0.0.1',
+                                ':ua'      => $item['user_agent'] ?? 'Web Form',
+                                ':created' => $item['created_at'] ?? date('Y-m-d H:i:s')
+                            ]);
+                            $newDbId = (int)$pdo->lastInsertId();
+
+                            if (!empty($item['resume_stored'])) {
+                                $fIns = $pdo->prepare('
+                                    INSERT INTO application_files (
+                                        application_id, original_filename, stored_filename, file_path, file_size, mime_type, created_at
+                                    ) VALUES (
+                                        :aid, :orig, :stored, :path, 0, "application/octet-stream", NOW()
+                                    )
+                                ');
+                                $fIns->execute([
+                                    ':aid'    => $newDbId,
+                                    ':orig'   => $item['resume_original'] ?? 'Resume',
+                                    ':stored' => $item['resume_stored'],
+                                    ':path'   => $item['resume_path'] ?? ''
+                                ]);
+                            }
+                        } catch (Throwable $syncEx) {
+                            error_log('[APPLICATIONS LIST AUTO-SYNC ERROR] ' . $syncEx->getMessage());
+                        }
+                    }
+
                     $applications[] = [
-                        'id' => 0,
+                        'id' => $newDbId,
                         'reference_no' => $item['reference_no'],
                         'job_id' => $item['job_id'] ?? 0,
                         'full_name' => $item['full_name'] ?? 'Candidate',
                         'email' => $item['email'] ?? '',
                         'phone' => $item['phone'] ?? '',
                         'experience_years' => $item['experience_years'] ?? '',
-                        'current_location' => $item['current_location'] ?? ($item['candidate_address'] ?? 'WFH'),
+                        'current_location' => $item['current_location'] ?? ($item['candidate_address'] ?? 'WFH (All India)'),
                         'notice_period' => $item['notice_period'] ?? '',
                         'additional_info' => $item['additional_info'] ?? '',
-                        'status' => 'New',
+                        'status' => $item['status'] ?? 'New',
                         'created_at' => $item['created_at'] ?? date('Y-m-d H:i:s'),
                         'job_title' => 'Data Operations (WFH)',
                         'department' => 'Operations',

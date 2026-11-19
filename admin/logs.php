@@ -91,52 +91,63 @@ if (!empty($dateTo)) {
 
 $whereSql = implode(' AND ', $whereClauses);
 
-// Count total
-try {
-    $countSql = "
-        SELECT COUNT(*)
-        FROM activity_logs al
-        LEFT JOIN admins a ON al.admin_id = a.id
-        WHERE $whereSql
-    ";
-    $countStmt = $pdo->prepare($countSql);
-    $countStmt->execute($params);
-    $totalLogs = (int)$countStmt->fetchColumn();
-    $totalPages = max(1, ceil($totalLogs / $perPage));
+$totalLogs = 0;
+$totalPages = 1;
+$logs = [];
+$distinctActions = [];
+$allAdminsList = [];
 
-    // Fetch paginated logs
-    $sql = "
-        SELECT 
-            al.*,
-            a.username AS admin_username,
-            a.full_name AS admin_full_name,
-            a.role AS admin_role
-        FROM activity_logs al
-        LEFT JOIN admins a ON al.admin_id = a.id
-        WHERE $whereSql
-        ORDER BY al.id DESC
-        LIMIT :limit OFFSET :offset
-    ";
+if (!empty($pdo)) {
+    try {
+        $countSql = "
+            SELECT COUNT(*)
+            FROM activity_logs al
+            LEFT JOIN admins a ON al.admin_id = a.id
+            WHERE $whereSql
+        ";
+        $countStmt = $pdo->prepare($countSql);
+        $countStmt->execute($params);
+        $totalLogs = (int)$countStmt->fetchColumn();
+        $totalPages = max(1, ceil($totalLogs / $perPage));
 
-    $stmt = $pdo->prepare($sql);
-    foreach ($params as $k => $v) {
-        $stmt->bindValue($k, $v);
+        // Fetch paginated logs
+        $sql = "
+            SELECT 
+                al.*,
+                a.username AS admin_username,
+                a.full_name AS admin_full_name,
+                a.role AS admin_role
+            FROM activity_logs al
+            LEFT JOIN admins a ON al.admin_id = a.id
+            WHERE $whereSql
+            ORDER BY al.id DESC
+            LIMIT :limit OFFSET :offset
+        ";
+
+        $stmt = $pdo->prepare($sql);
+        foreach ($params as $k => $v) {
+            $stmt->bindValue($k, $v);
+        }
+        $stmt->bindValue(':limit', $perPage, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+        $logs = $stmt->fetchAll();
+
+        // Fetch distinct actions for filter dropdown
+        $actionsStmt = $pdo->query('SELECT DISTINCT action FROM activity_logs ORDER BY action ASC');
+        if ($actionsStmt) {
+            $distinctActions = $actionsStmt->fetchAll(PDO::FETCH_COLUMN);
+        }
+
+        // Fetch admins list for filter dropdown
+        $adminsListStmt = $pdo->query('SELECT id, full_name, username FROM admins ORDER BY full_name ASC');
+        if ($adminsListStmt) {
+            $allAdminsList = $adminsListStmt->fetchAll();
+        }
+
+    } catch (Throwable $e) {
+        error_log('[LOGS QUERY ERROR] ' . $e->getMessage());
     }
-    $stmt->bindValue(':limit', $perPage, PDO::PARAM_INT);
-    $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
-    $stmt->execute();
-    $logs = $stmt->fetchAll();
-
-    // Fetch distinct actions for filter dropdown
-    $actionsStmt = $pdo->query('SELECT DISTINCT action FROM activity_logs ORDER BY action ASC');
-    $distinctActions = $actionsStmt->fetchAll(PDO::FETCH_COLUMN);
-
-    // Fetch admins list for filter dropdown
-    $adminsListStmt = $pdo->query('SELECT id, full_name, username FROM admins ORDER BY full_name ASC');
-    $allAdminsList = $adminsListStmt->fetchAll();
-
-} catch (Throwable $e) {
-    die('Database query error: ' . e($e->getMessage()));
 }
 
 $pageTitle = 'Activity Logs';

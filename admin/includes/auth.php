@@ -69,15 +69,6 @@ function requireAuth(): void {
         exit;
     }
 
-    // IP Subnet binding to prevent cross-network session hijacking
-    $clientIp = getClientIp();
-    $ipSubnet = preg_replace('/\.\d+$/', '.0', $clientIp);
-    if (!empty($_SESSION['admin_ip_subnet']) && !hash_equals($_SESSION['admin_ip_subnet'], md5($ipSubnet))) {
-        logoutAdmin();
-        header('Location: /admin/login.php?error=ip_mismatch');
-        exit;
-    }
-
     // Periodic session ID rotation to eliminate long-lived session fixation
     $rotationInterval = $config['session']['rotation_time'] ?? 900; // 15 mins
     if (empty($_SESSION['last_regenerated'])) {

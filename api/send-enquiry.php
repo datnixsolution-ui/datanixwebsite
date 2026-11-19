@@ -547,31 +547,30 @@ if ($pdo) {
     }
 }
 
-// Zero-Loss Fallback: Save to secure JSON file if DB unavailable or pending setup
-if (!$savedToDb) {
-    $backupDir = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'enquiries';
-    if (!is_dir($backupDir)) {
-        @mkdir($backupDir, 0755, true);
-    }
-    $backupPayload = [
-        'reference_no'     => $referenceNo,
-        'full_name'        => $fullName,
-        'company_name'     => $companyName,
-        'email'            => $email,
-        'phone'            => $phone,
-        'service'          => $canonicalService,
-        'estimated_volume' => $estimatedVolume,
-        'project_details'  => $projectDetails,
-        'ip_address'       => $clientIp,
-        'user_agent'       => $userAgent,
-        'created_at'       => date('Y-m-d H:i:s'),
-        'source'           => 'web_enquiry_form'
-    ];
-    @file_put_contents(
-        $backupDir . DIRECTORY_SEPARATOR . 'enq_' . date('Ymd_His') . '_' . preg_replace('/[^a-zA-Z0-9_-]/', '', $referenceNo) . '.json',
-        json_encode($backupPayload, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)
-    );
+// Dual-Save Architecture: Always ensure secure JSON copy exists on disk
+$backupDir = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'enquiries';
+if (!is_dir($backupDir)) {
+    @mkdir($backupDir, 0755, true);
 }
+$backupPayload = [
+    'reference_no'     => $referenceNo,
+    'full_name'        => $fullName,
+    'company_name'     => $companyName,
+    'email'            => $email,
+    'phone'            => $phone,
+    'service'          => $canonicalService,
+    'estimated_volume' => $estimatedVolume,
+    'project_details'  => $projectDetails,
+    'status'           => 'New',
+    'ip_address'       => $clientIp,
+    'user_agent'       => $userAgent,
+    'created_at'       => date('Y-m-d H:i:s'),
+    'source'           => 'web_enquiry_form'
+];
+@file_put_contents(
+    $backupDir . DIRECTORY_SEPARATOR . 'enq_' . date('Ymd_His') . '_' . preg_replace('/[^a-zA-Z0-9_-]/', '', $referenceNo) . '.json',
+    json_encode($backupPayload, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)
+);
 
 // Always deliver instant 200 OK confirmation with verified Reference Number
 http_response_code(200);

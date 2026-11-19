@@ -365,37 +365,36 @@ if ($pdo) {
     }
 }
 
-// Zero-Loss Fallback: Save to secure JSON file if DB unavailable or pending setup
-if (!$savedToDb) {
-    $backupDir = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'applications';
-    if (!is_dir($backupDir)) {
-        @mkdir($backupDir, 0755, true);
-    }
-    $backupPayload = [
-        'reference_no'     => $referenceNo,
-        'job_id'           => $targetJobId,
-        'full_name'        => $fullName,
-        'email'            => $email,
-        'phone'            => $phone,
-        'experience_years' => $experience,
-        'current_location' => $location,
-        'candidate_address'=> $candidateAddress,
-        'notice_period'    => $noticePeriod,
-        'additional_info'  => $additionalInfo,
-        'has_resume'       => $hasResume,
-        'resume_original'  => $originalName,
-        'resume_stored'    => $randomFilename,
-        'resume_path'      => $destPath,
-        'ip_address'       => $clientIp,
-        'user_agent'       => $userAgent,
-        'created_at'       => date('Y-m-d H:i:s'),
-        'source'           => 'web_careers_portal'
-    ];
-    @file_put_contents(
-        $backupDir . DIRECTORY_SEPARATOR . 'app_' . date('Ymd_His') . '_' . preg_replace('/[^a-zA-Z0-9_-]/', '', $referenceNo) . '.json',
-        json_encode($backupPayload, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)
-    );
+// Dual-Save Architecture: Always ensure secure JSON copy exists on disk
+$backupDir = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'applications';
+if (!is_dir($backupDir)) {
+    @mkdir($backupDir, 0755, true);
 }
+$backupPayload = [
+    'reference_no'     => $referenceNo,
+    'job_id'           => $targetJobId,
+    'full_name'        => $fullName,
+    'email'            => $email,
+    'phone'            => $phone,
+    'experience_years' => $experience,
+    'current_location' => $location,
+    'candidate_address'=> $candidateAddress,
+    'notice_period'    => $noticePeriod,
+    'additional_info'  => $additionalInfo,
+    'status'           => 'New',
+    'has_resume'       => $hasResume,
+    'resume_original'  => $originalName,
+    'resume_stored'    => $randomFilename,
+    'resume_path'      => $destPath,
+    'ip_address'       => $clientIp,
+    'user_agent'       => $userAgent,
+    'created_at'       => date('Y-m-d H:i:s'),
+    'source'           => 'web_careers_portal'
+];
+@file_put_contents(
+    $backupDir . DIRECTORY_SEPARATOR . 'app_' . date('Ymd_His') . '_' . preg_replace('/[^a-zA-Z0-9_-]/', '', $referenceNo) . '.json',
+    json_encode($backupPayload, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)
+);
 
 // Always deliver instant 200 OK confirmation with verified Reference Number
 http_response_code(200);

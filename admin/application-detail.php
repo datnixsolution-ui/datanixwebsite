@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * DATNIX SOLUTIONS - Candidate Application Detail & Review
  * Tagline: DATA. PROCESS. PERFORMANCE.
@@ -11,8 +11,8 @@ $pageTitle = 'Application Review';
 $breadcrumb = 'Application Detail';
 require_once __DIR__ . '/includes/header.php';
 
-$appId = (int)($_GET['id'] ?? 0);
-$refParam = trim($_GET['ref'] ?? '');
+$appId = (int)($_POST['app_id'] ?? ($_GET['id'] ?? 0));
+$refParam = trim((string)($_POST['ref'] ?? ($_GET['ref'] ?? '')));
 
 if ($appId <= 0 && empty($refParam)) {
     setFlashMessage('danger', 'Invalid application record ID.');
@@ -20,65 +20,13 @@ if ($appId <= 0 && empty($refParam)) {
     exit;
 }
 
-// Handle Status & Notes Submissions
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $submittedToken = $_POST['csrf_token'] ?? '';
-    if (!validateCsrfToken($submittedToken)) {
-        setFlashMessage('danger', 'CSRF validation failed.');
-        header("Location: application-detail.php?id=$appId");
-        exit;
-    }
-
-    $action = $_POST['form_action'] ?? '';
-
-    // Action 1: Update Status
-    if ($action === 'update_status') {
-        $newStatus = trim($_POST['status'] ?? '');
-        $allowed = ['New', 'Under Review', 'Shortlisted', 'Interview Scheduled', 'Selected', 'Rejected'];
-        if (in_array($newStatus, $allowed, true)) {
-            try {
-                $stmt = $pdo->prepare('UPDATE applications SET status = :st, updated_at = NOW() WHERE id = :id');
-                $stmt->execute([':st' => $newStatus, ':id' => $appId]);
-
-                logActivity($pdo, $admin['id'], 'application_status_updated', 'application', $appId, "Status updated to '$newStatus'");
-                setFlashMessage('success', "Candidate application status updated to '$newStatus'.");
-            } catch (Throwable $e) {
-                setFlashMessage('danger', 'Failed to update status: ' . $e->getMessage());
-            }
-        }
-        header("Location: application-detail.php?id=$appId");
-        exit;
-    }
-
-    // Action 2: Add Recruiter Note
-    if ($action === 'add_note') {
-        $noteText = trim($_POST['note'] ?? '');
-        if (!empty($noteText)) {
-            try {
-                $stmt = $pdo->prepare('INSERT INTO application_notes (application_id, admin_id, note, created_at) VALUES (:aid, :admin, :note, NOW())');
-                $stmt->execute([
-                    ':aid'   => $appId,
-                    ':admin' => $admin['id'],
-                    ':note'  => $noteText
-                ]);
-
-                logActivity($pdo, $admin['id'], 'application_note_added', 'application', $appId, 'Added review note');
-                setFlashMessage('success', 'Recruitment note added successfully.');
-            } catch (Throwable $e) {
-                setFlashMessage('danger', 'Failed to save note: ' . $e->getMessage());
-            }
-        }
-        header("Location: application-detail.php?id=$appId");
-        exit;
-    }
-}
-
-// Fetch Application Record with Job Details and Resume File
+// 1. Fetch Application Record with Job Details and Resume File
 $app = null;
 $resumeFile = null;
 $notes = [];
 $auditLogs = [];
 
+// Try database fetch if ID is present
 if ($appId > 0 && !empty($pdo)) {
     try {
         $stmt = $pdo->prepare('
@@ -89,76 +37,171 @@ if ($appId > 0 && !empty($pdo)) {
         ');
         $stmt->execute([':id' => $appId]);
         $app = $stmt->fetch();
-
-        if ($app) {
-            // Fetch Resume File
-            $fStmt = $pdo->prepare('SELECT * FROM application_files WHERE application_id = :id LIMIT 1');
-            $fStmt->execute([':id' => $appId]);
-            $resumeFile = $fStmt->fetch();
-
-            // Fetch Internal Notes
-            $nStmt = $pdo->prepare('
-                SELECT n.*, a.full_name as author_name, a.username 
-                FROM application_notes n
-                JOIN admins a ON n.admin_id = a.id
-                WHERE n.application_id = :aid
-                ORDER BY n.created_at DESC
-            ');
-            $nStmt->execute([':aid' => $appId]);
-            $notes = $nStmt->fetchAll();
-
-            // Fetch Activity Logs
-            $lStmt = $pdo->prepare('
-                SELECT l.*, a.full_name as admin_name 
-                FROM activity_logs l
-                LEFT JOIN admins a ON l.admin_id = a.id
-                WHERE l.entity_type = "application" AND l.entity_id = :aid
-                ORDER BY l.created_at DESC
-            ');
-            $lStmt->execute([':aid' => $appId]);
-            $auditLogs = $lStmt->fetchAll();
+        if ($app && empty($refParam)) {
+            $refParam = $app['reference_no'];
         }
     } catch (Throwable $e) {
-        error_log('[APPLICATION DETAIL ERROR] ' . $e->getMessage());
+        error_log('[APPLICATION DETAIL DB ERROR] ' . $e->getMessage());
+    }
+}
+
+// Try database fetch by reference_no if not loaded yet
+if (!$app && !empty($refParam) && !empty($pdo)) {
+    try {
+        $stmt = $pdo->prepare('
+            SELECT a.*, j.title as job_title, j.department, j.location as job_location
+            FROM applications a
+            LEFT JOIN jobs j ON a.job_id = j.id
+            WHERE a.reference_no = :ref
+        ');
+        $stmt->execute([':ref' => $refParam]);
+        $app = $stmt->fetch();
+        if ($app) {
+            $appId = (int)$app['id'];
+        }
+    } catch (Throwable $e) {
+        error_log('[APPLICATION DETAIL REF DB ERROR] ' . $e->getMessage());
     }
 }
 
 // Check disk backup if not loaded from DB
+$diskMatchedFile = null;
 if (!$app && !empty($refParam)) {
     $cleanRef = preg_replace('/[^a-zA-Z0-9_-]/', '', $refParam);
     $diskDir = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'applications';
     if (is_dir($diskDir)) {
         $matches = glob($diskDir . DIRECTORY_SEPARATOR . 'app_*' . $cleanRef . '*.json');
         if ($matches) {
-            $raw = @file_get_contents($matches[0]);
+            $diskMatchedFile = $matches[0];
+            $raw = @file_get_contents($diskMatchedFile);
             $item = json_decode($raw, true);
             if ($item) {
+                // If database is available, auto-sync this disk application into MySQL
+                if (!empty($pdo)) {
+                    try {
+                        $ins = $pdo->prepare('
+                            INSERT INTO applications (
+                                reference_no, job_id, full_name, email, phone,
+                                experience_years, current_location, notice_period,
+                                additional_info, status, ip_address, user_agent, created_at, updated_at
+                            ) VALUES (
+                                :ref, :jid, :name, :email, :phone,
+                                :exp, :loc, :np,
+                                :info, :st, :ip, :ua, :created, NOW()
+                            )
+                        ');
+                        $ins->execute([
+                            ':ref'     => $item['reference_no'],
+                            ':jid'     => $item['job_id'] ?? 0,
+                            ':name'    => $item['full_name'] ?? 'Candidate',
+                            ':email'   => $item['email'] ?? '',
+                            ':phone'   => $item['phone'] ?? '',
+                            ':exp'     => $item['experience_years'] ?? '',
+                            ':loc'     => $item['current_location'] ?? ($item['candidate_address'] ?? 'WFH (All India)'),
+                            ':np'      => $item['notice_period'] ?? '',
+                            ':info'    => $item['additional_info'] ?? null,
+                            ':st'      => $item['status'] ?? 'New',
+                            ':ip'      => $item['ip_address'] ?? '127.0.0.1',
+                            ':ua'      => $item['user_agent'] ?? 'Web Form',
+                            ':created' => $item['created_at'] ?? date('Y-m-d H:i:s')
+                        ]);
+                        $appId = (int)$pdo->lastInsertId();
+
+                        if (!empty($item['resume_stored'])) {
+                            $fIns = $pdo->prepare('
+                                INSERT INTO application_files (
+                                    application_id, original_filename, stored_filename, file_path, file_size, mime_type, created_at
+                                ) VALUES (
+                                    :aid, :orig, :stored, :path, 0, "application/octet-stream", NOW()
+                                )
+                            ');
+                            $fIns->execute([
+                                ':aid'    => $appId,
+                                ':orig'   => $item['resume_original'] ?? 'Resume',
+                                ':stored' => $item['resume_stored'],
+                                ':path'   => $item['resume_path'] ?? ''
+                            ]);
+                        }
+                    } catch (Throwable $syncErr) {
+                        error_log('[AUTO SYNC APPLICATION ERROR] ' . $syncErr->getMessage());
+                    }
+                }
+
                 $app = [
-                    'id' => 0,
+                    'id' => $appId,
                     'reference_no' => $item['reference_no'],
-                    'full_name' => $item['full_name'],
-                    'email' => $item['email'],
-                    'phone' => $item['phone'],
-                    'experience_years' => $item['experience_years'],
-                    'current_location' => $item['current_location'] ?? ($item['candidate_address'] ?? 'WFH'),
-                    'notice_period' => $item['notice_period'],
+                    'full_name' => $item['full_name'] ?? 'Candidate',
+                    'email' => $item['email'] ?? '',
+                    'phone' => $item['phone'] ?? '',
+                    'experience_years' => $item['experience_years'] ?? '',
+                    'current_location' => $item['current_location'] ?? ($item['candidate_address'] ?? 'WFH (All India)'),
+                    'notice_period' => $item['notice_period'] ?? '',
                     'additional_info' => $item['additional_info'] ?? '',
-                    'status' => 'New',
-                    'created_at' => $item['created_at'],
+                    'status' => $item['status'] ?? 'New',
+                    'created_at' => $item['created_at'] ?? date('Y-m-d H:i:s'),
                     'job_title' => 'Data Operations (WFH)',
                     'department' => 'Operations',
-                    'job_location' => 'Work From Home (WFH) / Remote'
+                    'job_location' => 'Work From Home (WFH) / Remote',
+                    'ip_address' => $item['ip_address'] ?? 'Unknown'
                 ];
+
                 if (!empty($item['resume_stored'])) {
                     $resumeFile = [
                         'id' => 0,
                         'original_filename' => $item['resume_original'] ?? 'Candidate_Resume',
                         'stored_filename' => $item['resume_stored'],
-                        'file_size' => 0
+                        'file_size' => 0,
+                        'mime_type' => 'Document'
                     ];
+                }
+
+                if (!empty($item['notes']) && is_array($item['notes'])) {
+                    foreach ($item['notes'] as $n) {
+                        $notes[] = [
+                            'author_name' => $n['author_name'] ?? 'Admin',
+                            'note' => $n['note'] ?? '',
+                            'created_at' => $n['created_at'] ?? date('Y-m-d H:i:s')
+                        ];
+                    }
                 }
             }
         }
+    }
+}
+
+// If loaded from database, also fetch attached file, notes, and activity logs
+if ($app && $app['id'] > 0 && !empty($pdo)) {
+    try {
+        if (!$resumeFile) {
+            $fStmt = $pdo->prepare('SELECT * FROM application_files WHERE application_id = :id LIMIT 1');
+            $fStmt->execute([':id' => $app['id']]);
+            $resumeFile = $fStmt->fetch();
+        }
+
+        $nStmt = $pdo->prepare('
+            SELECT n.*, a.full_name as author_name, a.username 
+            FROM application_notes n
+            JOIN admins a ON n.admin_id = a.id
+            WHERE n.application_id = :aid
+            ORDER BY n.created_at DESC
+        ');
+        $nStmt->execute([':aid' => $app['id']]);
+        $dbNotes = $nStmt->fetchAll();
+        if ($dbNotes) {
+            $notes = array_merge($notes, $dbNotes);
+        }
+
+        $lStmt = $pdo->prepare('
+            SELECT l.*, a.full_name as admin_name 
+            FROM activity_logs l
+            LEFT JOIN admins a ON l.admin_id = a.id
+            WHERE l.entity_type = "application" AND l.entity_id = :aid
+            ORDER BY l.created_at DESC
+        ');
+        $lStmt->execute([':aid' => $app['id']]);
+        $auditLogs = $lStmt->fetchAll();
+    } catch (Throwable $e) {
+        error_log('[APPLICATION DETAIL SUB-FETCH ERROR] ' . $e->getMessage());
     }
 }
 
@@ -167,6 +210,131 @@ if (!$app) {
     header('Location: applications.php');
     exit;
 }
+
+// 2. Handle Status & Notes Submissions
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $submittedToken = $_POST['csrf_token'] ?? '';
+    if (!validateCsrfToken($submittedToken)) {
+        setFlashMessage('danger', 'CSRF validation failed.');
+        $redir = $appId > 0 ? "application-detail.php?id=$appId" : "application-detail.php?ref=" . urlencode($app['reference_no']);
+        header("Location: $redir");
+        exit;
+    }
+
+    $action = $_POST['form_action'] ?? '';
+
+    // Action 1: Update Status
+    if ($action === 'update_status') {
+        $newStatus = trim($_POST['status'] ?? '');
+        $allowed = ['New', 'Under Review', 'Shortlisted', 'Interview Scheduled', 'Selected', 'Rejected'];
+        if (in_array($newStatus, $allowed, true)) {
+            // Update in MySQL
+            if (!empty($pdo)) {
+                try {
+                    if ($appId > 0) {
+                        $stmt = $pdo->prepare('UPDATE applications SET status = :st, updated_at = NOW() WHERE id = :id');
+                        $stmt->execute([':st' => $newStatus, ':id' => $appId]);
+                    } elseif (!empty($refParam)) {
+                        $stmt = $pdo->prepare('UPDATE applications SET status = :st, updated_at = NOW() WHERE reference_no = :ref');
+                        $stmt->execute([':st' => $newStatus, ':ref' => $refParam]);
+                    }
+                    if (function_exists('logActivity')) {
+                        logActivity($pdo, $admin['id'] ?? 1, 'application_status_updated', 'application', $appId, "Status updated to '$newStatus'");
+                    }
+                } catch (Throwable $dbErr) {
+                    error_log('[APPLICATION DB STATUS UPDATE ERROR] ' . $dbErr->getMessage());
+                }
+            }
+
+            // Dual-Save: Update in disk JSON file
+            $targetRef = !empty($refParam) ? $refParam : $app['reference_no'];
+            $cleanRef = preg_replace('/[^a-zA-Z0-9_-]/', '', $targetRef);
+            if (!empty($cleanRef)) {
+                $diskDir = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'applications';
+                $matches = glob($diskDir . DIRECTORY_SEPARATOR . 'app_*' . $cleanRef . '*.json');
+                if ($matches) {
+                    foreach ($matches as $matchFile) {
+                        $raw = @file_get_contents($matchFile);
+                        if ($raw) {
+                            $data = json_decode($raw, true);
+                            if ($data) {
+                                $data['status'] = $newStatus;
+                                $data['updated_at'] = date('Y-m-d H:i:s');
+                                @file_put_contents($matchFile, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+                            }
+                        }
+                    }
+                }
+            }
+
+            setFlashMessage('success', "Candidate application status updated to '$newStatus' successfully.");
+        } else {
+            setFlashMessage('danger', 'Invalid status selection.');
+        }
+
+        $redir = $appId > 0 ? "application-detail.php?id=$appId" : "application-detail.php?ref=" . urlencode($app['reference_no']);
+        header("Location: $redir");
+        exit;
+    }
+
+    // Action 2: Add Recruiter Note
+    if ($action === 'add_note') {
+        $noteText = trim($_POST['note'] ?? '');
+        if (!empty($noteText)) {
+            // Save in MySQL
+            if ($appId > 0 && !empty($pdo)) {
+                try {
+                    $stmt = $pdo->prepare('INSERT INTO application_notes (application_id, admin_id, note, created_at) VALUES (:aid, :admin, :note, NOW())');
+                    $stmt->execute([
+                        ':aid'   => $appId,
+                        ':admin' => $admin['id'] ?? 1,
+                        ':note'  => $noteText
+                    ]);
+                    if (function_exists('logActivity')) {
+                        logActivity($pdo, $admin['id'] ?? 1, 'application_note_added', 'application', $appId, 'Added review note');
+                    }
+                } catch (Throwable $e) {
+                    error_log('[APPLICATION DB NOTE ERROR] ' . $e->getMessage());
+                }
+            }
+
+            // Dual-Save: Save in disk JSON file
+            $targetRef = !empty($refParam) ? $refParam : $app['reference_no'];
+            $cleanRef = preg_replace('/[^a-zA-Z0-9_-]/', '', $targetRef);
+            if (!empty($cleanRef)) {
+                $diskDir = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'applications';
+                $matches = glob($diskDir . DIRECTORY_SEPARATOR . 'app_*' . $cleanRef . '*.json');
+                if ($matches) {
+                    foreach ($matches as $matchFile) {
+                        $raw = @file_get_contents($matchFile);
+                        if ($raw) {
+                            $data = json_decode($raw, true);
+                            if ($data) {
+                                if (!isset($data['notes']) || !is_array($data['notes'])) {
+                                    $data['notes'] = [];
+                                }
+                                $data['notes'][] = [
+                                    'author_name' => $admin['full_name'] ?? 'Admin',
+                                    'note' => $noteText,
+                                    'created_at' => date('Y-m-d H:i:s')
+                                ];
+                                @file_put_contents($matchFile, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+                            }
+                        }
+                    }
+                }
+            }
+
+            setFlashMessage('success', 'Recruitment note added successfully.');
+        }
+
+        $redir = $appId > 0 ? "application-detail.php?id=$appId" : "application-detail.php?ref=" . urlencode($app['reference_no']);
+        header("Location: $redir");
+        exit;
+    }
+}
+
+$pageTargetUrl = 'application-detail.php?' . ($appId > 0 ? 'id=' . $appId : 'ref=' . urlencode($app['reference_no']));
 ?>
 
 <div class="page-header-row">
@@ -183,20 +351,22 @@ if (!$app) {
 
   <div style="display: flex; gap: 0.65rem; flex-wrap: wrap;">
     <?php if ($resumeFile): ?>
-      <a href="download-resume.php?id=<?php echo (int)$resumeFile['id']; ?>" class="btn btn-primary btn-sm">
-        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-        <span>Download Resume (<?php echo e($resumeFile['original_filename']); ?>)</span>
-      </a>
+      <?php if (!empty($resumeFile['stored_filename'])): ?>
+        <a href="download-resume.php?file=<?php echo urlencode($resumeFile['stored_filename']); ?>" class="btn btn-primary btn-sm">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          <span>Download Resume (<?php echo e($resumeFile['original_filename']); ?>)</span>
+        </a>
+      <?php elseif (!empty($resumeFile['id'])): ?>
+        <a href="download-resume.php?id=<?php echo (int)$resumeFile['id']; ?>" class="btn btn-primary btn-sm">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          <span>Download Resume (<?php echo e($resumeFile['original_filename']); ?>)</span>
+        </a>
+      <?php endif; ?>
     <?php endif; ?>
-    <a href="mailto:<?php echo e($app['email']); ?>?subject=Re:%20DATNIX%20SOLUTIONS%20Application%20<?php echo urlencode($app['reference_no']); ?>" class="btn btn-navy btn-sm">
-      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-      <span>Contact Candidate</span>
-    </a>
   </div>
 </div>
 
-<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.75rem; align-items: start;">
-  <!-- Left Column: Candidate Profile & Notes -->
+<div class="content-grid">
   <div>
     <!-- Profile Card -->
     <div class="admin-card">
@@ -246,7 +416,7 @@ if (!$app) {
               <div>
                 <strong style="color: var(--admin-navy-dark);"><?php echo e($resumeFile['original_filename']); ?></strong>
                 <div style="font-size: 12px; color: var(--admin-text-muted);">
-                  Size: <?php echo formatFileSize((int)$resumeFile['file_size']); ?> &bull; Type: <?php echo e($resumeFile['mime_type']); ?>
+                  Status: Uploaded &bull; Ref: <?php echo e($app['reference_no']); ?>
                 </div>
               </div>
             </div>
@@ -255,7 +425,7 @@ if (!$app) {
                 <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
                 <span>Download CV</span>
               </a>
-            <?php else: ?>
+            <?php elseif (!empty($resumeFile['id'])): ?>
               <a href="download-resume.php?id=<?php echo (int)$resumeFile['id']; ?>" class="btn btn-navy btn-sm">
                 <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
                 <span>Download CV</span>
@@ -263,7 +433,7 @@ if (!$app) {
             <?php endif; ?>
           </div>
         <?php else: ?>
-          <div class="alert alert-warning">No resume document file associated with this candidate record.</div>
+          <div class="alert alert-warning" style="margin-bottom: 0;">No separate resume document uploaded (Candidate applied with direct form details).</div>
         <?php endif; ?>
       </div>
     </div>
@@ -275,8 +445,10 @@ if (!$app) {
         <span style="font-size: 11.5px; color: var(--admin-orange); font-weight: 700;">Private / Internal Only</span>
       </div>
       <div class="admin-card-body">
-        <form method="POST" action="application-detail.php?id=<?php echo $appId; ?>" style="margin-bottom: 1.75rem;">
+        <form method="POST" action="<?php echo e($pageTargetUrl); ?>" style="margin-bottom: 1.75rem;">
           <?php echo csrfField(); ?>
+          <input type="hidden" name="app_id" value="<?php echo (int)$appId; ?>">
+          <input type="hidden" name="ref" value="<?php echo e($app['reference_no']); ?>">
           <input type="hidden" name="form_action" value="add_note">
           <div class="form-group">
             <label for="note" class="form-label">Add Candidate Review Note</label>
@@ -317,8 +489,10 @@ if (!$app) {
         <h3 class="card-title">Recruitment Stage</h3>
       </div>
       <div class="admin-card-body">
-        <form method="POST" action="application-detail.php?id=<?php echo $appId; ?>">
+        <form method="POST" action="<?php echo e($pageTargetUrl); ?>">
           <?php echo csrfField(); ?>
+          <input type="hidden" name="app_id" value="<?php echo (int)$appId; ?>">
+          <input type="hidden" name="ref" value="<?php echo e($app['reference_no']); ?>">
           <input type="hidden" name="form_action" value="update_status">
           <div class="form-group">
             <label for="status" class="form-label">Application Status</label>
@@ -368,7 +542,7 @@ if (!$app) {
 
         <div style="border-top: 1px solid var(--admin-border); padding-top: 0.75rem; font-size: 12px; color: var(--admin-text-muted);">
           <div>Submitted: <?php echo formatDate($app['created_at']); ?></div>
-          <div>Applicant IP: <code><?php echo e($app['ip_address']); ?></code></div>
+          <div>Applicant IP: <code><?php echo e($app['ip_address'] ?? '127.0.0.1'); ?></code></div>
         </div>
       </div>
     </div>
