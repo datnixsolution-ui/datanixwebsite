@@ -115,6 +115,39 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   if (contactForm) {
+    // Check URL parameters for successful native form submission
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('enquiry_status') === 'success') {
+        const refNo = urlParams.get('ref') || 'LOGGED';
+        if (formStatus) {
+          formStatus.className = 'form-status success';
+          formStatus.innerHTML = `
+            <div style="font-weight: 700; font-size: 1.05rem; margin-bottom: 0.35rem; color: #065F46; display: flex; align-items: center; gap: 8px;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span>Enquiry Received Successfully!</span>
+            </div>
+            <p style="margin: 0 0 0.5rem; font-size: 0.95rem; color: #166534; line-height: 1.5;">
+              Thank you for contacting DATNIX SOLUTIONS! Your enquiry has been recorded in our system under Reference ID:
+              <strong style="color: #065F46; font-family: monospace; font-size: 1.05rem;">${escapeHTML(refNo)}</strong>.
+            </p>
+            <p style="margin: 0; font-size: 0.88rem; color: #15803D;">
+              Our operations team will review your project specifications and contact you shortly. Please quote your reference number in any follow-up correspondence.
+            </p>
+          `;
+          formStatus.style.display = 'block';
+          contactForm.reset();
+        }
+      } else if (urlParams.get('enquiry_status') === 'error') {
+        const errMsg = urlParams.get('msg') || 'An error occurred during submission.';
+        if (formStatus) {
+          formStatus.className = 'form-status error';
+          formStatus.innerHTML = `<strong>Submission Notice:</strong> ${escapeHTML(errMsg)}`;
+          formStatus.style.display = 'block';
+        }
+      }
+    } catch (e) {}
+
     // Clear field-level invalid states on input
     const inputs = contactForm.querySelectorAll('input, select, textarea');
     inputs.forEach(input => {
@@ -377,23 +410,18 @@ document.addEventListener('DOMContentLoaded', () => {
           } else if (phpResult && phpResult.error) {
             throw new Error(phpResult.error);
           }
+          if (!phpResult && phpResp.status !== 429) {
+            // Free hosting reverse proxy challenge or non-JSON response: submit natively via browser
+            console.warn('Non-JSON response received, submitting natively via browser...');
+            contactForm.submit();
+            return;
+          }
         }
       } catch (phpErr) {
-        if (phpErr.name !== 'AbortError' && phpErr.message && !phpErr.message.includes('fetch') && !phpErr.message.includes('NetworkError') && !phpErr.message.includes('Failed to fetch')) {
-          if (formStatus) {
-            formStatus.className = 'form-status error';
-            formStatus.innerHTML = `
-              <div style="font-weight: 700; margin-bottom: 0.35rem; color: #991B1B;">Notice</div>
-              <p style="margin-bottom: 0.75rem; font-size: 0.95rem; color: #B91C1C; line-height: 1.5;">${escapeHTML(phpErr.message)}</p>
-            `;
-          }
-          if (submitBtn) {
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = originalBtnText;
-          }
-          return;
-        }
-        console.warn('PHP API request failed, offering direct channels...', phpErr);
+        // Free hosting reverse proxy challenge or fetch failure: submit natively via browser
+        console.warn('AJAX request failed, submitting natively via browser...', phpErr);
+        contactForm.submit();
+        return;
       }
 
       // Fallback: If running on static host (e.g. GitHub Pages) without PHP

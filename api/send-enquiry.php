@@ -275,10 +275,26 @@ if (strlen($projectDetails) < 3 || strlen($projectDetails) > 5000) {
     $errors[] = 'Project Details must be between 3 and 5,000 characters.';
 }
 
+// Detect AJAX vs Direct Browser Form Submission
+$isAjax = (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') ||
+          (strpos($_SERVER['HTTP_ACCEPT'] ?? '', 'application/json') !== false) ||
+          (!empty($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false) ||
+          (!empty($_POST['is_ajax'])) ||
+          (!empty($data['is_ajax']));
+
 if (!empty($errors)) {
-    http_response_code(400);
-    echo json_encode(['success' => false, 'error' => implode(' ', $errors)]);
-    exit;
+    if ($isAjax) {
+        http_response_code(400);
+        header('Content-Type: application/json; charset=UTF-8');
+        echo json_encode(['success' => false, 'error' => implode(' ', $errors)]);
+        exit;
+    } else {
+        $referer = $_SERVER['HTTP_REFERER'] ?? '';
+        $redirectPage = (strpos($referer, 'index.html') !== false) ? '../index.html' : '../contact.html';
+        $errStr = urlencode(implode(' ', $errors));
+        header('Location: ' . $redirectPage . '?enquiry_status=error&msg=' . $errStr . '#quote');
+        exit;
+    }
 }
 
 // Double-Click Rapid Duplicate Prevention (3 seconds)
@@ -378,12 +394,20 @@ $backupPayload = [
     json_encode($backupPayload, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)
 );
 
-// 5. Always deliver instant 200 OK confirmation with verified Reference Number
-http_response_code(200);
-echo json_encode([
-    'success'     => true,
-    'message'     => 'Thank you! Your enquiry has been received successfully and logged under Reference ID ' . $referenceNo . '. Our operations pod will review your specifications and contact you shortly.',
-    'referenceNo' => $referenceNo,
-    'service'     => $canonicalService
-]);
-exit;
+// 5. Deliver Confirmation (JSON for AJAX, Redirect for native browser POST)
+if ($isAjax) {
+    http_response_code(200);
+    header('Content-Type: application/json; charset=UTF-8');
+    echo json_encode([
+        'success'     => true,
+        'message'     => 'Thank you! Your enquiry has been received successfully and logged under Reference ID ' . $referenceNo . '. Our operations pod will review your specifications and contact you shortly.',
+        'referenceNo' => $referenceNo,
+        'service'     => $canonicalService
+    ]);
+    exit;
+} else {
+    $referer = $_SERVER['HTTP_REFERER'] ?? '';
+    $redirectPage = (strpos($referer, 'index.html') !== false) ? '../index.html' : '../contact.html';
+    header('Location: ' . $redirectPage . '?enquiry_status=success&ref=' . urlencode($referenceNo) . '#quote');
+    exit;
+}

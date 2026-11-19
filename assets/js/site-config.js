@@ -31,14 +31,12 @@ const SITE_CONFIG = {
     whatsappFloatingLink: "https://wa.me/917387010393?text=Hello%20DATNIX%20SOLUTIONS%2C%20I%20am%20interested%20in%20your%20data%20entry%20and%20BPO%20services.%20I%20would%20like%20to%20discuss%20a%20business%20requirement.",
 
     responseCommitment: "Prompt inquiries response within 2-4 business hours",
-    // Formspree Integration for genuine enquiry delivery to datnixsolution@gmail.com:
-    // Replace "YOUR_FORM_ID" with your actual Formspree endpoint (e.g. "https://formspree.io/f/mqazklow")
-    formspreeEndpoint: "https://formspree.io/f/YOUR_FORM_ID",
-    backendEndpoint: "https://formspree.io/f/YOUR_FORM_ID",
+    formspreeEndpoint: "api/send-enquiry.php",
+    backendEndpoint: "api/send-enquiry.php",
   },
 
   formspree: {
-    endpoint: "https://formspree.io/f/YOUR_FORM_ID",
+    endpoint: "api/send-enquiry.php",
     recipientEmail: "datnixsolution@gmail.com",
     subjectPrefix: "New DATNIX SOLUTIONS Website Enquiry"
   },
@@ -200,12 +198,10 @@ function applySiteConfig() {
     el.textContent = new Date().getFullYear();
   });
 
-  // Connect Formspree endpoint to form action attributes
-  document.querySelectorAll('form#consultationForm, form#businessEnquiryForm, form[action*="formspree.io"]').forEach(form => {
-    if (SITE_CONFIG.formspree && SITE_CONFIG.formspree.endpoint) {
-      form.setAttribute('action', SITE_CONFIG.formspree.endpoint);
-      form.setAttribute('method', 'POST');
-    }
+  // Ensure enquiry forms post to hardened PHP handler
+  document.querySelectorAll('form#consultationForm, form#businessEnquiryForm').forEach(form => {
+    form.setAttribute('action', 'api/send-enquiry.php');
+    form.setAttribute('method', 'POST');
   });
 }
 
