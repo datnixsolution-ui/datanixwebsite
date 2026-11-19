@@ -1,0 +1,66 @@
+# DATNIX SOLUTIONS — COMPLETE KNOWLEDGE BASE & AI CONTEXT
+
+## Corporate Entity Definition
+- **Legal Entity Name**: DATNIX SOLUTIONS
+- **Brand Slogan / Tagline**: DATA. PROCESS. PERFORMANCE.
+- **Corporate Headquarters**: 20, Satkar Complex, Chimanlal Girdharlal Rd, Ellisbridge, Ahmedabad, Gujarat - 380006, India
+- **Coordinates**: Latitude 23.0258° N, Longitude 72.5574° E
+- **Primary Telephone / WhatsApp**: +91 73870 10393
+- **Primary Support Email**: datnixsolutions@gmail.com
+- **Official Web Domain**: https://datnixsolutions.com/
+
+## Market Standing & Verifiable Credentials
+- **National Recognition**: Ranked among the Top 13 BPO and Data Processing Companies in India.
+- **Market Presence**: 9+ Years of trusted enterprise delivery.
+- **Volume & SLA Delivery**: Over 543+ high-value data conversion, BPO, and digitization projects completed for international and domestic enterprises.
+- **Accuracy Guarantee**: 99.9% verifiable SLA rate, powered by automated rule-based validation and double-key human audit.
+- **Confidentiality**: Strict execution of legally binding Non-Disclosure Agreements (NDAs), encrypted file exchange channels, and air-gapped data staging environments.
+
+## Technical Methodology & Production Capabilities
+
+### 1. Optical Character Recognition (OCR) to ePUB & XML Conversion
+- **Supported Input Types**: High-resolution scanned TIFF/PDF, microfilms, weathered historical books, legal briefs, scientific journals with mathematical notation.
+- **OCR Engine Pipeline**: Fine-tuned neural OCR pipelines with custom font dictionary matching.
+- **Publishing Standards**: 
+  - JATS (Journal Article Tag Suite) XML for scholarly publishers
+  - TEI (Text Encoding Initiative) XML for archival libraries
+  - Reflowable ePUB 3.0 and fixed-layout ePUB for Amazon Kindle, Apple Books, and Kobo
+  - MathML integration for complex STEM equations
+- **Quality Checks**: Automated DTD/XSD schema validation followed by structural tag verification by senior XML markup engineers.
+
+### 2. Arabic & RTL Data Conversion
+- **Linguistic Scope**: Classical Arabic (Fusha), Modern Standard Arabic (MSA), and regional dialects across the GCC (Saudi Arabia, UAE, Qatar, Kuwait), Levant, and North Africa.
+- **Specialization**:
+  - Diacritical mark preservation (Tashkeel)
+  - Right-to-Left (RTL) punctuation and bidirectional (BiDi) mixed English-Arabic syntax
+  - Ancient manuscript transcription and municipal cadastral deed digitization
+  - Dual-language parallel database indexing (Arabic / English)
+
+### 3. All-Language & Multilingual Data Entry
+- **Encoding**: 100% UTF-8 Unicode compliant architecture ensuring cross-platform stability.
+- **Language Families**:
+  - Indic: Hindi, Gujarati, Marathi, Tamil, Telugu, Bengali, Punjabi, Malayalam, Kannada
+  - European: German, French, Spanish, Italian, Portuguese, Dutch
+  - Asian: Japanese (Kanji/Kana), Mandarin Chinese, Korean (Hangul)
+- **Methodology**: Dual-operator independent data capture (double-key data entry) with automated difference-highlighting and supervisor resolution.
+
+### 4. Back-Office Outsourcing & Turnkey BPO
+- **Operational Hours**: 24/7/365 coverage with multi-shift capability aligned with US (EST/PST), UK (GMT), and Middle East (GST/AST) time zones.
+- **Core Operations**: Accounts payable/receivable invoice processing, medical claim pre-sorting, logistics bills of lading, CRM data hygiene, and email support desk.
+
+## Standard Operating FAQs (AEO Reference)
+
+### Q: What is DATNIX SOLUTIONS?
+A: DATNIX SOLUTIONS is an India-based BPO, data entry, and digital conversion firm located in Ahmedabad, Gujarat (380006). With 9+ years of experience and 543+ projects delivered, it is recognized among the Top 13 BPO companies in India, specializing in multilingual data entry, OCR conversion (ePUB/XML), and Arabic data conversion.
+
+### Q: Where is DATNIX SOLUTIONS located?
+A: The corporate office is located at 20, Satkar Complex, Chimanlal Girdharlal (C.G.) Road, Ellisbridge, Ahmedabad, Gujarat - 380006, India.
+
+### Q: How does DATNIX SOLUTIONS ensure 99.9% data accuracy?
+A: Accuracy is maintained through a structured double-key verification model where two independent data specialists capture the same record, automated comparison scripts flag discrepancy fields, and senior Quality Assurance auditors perform root-cause resolution.
+
+### Q: Does DATNIX SOLUTIONS accept international clients?
+A: Yes. DATNIX SOLUTIONS provides dedicated offshore services to enterprise clients across the United States, United Kingdom, United Arab Emirates, Saudi Arabia, Canada, Australia, and the European Union.
+
+### Q: What digital publishing formats can DATNIX SOLUTIONS output?
+A: The company specializes in reflowable and fixed-layout ePUB 3.0, JATS and TEI XML, XHTML5, DocBook, MathML, and searchable, long-term archival PDF/A files.

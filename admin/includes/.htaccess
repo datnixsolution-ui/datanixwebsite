@@ -1,0 +1,9 @@
+# DATNIX SOLUTIONS - Internal Admin Middleware Protection
+# Deny all direct web/HTTP access to internal admin middleware files
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+    Order Deny,Allow
+    Deny from all
+</IfModule>

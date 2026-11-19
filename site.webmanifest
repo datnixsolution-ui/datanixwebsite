@@ -1,0 +1,26 @@
+{
+  "name": "DATNIX SOLUTIONS - Data, Process, Performance",
+  "short_name": "DATNIX",
+  "description": "Top 13th BPO and Data Processing Company in India. Multilingual Data Entry, OCR & ePUB/XML Conversion, Arabic Data Conversion, and Back-Office Outsourcing.",
+  "start_url": "/index.html",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#FFFFFF",
+  "theme_color": "#092D78",
+  "categories": ["business", "productivity", "utilities"],
+  "icons": [
+    {
+      "src": "assets/images/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/images/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

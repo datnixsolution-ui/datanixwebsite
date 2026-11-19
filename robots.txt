@@ -1,0 +1,58 @@
+# ==============================================================================
+# DATNIX SOLUTIONS - robots.txt
+# Corporate Office: 20, Satkar Complex, Chimanlal Girdharlal Rd, Ahmedabad - 380006
+# Tagline: DATA. PROCESS. PERFORMANCE.
+# ==============================================================================
+
+# Default rule for all web search crawlers
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /config/
+Disallow: /includes/
+Disallow: /migrations/
+Disallow: /uploads/
+
+# Explicitly welcome AI Search & Answer Engines (AEO / GEO Optimization)
+User-agent: GPTBot
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /config/
+Disallow: /includes/
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+
+User-agent: Claude-Web
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+
+User-agent: Google-Extended
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+
+User-agent: Applebot-Extended
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+
+User-agent: Amazonbot
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+
+# XML Sitemap and Machine-Readable LLM Knowledge Pointers
+Sitemap: https://datnixsolutions.com/sitemap.xml
+# AI Model Documentation Architecture
+# LLMs-Txt: https://datnixsolutions.com/llms.txt
