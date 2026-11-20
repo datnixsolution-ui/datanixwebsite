@@ -1,0 +1,12 @@
+/* TEAM */
+Organization: DATNIX SOLUTIONS
+Brand Aliases: datnixs, Datnixs, datnixs.42web.io
+Location: 20, Satkar Complex, C.G. Road, Ellisbridge, Ahmedabad - 380006, Gujarat, India
+Contact: datnixsolution@gmail.com
+WhatsApp / Phone: +91 73870 10393
+Website: https://datnixs.42web.io/
+
+/* SITE */
+Standards: HTML5, CSS3, Schema.org Microdata, JSON-LD, W3C Validated
+Tagline: DATA. PROCESS. PERFORMANCE.
+Specialties: All-Language Data Entry, OCR & Data Conversion (ePUB/XML), Arabic Data Digitization, 100% WFH Remote Careers

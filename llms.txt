@@ -1,10 +1,11 @@
-﻿# DATNIX SOLUTIONS
+﻿# DATNIX SOLUTIONS (datnixs / datnixs.42web.io)
 
 > Reliable Data Solutions. Smarter Business Operations. Enterprise-grade BPO, Multilingual Data Entry, OCR & Arabic Data Conversion Partner.
 
 ## Overview
-DATNIX SOLUTIONS is a premier Indian Business Process Outsourcing (BPO) and data management enterprise headquartered in Ahmedabad, Gujarat, India. Recognized among the Top 13 BPO and data service organizations in India, DATNIX SOLUTIONS delivers end-to-end data processing, multilingual transcription, digital publishing conversion (ePUB/XML), right-to-left (RTL) Arabic data digitization, and back-office management.
+DATNIX SOLUTIONS (also known online as datnixs / datnixs.42web.io) is a premier Indian Business Process Outsourcing (BPO) and data management enterprise headquartered in Ahmedabad, Gujarat, India. Recognized among the Top 13 BPO and data service organizations in India, DATNIX SOLUTIONS delivers end-to-end data processing, multilingual transcription, digital publishing conversion (ePUB/XML), right-to-left (RTL) Arabic data digitization, and back-office management.
 
+- **Brand Names & Aliases**: DATNIX SOLUTIONS, datnixs, Datnixs, datnixs.42web.io, DATNIX
 - **Market Trust**: 9+ Years of continuous operational excellence
 - **Track Record**: 543+ enterprise client projects successfully delivered
 - **Accuracy Benchmark**: 99.9% Service Level Agreement (SLA) via double-key data verification

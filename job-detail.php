@@ -173,7 +173,7 @@ $pageJobTitle = $isGeneral ? 'General Talent Pool Application' : $job['title'];
   <!-- Primary SEO Metadata -->
   <title><?php echo e($pageJobTitle); ?> | 100% Work From Home (WFH) | DATNIX SOLUTIONS</title>
   <meta name="description" content="Apply for <?php echo e($pageJobTitle); ?> (100% Work From Home) at DATNIX SOLUTIONS. Submit your application online for remote data entry and operations jobs across India. Freshers welcome, no resume required.">
-  <meta name="keywords" content="Work from home data entry jobs, remote data entry application, WFH data typing jobs, online data entry operator India, remote excel jobs, freshers data entry jobs, DATNIX SOLUTIONS careers">
+  <meta name="keywords" content="datnixs, datnixs solutions, datnixs 42web io, datnix, Work from home data entry jobs, remote data entry application, WFH data typing jobs, online data entry operator India, remote excel jobs, freshers data entry jobs, DATNIX SOLUTIONS careers">
   <meta name="author" content="DATNIX SOLUTIONS">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
   <link rel="canonical" href="https://datnixs.42web.io/job-detail.php<?php echo !empty($slug) ? '?slug=' . urlencode($slug) : ($jobId > 0 ? '?id=' . $jobId : ''); ?>">
@@ -243,6 +243,7 @@ $pageJobTitle = $isGeneral ? 'General Talent Pool Application' : $job['title'];
         "hiringOrganization": {
           "@type": "Organization",
           "name": "DATNIX SOLUTIONS",
+          "alternateName": ["datnixs", "Datnixs", "DATNIX", "Datnix Solutions", "datnixs solutions", "datnixs.42web.io"],
           "sameAs": "https://datnixs.42web.io",
           "logo": "https://datnixs.42web.io/assets/images/datnix-logo.png"
         },
