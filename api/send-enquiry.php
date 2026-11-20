@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * DATNIX SOLUTIONS - Hardened & Ultra-Reliable Backend Handler for Enquiry Form
  * Endpoint: /api/send-enquiry.php
@@ -14,8 +14,8 @@ header('Cache-Control: no-store, no-cache, must-revalidate, private');
 
 // 1. CORS Configuration (Permissive and Robust)
 $trustedOrigins = [
-    'https://datnixsolutions.com',
-    'https://www.datnixsolutions.com',
+    'https://datnixs.42web.io',
+    'https://datnixs.42web.io',
     'http://datnixs.42web.io',
     'https://datnixs.42web.io',
     'http://www.datnixs.42web.io',

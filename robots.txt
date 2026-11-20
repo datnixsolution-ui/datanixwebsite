@@ -1,4 +1,4 @@
-# ==============================================================================
+﻿# ==============================================================================
 # DATNIX SOLUTIONS - robots.txt
 # Corporate Office: 20, Satkar Complex, Chimanlal Girdharlal Rd, Ahmedabad - 380006
 # Tagline: DATA. PROCESS. PERFORMANCE.
@@ -53,6 +53,6 @@ Disallow: /admin/
 Disallow: /api/
 
 # XML Sitemap and Machine-Readable LLM Knowledge Pointers
-Sitemap: https://datnixsolutions.com/sitemap.xml
+Sitemap: https://datnixs.42web.io/sitemap.xml
 # AI Model Documentation Architecture
-# LLMs-Txt: https://datnixsolutions.com/llms.txt
+# LLMs-Txt: https://datnixs.42web.io/llms.txt

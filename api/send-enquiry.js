@@ -52,8 +52,8 @@ import os from 'os';
 
 // 1. Trusted Origins Whitelist for CORS
 const TRUSTED_ORIGINS = [
-  'https://datnixsolutions.com',
-  'https://www.datnixsolutions.com',
+  'https://datnixs.42web.io',
+  'https://datnixs.42web.io',
   'http://localhost:3000',
   'http://localhost:5000',
   'http://localhost:5500',

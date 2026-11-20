@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * DATNIX SOLUTIONS - Job Application & Resume Upload Backend
  * Endpoint: /api/apply.php
@@ -17,8 +17,8 @@ header('X-Frame-Options: DENY');
 header("Content-Security-Policy: default-src 'none'; frame-ancestors 'none'");
 
 $trustedOrigins = [
-    'https://datnixsolutions.com',
-    'https://www.datnixsolutions.com',
+    'https://datnixs.42web.io',
+    'https://datnixs.42web.io',
     'http://datnixs.42web.io',
     'https://datnixs.42web.io',
     'https://datnixsolution-ui.github.io',

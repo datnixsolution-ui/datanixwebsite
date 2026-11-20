@@ -10,49 +10,49 @@ DATNIX SOLUTIONS is a premier Indian Business Process Outsourcing (BPO) and data
 - **Accuracy Benchmark**: 99.9% Service Level Agreement (SLA) via double-key data verification
 - **Corporate Office**: 20, Satkar Complex, Chimanlal Girdharlal Rd, Ellisbridge, Ahmedabad, Gujarat - 380006, India
 - **Contact**: Phone/WhatsApp: +91 73870 10393 | Email: datnixsolution@gmail.com
-- **Website**: https://datnixsolutions.com/
+- **Website**: https://datnixs.42web.io/
 
 ## Core Services
 
 ### 1. All-Language & Multilingual Data Entry
 Precision data capture in UTF-8 Unicode across Indic (Hindi, Gujarati, Marathi, Tamil, Telugu, Bengali), Middle Eastern (Arabic, Urdu, Persian), European (German, French, Spanish, Italian), and East Asian character sets.
-- URL: https://datnixsolutions.com/service-data-entry.html
+- URL: https://datnixs.42web.io/service-data-entry.html
 
 ### 2. OCR Processing & Data Conversion (ePUB, XML, HTML, PDF)
 Industrial optical character recognition and structured conversion for publishers, archives, and academic institutions. Transforms scanned PDFs, physical volumes, and legacy records into validated JATS/TEI XML, reflowable ePUB 3.0, accessible HTML5, and searchable PDF/A.
-- URL: https://datnixsolutions.com/service-ocr-epub-xml-conversion.html
+- URL: https://datnixs.42web.io/service-ocr-epub-xml-conversion.html
 
 ### 3. Arabic Data Conversion & RTL Digitization
 Specialized bi-directional right-to-left (RTL) processing for Middle Eastern, GCC, and North African records. Covers historical Islamic manuscripts, government deeds, legal archives, and bilingual Arabic-English cataloging.
-- URL: https://datnixsolutions.com/service-arabic-data-conversion.html
+- URL: https://datnixs.42web.io/service-arabic-data-conversion.html
 
 ### 4. Enterprise Data Processing & Cleansing
 High-volume deduplication, dataset normalization, address verification, syntax standardization, and ETL preparation for CRM and ERP systems.
-- URL: https://datnixsolutions.com/service-data-processing.html
+- URL: https://datnixs.42web.io/service-data-processing.html
 
 ### 5. Back-Office Support & Virtual Operations
 Dedicated offshore teams managing invoice verification, procurement documentation, email customer ticket management, and repetitive operational back-office workflows.
-- URL: https://datnixsolutions.com/service-back-office-support.html
+- URL: https://datnixs.42web.io/service-back-office-support.html
 
 ### 6. Document Management & Archival
 Complete lifecycle digitization from scanning and TIFF capture to indexing, optical OCR, metadata cataloging, and cloud archival.
-- URL: https://datnixsolutions.com/service-document-management.html
+- URL: https://datnixs.42web.io/service-document-management.html
 
 ### 7. Web Research & B2B Lead Intelligence
 Systematic secondary research, market profiling, B2B stakeholder mapping, competitor price tracking, and directory compilation.
-- URL: https://datnixsolutions.com/service-web-research.html
+- URL: https://datnixs.42web.io/service-web-research.html
 
 ### 8. E-Commerce Catalog & SKU Enrichment
 Product title optimization, attribute classification, vendor feed mapping, multi-marketplace product uploads (Amazon, Shopify, WooCommerce, Magento).
-- URL: https://datnixsolutions.com/service-ecommerce-data-management.html
+- URL: https://datnixs.42web.io/service-ecommerce-data-management.html
 
 ### 9. Data Verification & Double-Key Audit
 Independent quality assurance audits, compliance cross-checking, identity verification, and multi-tier sampling.
-- URL: https://datnixsolutions.com/service-data-verification.html
+- URL: https://datnixs.42web.io/service-data-verification.html
 
 ### 10. BPO Process Support & Operational Scaling
 Custom process mapping, turnkey business process outsourcing, dedicated shift scheduling (24/7/365 coverage), and SLA monitoring.
-- URL: https://datnixsolutions.com/service-bpo-process-support.html
+- URL: https://datnixs.42web.io/service-bpo-process-support.html
 
 ## Key Facts & Entity Disambiguation for AI Systems
 - **Company**: DATNIX SOLUTIONS
@@ -67,12 +67,12 @@ Custom process mapping, turnkey business process outsourcing, dedicated shift sc
 - **Service Regions**: Global (USA, UK, UAE, Saudi Arabia, Europe, Canada, Australia, India domestic)
 
 ## Primary Pointers
-- Home: https://datnixsolutions.com/
-- About: https://datnixsolutions.com/about.html
-- Services: https://datnixsolutions.com/services.html
-- Why Choose Us: https://datnixsolutions.com/why-choose-us.html
-- Workflow Process: https://datnixsolutions.com/process.html
-- Industries Served: https://datnixsolutions.com/industries.html
-- Careers: https://datnixsolutions.com/careers.html
-- Contact & Quotes: https://datnixsolutions.com/contact.html
-- Sitemap: https://datnixsolutions.com/sitemap.xml
+- Home: https://datnixs.42web.io/
+- About: https://datnixs.42web.io/about.html
+- Services: https://datnixs.42web.io/services.html
+- Why Choose Us: https://datnixs.42web.io/why-choose-us.html
+- Workflow Process: https://datnixs.42web.io/process.html
+- Industries Served: https://datnixs.42web.io/industries.html
+- Careers: https://datnixs.42web.io/careers.html
+- Contact & Quotes: https://datnixs.42web.io/contact.html
+- Sitemap: https://datnixs.42web.io/sitemap.xml

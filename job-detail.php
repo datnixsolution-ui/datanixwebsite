@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * DATNIX SOLUTIONS - Job Detail & Application Portal
  * Tagline: DATA. PROCESS. PERFORMANCE.
@@ -176,7 +176,7 @@ $pageJobTitle = $isGeneral ? 'General Talent Pool Application' : $job['title'];
   <meta name="keywords" content="Work from home data entry jobs, remote data entry application, WFH data typing jobs, online data entry operator India, remote excel jobs, freshers data entry jobs, DATNIX SOLUTIONS careers">
   <meta name="author" content="DATNIX SOLUTIONS">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
-  <link rel="canonical" href="https://datnixsolutions.com/job-detail.php<?php echo !empty($slug) ? '?slug=' . urlencode($slug) : ($jobId > 0 ? '?id=' . $jobId : ''); ?>">
+  <link rel="canonical" href="https://datnixs.42web.io/job-detail.php<?php echo !empty($slug) ? '?slug=' . urlencode($slug) : ($jobId > 0 ? '?id=' . $jobId : ''); ?>">
 
   <!-- Geographic & Local Search Engine Optimization (GEO) -->
   <meta name="geo.region" content="IN">
@@ -189,8 +189,8 @@ $pageJobTitle = $isGeneral ? 'General Talent Pool Application' : $job['title'];
   <meta property="og:site_name" content="DATNIX SOLUTIONS">
   <meta property="og:title" content="<?php echo e($pageJobTitle); ?> | 100% Work From Home (WFH) | DATNIX SOLUTIONS">
   <meta property="og:description" content="Apply for <?php echo e($pageJobTitle); ?> (100% Work From Home) at DATNIX SOLUTIONS. Freshers welcome, no resume required.">
-  <meta property="og:url" content="https://datnixsolutions.com/job-detail.php<?php echo !empty($slug) ? '?slug=' . urlencode($slug) : ($jobId > 0 ? '?id=' . $jobId : ''); ?>">
-  <meta property="og:image" content="https://datnixsolutions.com/assets/images/datnix-social-share.png">
+  <meta property="og:url" content="https://datnixs.42web.io/job-detail.php<?php echo !empty($slug) ? '?slug=' . urlencode($slug) : ($jobId > 0 ? '?id=' . $jobId : ''); ?>">
+  <meta property="og:image" content="https://datnixs.42web.io/assets/images/datnix-social-share.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
 
@@ -198,7 +198,7 @@ $pageJobTitle = $isGeneral ? 'General Talent Pool Application' : $job['title'];
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="<?php echo e($pageJobTitle); ?> | 100% Work From Home (WFH) | DATNIX SOLUTIONS">
   <meta name="twitter:description" content="Apply for <?php echo e($pageJobTitle); ?> at DATNIX SOLUTIONS. Remote WFH data entry openings across India.">
-  <meta name="twitter:image" content="https://datnixsolutions.com/assets/images/datnix-social-share.png">
+  <meta name="twitter:image" content="https://datnixs.42web.io/assets/images/datnix-social-share.png">
 
   <!-- Structured Data (JSON-LD: Google for Jobs & BreadcrumbList) -->
   <script type="application/ld+json">
@@ -212,19 +212,19 @@ $pageJobTitle = $isGeneral ? 'General Talent Pool Application' : $job['title'];
             "@type": "ListItem",
             "position": 1,
             "name": "Home",
-            "item": "https://datnixsolutions.com/"
+            "item": "https://datnixs.42web.io/"
           },
           {
             "@type": "ListItem",
             "position": 2,
             "name": "Careers",
-            "item": "https://datnixsolutions.com/careers.php"
+            "item": "https://datnixs.42web.io/careers.php"
           },
           {
             "@type": "ListItem",
             "position": 3,
             "name": "Job Application",
-            "item": "https://datnixsolutions.com/job-detail.php"
+            "item": "https://datnixs.42web.io/job-detail.php"
           }
         ]
       },
@@ -243,8 +243,8 @@ $pageJobTitle = $isGeneral ? 'General Talent Pool Application' : $job['title'];
         "hiringOrganization": {
           "@type": "Organization",
           "name": "DATNIX SOLUTIONS",
-          "sameAs": "https://datnixsolutions.com",
-          "logo": "https://datnixsolutions.com/assets/images/datnix-logo.png"
+          "sameAs": "https://datnixs.42web.io",
+          "logo": "https://datnixs.42web.io/assets/images/datnix-logo.png"
         },
         "jobLocationType": "TELECOMMUTE",
         "applicantLocationRequirements": {

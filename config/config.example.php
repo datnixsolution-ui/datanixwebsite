@@ -21,8 +21,8 @@ return [
 
     'app' => [
         'name'        => 'DATNIX SOLUTIONS Business Management System',
-        'url'         => getenv('APP_URL') ?: 'https://datnixsolutions.com',
-        'admin_url'   => getenv('ADMIN_URL') ?: 'https://datnixsolutions.com/admin',
+        'url'         => getenv('APP_URL') ?: 'https://datnixs.42web.io',
+        'admin_url'   => getenv('ADMIN_URL') ?: 'https://datnixs.42web.io/admin',
         'environment' => getenv('APP_ENV') ?: 'production',
         'debug'       => false,
         'secret_key'  => getenv('APP_KEY') ?: '', // Leave empty to auto-generate secure persistent key

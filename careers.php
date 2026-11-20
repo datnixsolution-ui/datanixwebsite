@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * DATNIX SOLUTIONS - Public Careers Portal
  * Tagline: DATA. PROCESS. PERFORMANCE.
@@ -121,21 +121,21 @@ if (empty($jobs)) {
   <meta name="keywords" content="Work from home data entry jobs, remote data entry jobs India, WFH typing jobs, online data entry operator, remote back office jobs, data entry jobs for freshers, part time data entry WFH, DATNIX SOLUTIONS careers">
   <meta name="author" content="DATNIX SOLUTIONS">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
-  <link rel="canonical" href="https://datnixsolutions.com/careers.php">
+  <link rel="canonical" href="https://datnixs.42web.io/careers.php">
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="DATNIX SOLUTIONS">
   <meta property="og:title" content="100% Work From Home (WFH) Data Entry Jobs | Remote Careers India | DATNIX SOLUTIONS">
   <meta property="og:description" content="Apply for 100% Work From Home (WFH) Data Entry jobs at DATNIX SOLUTIONS. Remote Data Entry Operators, Typing Specialists, and QC Auditors across India. Freshers welcome.">
-  <meta property="og:url" content="https://datnixsolutions.com/careers.php">
-  <meta property="og:image" content="https://datnixsolutions.com/assets/images/datnix-social-share.png">
+  <meta property="og:url" content="https://datnixs.42web.io/careers.php">
+  <meta property="og:image" content="https://datnixs.42web.io/assets/images/datnix-social-share.png">
 
   <!-- Twitter / X Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="100% Work From Home (WFH) Data Entry Jobs | Remote Careers India | DATNIX SOLUTIONS">
   <meta name="twitter:description" content="Apply for 100% Work From Home (WFH) Data Entry jobs at DATNIX SOLUTIONS. Remote Data Entry Operators and QC Auditors across India. Freshers welcome.">
-  <meta name="twitter:image" content="https://datnixsolutions.com/assets/images/datnix-social-share.png">
+  <meta name="twitter:image" content="https://datnixs.42web.io/assets/images/datnix-social-share.png">
 
   <!-- Favicons -->
   <link rel="icon" type="image/x-icon" href="favicon.ico">
