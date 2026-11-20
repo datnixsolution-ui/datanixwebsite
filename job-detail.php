@@ -659,7 +659,43 @@ $pageJobTitle = $isGeneral ? 'General Talent Pool Application' : $job['title'];
       const appStatus = document.getElementById('appStatus');
       const submitBtn = document.getElementById('submitAppBtn');
 
+      function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+      }
+
       if (!appForm) return;
+
+      // Check URL parameters for successful native form submission
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('application_status') === 'success') {
+          const refNo = urlParams.get('ref') || 'LOGGED';
+          if (appStatus) {
+            appStatus.className = 'form-status success';
+            appStatus.innerHTML = `
+              <div style="font-weight: 700; font-size: 1.05rem; margin-bottom: 0.35rem; color: #065F46;">
+                Application Received Successfully!
+              </div>
+              <p style="margin: 0; font-size: 0.92rem; color: #166534; line-height: 1.5;">
+                Thank you! Your job application has been logged under Reference ID: <strong>${escapeHtml(refNo)}</strong>. Our human resources and operational pod leads will review your credentials and reach out if your profile matches current openings.
+              </p>
+            `;
+            appStatus.style.display = 'block';
+          }
+          if (submitBtn) submitBtn.style.display = 'none';
+          appForm.reset();
+        } else if (urlParams.get('application_status') === 'error') {
+          const errMsg = urlParams.get('msg') || 'An error occurred during submission.';
+          if (appStatus) {
+            appStatus.className = 'form-status error';
+            appStatus.innerHTML = `<strong>Submission Error:</strong> ${escapeHtml(errMsg)}`;
+            appStatus.style.display = 'block';
+          }
+        }
+      } catch (e) {}
 
       appForm.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -683,7 +719,6 @@ $pageJobTitle = $isGeneral ? 'General Talent Pool Application' : $job['title'];
           return;
         }
 
-        // Set Loading State
         submitBtn.disabled = true;
         const originalText = submitBtn.innerHTML;
         submitBtn.innerHTML = 'Uploading &amp; Submitting Application...';
@@ -694,7 +729,7 @@ $pageJobTitle = $isGeneral ? 'General Talent Pool Application' : $job['title'];
         const formData = new FormData(appForm);
 
         const abortCtrl = new AbortController();
-        const abortTimer = setTimeout(() => abortCtrl.abort(), 10000);
+        const abortTimer = setTimeout(() => abortCtrl.abort(), 25000);
 
         try {
           const resp = await fetch('api/apply.php', {
@@ -714,22 +749,25 @@ $pageJobTitle = $isGeneral ? 'General Talent Pool Application' : $job['title'];
                 Application Received Successfully!
               </div>
               <p style="margin: 0; font-size: 0.92rem; color: #166534; line-height: 1.5;">
-                Thank you! Your job application has been logged under Reference ID: <strong>${result.referenceNo}</strong>. Our human resources and operational pod leads will review your credentials and reach out if your profile matches current openings.
+                Thank you! Your job application has been logged under Reference ID: <strong>${escapeHtml(result.referenceNo || 'LOGGED')}</strong>. Our human resources and operational pod leads will review your credentials and reach out if your profile matches current openings.
               </p>
             `;
             submitBtn.style.display = 'none';
+          } else if (!result && resp.status !== 429) {
+            console.warn('Non-JSON response received, submitting application natively via browser...');
+            appForm.submit();
+            return;
           } else {
             const errText = result && result.error ? result.error : 'An error occurred while uploading your application. Please try again.';
             appStatus.className = 'form-status error';
-            appStatus.innerHTML = `<strong>Submission Error:</strong> ${errText}`;
+            appStatus.innerHTML = `<strong>Submission Error:</strong> ${escapeHtml(errText)}`;
             submitBtn.disabled = false;
             submitBtn.innerHTML = originalText;
           }
         } catch (err) {
-          appStatus.className = 'form-status error';
-          appStatus.innerHTML = '<strong>Connection Error:</strong> Could not complete upload. Please check your network connection or email your resume directly to datnixsolution@gmail.com.';
-          submitBtn.disabled = false;
-          submitBtn.innerHTML = originalText;
+          console.warn('AJAX application upload failed, submitting natively via browser...', err);
+          appForm.submit();
+          return;
         }
       });
     });

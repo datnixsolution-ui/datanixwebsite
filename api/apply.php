@@ -5,7 +5,13 @@
  * Tagline: DATA. PROCESS. PERFORMANCE.
  */
 
-header('Content-Type: application/json; charset=UTF-8');
+$isAjax = (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest')
+    || (strpos($_SERVER['HTTP_ACCEPT'] ?? '', 'application/json') !== false)
+    || (!empty($_POST['is_ajax']));
+
+if ($isAjax) {
+    header('Content-Type: application/json; charset=UTF-8');
+}
 header('X-Content-Type-Options: nosniff');
 header('X-Frame-Options: DENY');
 header("Content-Security-Policy: default-src 'none'; frame-ancestors 'none'");
@@ -263,8 +269,14 @@ if ($hasResume) {
 }
 
 if (!empty($errors)) {
-    http_response_code(400);
-    echo json_encode(['success' => false, 'error' => implode(' ', $errors)]);
+    if ($isAjax) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'error' => implode(' ', $errors)]);
+    } else {
+        $refUrl = !empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '../job-detail.html';
+        $sep = (strpos($refUrl, '?') !== false) ? '&' : '?';
+        header("Location: " . $refUrl . $sep . "application_status=error&msg=" . urlencode(implode(' ', $errors)) . "#apply");
+    }
     exit;
 }
 
@@ -396,11 +408,20 @@ $backupPayload = [
     json_encode($backupPayload, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)
 );
 
-// Always deliver instant 200 OK confirmation with verified Reference Number
-http_response_code(200);
-echo json_encode([
-    'success'     => true,
-    'message'     => 'Thank you! Your job application has been successfully submitted under Reference ID ' . $referenceNo . '.',
-    'referenceNo' => $referenceNo
-]);
+// Always deliver instant confirmation with verified Reference Number (dual mode: AJAX JSON or native redirect)
+if ($isAjax) {
+    http_response_code(200);
+    echo json_encode([
+        'success'     => true,
+        'message'     => 'Thank you! Your job application has been successfully submitted under Reference ID ' . $referenceNo . '.',
+        'referenceNo' => $referenceNo
+    ]);
+} else {
+    $refUrl = !empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '../job-detail.html';
+    $cleanRefUrl = preg_replace('/([?&])application_status=[^&#]*/', '', $refUrl);
+    $cleanRefUrl = preg_replace('/([?&])ref=[^&#]*/', '', $cleanRefUrl);
+    $cleanRefUrl = preg_replace('/#.*$/', '', $cleanRefUrl);
+    $sep = (strpos($cleanRefUrl, '?') !== false) ? '&' : '?';
+    header("Location: " . $cleanRefUrl . $sep . "application_status=success&ref=" . urlencode($referenceNo) . "#apply");
+}
 exit;
