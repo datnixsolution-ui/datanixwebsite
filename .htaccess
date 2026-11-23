@@ -98,13 +98,6 @@ Options -Indexes -MultiViews
 
   # HTTP Strict Transport Security (HSTS) - Enforce HTTPS for 1 year
   Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
-
-  # Cross-Origin Policies (COOP & CORP)
-  Header set Cross-Origin-Opener-Policy "same-origin"
-  Header set Cross-Origin-Resource-Policy "same-origin"
-
-  # Content Security Policy (CSP)
-  Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https:; connect-src 'self'; frame-ancestors 'self'; form-action 'self' https://wa.me; base-uri 'self'; object-src 'none';"
 </IfModule>
 
 # ------------------------------------------------------------------------------
