@@ -308,6 +308,7 @@ document.addEventListener('DOMContentLoaded', () => {
       formData.set('projectDetails', message);
       formData.set('Project Details', message);
       formData.set('honeypot', honeypot);
+      formData.set('is_ajax', '1');
 
       // Direct communication channels for backup / direct transmission
       const whatsappText = encodeURIComponent(

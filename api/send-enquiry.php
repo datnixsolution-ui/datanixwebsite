@@ -162,14 +162,38 @@ foreach (array_keys($data) as $k) {
 }
 
 // Standardized Fields Extraction
-$fullName        = trim((string)($data['fullName'] ?? $data['Full Name'] ?? $data['full_name'] ?? $data['name'] ?? ''));
-$companyName     = trim((string)($data['companyName'] ?? $data['Company Name'] ?? $data['company_name'] ?? $data['company'] ?? ''));
-$email           = strtolower(trim((string)($data['email'] ?? $data['emailAddress'] ?? $data['Email Address'] ?? '')));
-$phone           = trim((string)($data['phone'] ?? $data['mobileNumber'] ?? $data['Mobile Number'] ?? $data['mobile'] ?? ''));
-$serviceInput    = trim((string)($data['service'] ?? $data['serviceRequired'] ?? $data['Service Required'] ?? 'Data Entry'));
-$estimatedVolume = trim((string)($data['estimatedVolume'] ?? $data['Estimated Project Volume'] ?? $data['estimated_volume'] ?? ''));
-$projectDetails  = trim((string)($data['projectDetails'] ?? $data['Project Details'] ?? $data['project_details'] ?? $data['message'] ?? ''));
+$fullName        = trim((string)($data['fullName'] ?? $data['Full_Name'] ?? $data['Full Name'] ?? $data['full_name'] ?? $data['name'] ?? ''));
+$companyName     = trim((string)($data['companyName'] ?? $data['Company_Name'] ?? $data['Company Name'] ?? $data['company_name'] ?? $data['company'] ?? ''));
+$email           = strtolower(trim((string)($data['email'] ?? $data['Email_Address'] ?? $data['emailAddress'] ?? $data['Email Address'] ?? $data['email_address'] ?? '')));
+$phone           = trim((string)($data['phone'] ?? $data['Mobile_Number'] ?? $data['mobileNumber'] ?? $data['Mobile Number'] ?? $data['mobile_number'] ?? $data['mobile'] ?? ''));
+$serviceInput    = trim((string)($data['service'] ?? $data['Service_Required'] ?? $data['serviceRequired'] ?? $data['Service Required'] ?? $data['service_required'] ?? 'Data Entry'));
+$estimatedVolume = trim((string)($data['estimatedVolume'] ?? $data['Estimated_Project_Volume'] ?? $data['estimated_volume'] ?? $data['Estimated Project Volume'] ?? ''));
+$projectDetails  = trim((string)($data['projectDetails'] ?? $data['Project_Details'] ?? $data['Project Details'] ?? $data['project_details'] ?? $data['message'] ?? ''));
 $honeypot        = trim((string)($data['honeypot'] ?? $data['_gotcha'] ?? ''));
+
+// Universal Case-Insensitive Key Extractor (guarantees zero missing fields regardless of browser/proxy mangling)
+if (empty($fullName) || empty($email) || empty($projectDetails)) {
+    foreach ($data as $k => $v) {
+        $kLower = strtolower(str_replace(['_', '-', ' '], '', (string)$k));
+        $val = trim((string)$v);
+        if (empty($val)) continue;
+        if (empty($fullName) && ($kLower === 'fullname' || $kLower === 'name' || $kLower === 'clientname')) {
+            $fullName = $val;
+        } elseif (empty($email) && ($kLower === 'email' || $kLower === 'emailaddress' || $kLower === 'workemail')) {
+            $email = strtolower($val);
+        } elseif (empty($phone) && ($kLower === 'phone' || $kLower === 'mobilenumber' || $kLower === 'mobile' || $kLower === 'tel')) {
+            $phone = $val;
+        } elseif (empty($companyName) && ($kLower === 'companyname' || $kLower === 'company' || $kLower === 'firm')) {
+            $companyName = $val;
+        } elseif (empty($serviceInput) && ($kLower === 'service' || $kLower === 'servicerequired' || $kLower === 'serviceinterest')) {
+            $serviceInput = $val;
+        } elseif (empty($estimatedVolume) && ($kLower === 'estimatedvolume' || $kLower === 'estimatedprojectvolume' || $kLower === 'volume')) {
+            $estimatedVolume = $val;
+        } elseif (empty($projectDetails) && ($kLower === 'projectdetails' || $kLower === 'details' || $kLower === 'message' || $kLower === 'scope')) {
+            $projectDetails = $val;
+        }
+    }
+}
 
 // Anti-Spam Honeypot Verification
 if (!empty($honeypot)) {
@@ -366,6 +390,8 @@ if ($pdo) {
     } catch (Throwable $e) {
         error_log('[ENQUIRY DB ERROR] ' . $e->getMessage());
         $savedToDb = false;
+        $dbErrFile = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'enquiries' . DIRECTORY_SEPARATOR . 'db_error.log';
+        @file_put_contents($dbErrFile, date('[Y-m-d H:i:s] ') . $e->getMessage() . "\n", FILE_APPEND);
     }
 }
 
@@ -389,10 +415,16 @@ $backupPayload = [
     'created_at'       => date('Y-m-d H:i:s'),
     'source'           => 'web_enquiry_form'
 ];
-@file_put_contents(
-    $backupDir . DIRECTORY_SEPARATOR . 'enq_' . date('Ymd_His') . '_' . preg_replace('/[^a-zA-Z0-9_-]/', '', $referenceNo) . '.json',
-    json_encode($backupPayload, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)
-);
+$jsonFilename = 'enq_' . date('Ymd_His') . '_' . preg_replace('/[^a-zA-Z0-9_-]/', '', $referenceNo) . '.json';
+$jsonContent = json_encode($backupPayload, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+@file_put_contents($backupDir . DIRECTORY_SEPARATOR . $jsonFilename, $jsonContent);
+
+// Fallback to sys_get_temp_dir if main uploads was restricted
+$sysBackupDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'datnix_enquiries';
+if (!is_dir($sysBackupDir)) {
+    @mkdir($sysBackupDir, 0755, true);
+}
+@file_put_contents($sysBackupDir . DIRECTORY_SEPARATOR . $jsonFilename, $jsonContent);
 
 // 5. Deliver Confirmation (JSON for AJAX, Redirect for native browser POST)
 if ($isAjax) {

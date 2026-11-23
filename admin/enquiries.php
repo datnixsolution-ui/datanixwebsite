@@ -77,72 +77,85 @@ if (!empty($pdo)) {
     }
 }
 
-// Check for zero-loss disk backup enquiries in uploads/enquiries/
-$diskEnqDir = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'enquiries';
-if (is_dir($diskEnqDir)) {
-    $enqFiles = glob($diskEnqDir . DIRECTORY_SEPARATOR . 'enq_*.json');
-    if ($enqFiles) {
-        $existingEnqRefs = array_column($enquiries, 'reference_no');
-        foreach ($enqFiles as $ef) {
-            $raw = @file_get_contents($ef);
-            if ($raw) {
-                $item = json_decode($raw, true);
-                if ($item && isset($item['reference_no']) && !in_array($item['reference_no'], $existingEnqRefs, true)) {
-                    $newEnqId = 0;
-                    // Auto-sync into MySQL if connected
-                    if (!empty($pdo)) {
-                        try {
-                            $ins = $pdo->prepare('
-                                INSERT INTO enquiries (
-                                    reference_no, full_name, company_name, email, phone,
-                                    service, estimated_volume, project_details, status,
-                                    ip_address, user_agent, created_at, updated_at
-                                ) VALUES (
-                                    :ref, :name, :company, :email, :phone,
-                                    :service, :volume, :details, :st,
-                                    :ip, :ua, :created, NOW()
-                                )
-                            ');
-                            $ins->execute([
-                                ':ref'     => $item['reference_no'],
-                                ':name'    => $item['full_name'] ?? 'Inquirer',
-                                ':company' => $item['company_name'] ?? null,
-                                ':email'   => $item['email'] ?? '',
-                                ':phone'   => $item['phone'] ?? null,
-                                ':service' => $item['service'] ?? 'General Outsourcing',
-                                ':volume'  => $item['estimated_volume'] ?? null,
-                                ':details' => $item['project_details'] ?? '',
-                                ':st'      => $item['status'] ?? 'New',
-                                ':ip'      => $item['ip_address'] ?? '127.0.0.1',
-                                ':ua'      => $item['user_agent'] ?? 'Web Form',
-                                ':created' => $item['created_at'] ?? date('Y-m-d H:i:s')
-                            ]);
-                            $newEnqId = (int)$pdo->lastInsertId();
-                        } catch (Throwable $syncErr) {
-                            error_log('[ENQUIRIES LIST AUTO-SYNC ERROR] ' . $syncErr->getMessage());
-                        }
-                    }
+// Check for zero-loss disk backup enquiries in uploads/enquiries/ and sys_get_temp_dir
+$candidateDirs = [
+    dirname(__DIR__) . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'enquiries',
+    sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'datnix_enquiries'
+];
 
-                    $enquiries[] = [
-                        'id' => $newEnqId,
-                        'reference_no' => $item['reference_no'],
-                        'full_name' => $item['full_name'] ?? 'Inquirer',
-                        'company_name' => $item['company_name'] ?? '',
-                        'email' => $item['email'] ?? '',
-                        'phone' => $item['phone'] ?? '',
-                        'service' => $item['service'] ?? 'General Enquiry',
-                        'estimated_volume' => $item['estimated_volume'] ?? '',
-                        'project_details' => $item['project_details'] ?? '',
-                        'status' => $item['status'] ?? 'New',
-                        'created_at' => $item['created_at'] ?? date('Y-m-d H:i:s'),
-                        'is_disk_backup' => true
-                    ];
-                    $totalCount++;
+$existingEnqRefs = array_column($enquiries, 'reference_no');
+
+foreach ($candidateDirs as $diskEnqDir) {
+    if (is_dir($diskEnqDir)) {
+        $enqFiles = glob($diskEnqDir . DIRECTORY_SEPARATOR . 'enq_*.json');
+        if ($enqFiles) {
+            foreach ($enqFiles as $ef) {
+                $raw = @file_get_contents($ef);
+                if ($raw) {
+                    $item = json_decode($raw, true);
+                    if ($item && isset($item['reference_no']) && !in_array($item['reference_no'], $existingEnqRefs, true)) {
+                        $newEnqId = 0;
+                        // Auto-sync into MySQL if connected
+                        if (!empty($pdo)) {
+                            try {
+                                $ins = $pdo->prepare('
+                                    INSERT INTO enquiries (
+                                        reference_no, full_name, company_name, email, phone,
+                                        service, estimated_volume, project_details, status,
+                                        ip_address, user_agent, created_at, updated_at
+                                    ) VALUES (
+                                        :ref, :name, :company, :email, :phone,
+                                        :service, :volume, :details, :st,
+                                        :ip, :ua, :created, NOW()
+                                    )
+                                ');
+                                $ins->execute([
+                                    ':ref'     => $item['reference_no'],
+                                    ':name'    => $item['full_name'] ?? 'Inquirer',
+                                    ':company' => $item['company_name'] ?? null,
+                                    ':email'   => $item['email'] ?? '',
+                                    ':phone'   => $item['phone'] ?? null,
+                                    ':service' => $item['service'] ?? 'General Outsourcing',
+                                    ':volume'  => $item['estimated_volume'] ?? null,
+                                    ':details' => $item['project_details'] ?? '',
+                                    ':st'      => $item['status'] ?? 'New',
+                                    ':ip'      => $item['ip_address'] ?? '127.0.0.1',
+                                    ':ua'      => $item['user_agent'] ?? 'Web Form',
+                                    ':created' => $item['created_at'] ?? date('Y-m-d H:i:s')
+                                ]);
+                                $newEnqId = (int)$pdo->lastInsertId();
+                            } catch (Throwable $syncErr) {
+                                error_log('[ENQUIRIES LIST AUTO-SYNC ERROR] ' . $syncErr->getMessage());
+                            }
+                        }
+
+                        $enquiries[] = [
+                            'id' => $newEnqId,
+                            'reference_no' => $item['reference_no'],
+                            'full_name' => $item['full_name'] ?? 'Inquirer',
+                            'company_name' => $item['company_name'] ?? '',
+                            'email' => $item['email'] ?? '',
+                            'phone' => $item['phone'] ?? '',
+                            'service' => $item['service'] ?? 'General Enquiry',
+                            'estimated_volume' => $item['estimated_volume'] ?? '',
+                            'project_details' => $item['project_details'] ?? '',
+                            'status' => $item['status'] ?? 'New',
+                            'created_at' => $item['created_at'] ?? date('Y-m-d H:i:s'),
+                            'is_disk_backup' => true
+                        ];
+                        $existingEnqRefs[] = $item['reference_no'];
+                        $totalCount++;
+                    }
                 }
             }
         }
     }
 }
+
+// Ensure the list is strictly ordered newest first
+usort($enquiries, function($a, $b) {
+    return strtotime($b['created_at'] ?? 'now') <=> strtotime($a['created_at'] ?? 'now');
+});
 
 $totalPages = max(1, (int)ceil($totalCount / $perPage));
 

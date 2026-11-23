@@ -115,32 +115,46 @@ if (is_dir($diskAppDir)) {
     }
 }
 
-$diskEnqDir = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'enquiries';
-if (is_dir($diskEnqDir)) {
-    $enqFiles = glob($diskEnqDir . DIRECTORY_SEPARATOR . 'enq_*.json');
-    if ($enqFiles) {
-        $stats['total_enquiries'] += count($enqFiles);
-        $stats['new_enquiries'] += count($enqFiles);
-        foreach ($enqFiles as $ef) {
-            $raw = @file_get_contents($ef);
-            if ($raw) {
-                $item = json_decode($raw, true);
-                if ($item && isset($item['reference_no'])) {
-                    $recentEnquiries[] = [
-                        'id' => 0,
-                        'reference_no' => $item['reference_no'],
-                        'full_name' => $item['full_name'] ?? 'Inquirer',
-                        'company_name' => $item['company_name'] ?? '',
-                        'email' => $item['email'] ?? '',
-                        'service' => $item['service'] ?? 'General Enquiry',
-                        'status' => 'New',
-                        'created_at' => $item['created_at'] ?? date('Y-m-d H:i:s')
-                    ];
+$candidateEnqDirs = [
+    dirname(__DIR__) . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'enquiries',
+    sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'datnix_enquiries'
+];
+
+$existingDashboardEnqRefs = array_column($recentEnquiries, 'reference_no');
+
+foreach ($candidateEnqDirs as $diskEnqDir) {
+    if (is_dir($diskEnqDir)) {
+        $enqFiles = glob($diskEnqDir . DIRECTORY_SEPARATOR . 'enq_*.json');
+        if ($enqFiles) {
+            foreach ($enqFiles as $ef) {
+                $raw = @file_get_contents($ef);
+                if ($raw) {
+                    $item = json_decode($raw, true);
+                    if ($item && isset($item['reference_no']) && !in_array($item['reference_no'], $existingDashboardEnqRefs, true)) {
+                        $stats['total_enquiries']++;
+                        $stats['new_enquiries']++;
+                        $recentEnquiries[] = [
+                            'id' => 0,
+                            'reference_no' => $item['reference_no'],
+                            'full_name' => $item['full_name'] ?? 'Inquirer',
+                            'company_name' => $item['company_name'] ?? '',
+                            'email' => $item['email'] ?? '',
+                            'service' => $item['service'] ?? 'General Enquiry',
+                            'status' => 'New',
+                            'created_at' => $item['created_at'] ?? date('Y-m-d H:i:s')
+                        ];
+                        $existingDashboardEnqRefs[] = $item['reference_no'];
+                    }
                 }
             }
         }
     }
 }
+
+usort($recentEnquiries, function($a, $b) {
+    return strtotime($b['created_at'] ?? 'now') <=> strtotime($a['created_at'] ?? 'now');
+});
+$recentEnquiries = array_slice($recentEnquiries, 0, 6);
 
 if ($stats['active_jobs'] === 0) {
     $stats['active_jobs'] = 8; // 8 published Data Entry WFH jobs
