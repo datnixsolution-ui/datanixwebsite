@@ -52,7 +52,8 @@ Allow: /
 Disallow: /admin/
 Disallow: /api/
 
-# XML Sitemap and Machine-Readable LLM Knowledge Pointers
+# XML & Plain Text Sitemaps
 Sitemap: https://datnixs.42web.io/sitemap.xml
+Sitemap: https://datnixs.42web.io/sitemap.txt
 # AI Model Documentation Architecture
 # LLMs-Txt: https://datnixs.42web.io/llms.txt
